@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>brenntel mediadesign — Webdesign, Entwicklung &amp; Branding</title>
+  <meta name="description" content="brenntel mediadesign — Kreative digitale Lösungen: Webdesign, Webentwicklung, Branding und Beratung von Eike Brenneisen.">
+  <meta property="og:title" content="brenntel mediadesign">
+  <meta property="og:description" content="Kreative digitale Lösungen: Webdesign, Webentwicklung, Branding und Beratung.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://brenntel.de">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:locale:alternate" content="en_US">
+  <link rel="canonical" href="https://brenntel.de">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS Custom Properties
+       ======================================== */
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f5f5f5;
+      --color-text: #1a1a1a;
+      --color-text-light: #555555;
+      --color-accent: #e8720c;
+      --color-accent-hover: #d06000;
+      --color-border: #e0e0e0;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --max-width: 1200px;
+      --section-padding: 5rem 1.5rem;
+      --radius: 8px;
+      --transition: 0.3s ease;
+    }
+
+    /* ========================================
+       Reset & Base (Mobile-first)
+       ======================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.7;
+      font-size: 1rem;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    /* ========================================
+       Utility
+       ======================================== */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ========================================
+       Scroll Animations
+       ======================================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* ========================================
+       Header / Navigation
+       ======================================== */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--color-border);
+      transition: box-shadow var(--transition);
+    }
+
+    .site-header.scrolled {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+
+    .logo span {
+      color: var(--color-accent);
+    }
+
+    /* Desktop Nav */
+    .nav-desktop {
+      display: none;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-desktop a {
+      color: var(--color-text);
+      font-size: 0.9rem;
+      font-weight: 500;
+      position: relative;
+      padding: 0.25rem 0;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nav-desktop a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--color-accent);
+      transition: width var(--transition);
+    }
+
+    .nav-desktop a:hover::after,
+    .nav-desktop a:focus::after {
+      width: 100%;
+    }
+
+    .nav-desktop a:hover {
+      color: var(--color-accent);
+    }
+
+    /* Language Toggle */
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      overflow: hidden;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .lang-toggle button {
+      background: none;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-light);
+      transition: background var(--transition), color var(--transition);
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lang-toggle button.active {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .lang-toggle button:hover:not(.active) {
+      background: var(--color-bg-alt);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 1001;
+      padding: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--color-text);
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile Nav Overlay */
+    .nav-mobile {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 280px;
+      background: var(--color-bg);
+      z-index: 999;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 5rem 2rem 2rem;
+      box-shadow: -4px 0 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-mobile.open {
+      transform: translateX(0);
+    }
+
+    .nav-mobile a {
+      display: block;
+      padding: 0.75rem 0;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      min-height: 44px;
+    }
+
+    .nav-mobile a:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-mobile .lang-toggle {
+      margin-top: 1rem;
+      align-self: flex-start;
+    }
+
+    .nav-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition), visibility var(--transition);
+    }
+
+    .nav-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ========================================
+       Hero Section
+       ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 span {
+      color: var(--color-accent);
+    }
+
+    .hero .subtitle {
+      font-size: clamp(0.95rem, 2vw, 1.25rem);
+      font-weight: 300;
+      color: var(--color-text-light);
+      max-width: 550px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 2rem;
+      font-family: var(--font-family);
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+      min-height: 44px;
+      min-width: 44px;
+      border: none;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: var(--color-accent-hover);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(232, 114, 12, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--color-accent);
+      border: 2px solid var(--color-accent);
+    }
+
+    .btn-outline:hover,
+    .btn-outline:focus {
+      background: var(--color-accent);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* ========================================
+       Section Titles
+       ======================================== */
+    .section-title {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      color: var(--color-text-light);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      font-size: 1rem;
+    }
+
+    /* ========================================
+       Services Section
+       ======================================== */
+    .services {
+      padding: var(--section-padding);
+      background: var(--color-bg-alt);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: var(--color-bg);
+      border-radius: var(--radius);
+      padding: 2rem;
+      border: 1px solid var(--color-border);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1.25rem;
+      color: var(--color-accent);
+    }
+
+    .service-card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-card p {
+      color: var(--color-text-light);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ========================================
+       About Section
+       ======================================== */
+    .about {
+      padding: var(--section-padding);
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .about-photo {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1;
+      background: var(--color-bg-alt);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-light);
+      font-size: 0.85rem;
+    }
+
+    .about-text h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .about-text p {
+      color: var(--color-text-light);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       Projects Section
+       ======================================== */
+    .projects {
+      padding: var(--section-padding);
+      background: var(--color-bg-alt);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--color-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .project-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, var(--color-bg-alt) 0%, #e0e0e0 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(232, 114, 12, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .project-card:hover .project-overlay {
+      opacity: 1;
+    }
+
+    .project-overlay span {
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .project-info {
+      padding: 1.5rem;
+    }
+
+    .project-info h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .project-info p {
+      color: var(--color-text-light);
+      font-size: 0.9rem;
+    }
+
+    /* ========================================
+       Contact Section
+       ======================================== */
+    .contact {
+      padding: var(--section-padding);
+    }
+
+    .contact-form {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-family);
+      font-size: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-bg);
+      color: var(--color-text);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      min-height: 44px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(232, 114, 12, 0.15);
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .form-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-checkbox input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      margin-top: 0.15rem;
+      accent-color: var(--color-accent);
+      cursor: pointer;
+    }
+
+    .form-checkbox label {
+      font-size: 0.85rem;
+      color: var(--color-text-light);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    .form-checkbox label a {
+      text-decoration: underline;
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: var(--color-bg-alt);
+      border-radius: var(--radius);
+      border: 1px solid var(--color-border);
+    }
+
+    .form-success.show {
+      display: block;
+    }
+
+    .form-success h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-accent);
+    }
+
+    /* ========================================
+       Footer
+       ======================================== */
+    .site-footer {
+      background: var(--color-bg-alt);
+      border-top: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: var(--color-text-light);
+      font-size: 0.85rem;
+      position: relative;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .footer-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width var(--transition);
+    }
+
+    .footer-links a:hover::after {
+      width: 100%;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-accent);
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--color-text-light);
+    }
+
+    /* ========================================
+       Responsive: Tablet (768px+)
+       ======================================== */
+    @media (min-width: 768px) {
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .about-content {
+        grid-template-columns: 280px 1fr;
+      }
+
+      .about-photo {
+        margin: 0;
+      }
+
+      .footer-inner {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    /* ========================================
+       Responsive: Desktop (1024px+)
+       ======================================== */
+    @media (min-width: 1024px) {
+      .hamburger {
+        display: none;
+      }
+
+      .nav-desktop {
+        display: flex;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .projects-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .about-content {
+        grid-template-columns: 320px 1fr;
+        gap: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======== Header ======== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="#hero" class="logo" aria-label="brenntel mediadesign — Startseite">brenntel<span>.</span></a>
+
+      <!-- Desktop Navigation -->
+      <nav class="nav-desktop" aria-label="Hauptnavigation">
+        <a href="#services" data-de="Leistungen" data-en="Services">Leistungen</a>
+        <a href="#about" data-de="Über mich" data-en="About">Über mich</a>
+        <a href="#projects" data-de="Projekte" data-en="Projects">Projekte</a>
+        <a href="#contact" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+          <button type="button" data-lang="en" aria-label="English">EN</button>
+        </div>
+      </nav>
+
+      <!-- Mobile Hamburger -->
+      <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="nav-mobile" aria-label="Mobile Navigation">
+      <a href="#services" data-de="Leistungen" data-en="Services">Leistungen</a>
+      <a href="#about" data-de="Über mich" data-en="About">Über mich</a>
+      <a href="#projects" data-de="Projekte" data-en="Projects">Projekte</a>
+      <a href="#contact" data-de="Kontakt" data-en="Contact">Kontakt</a>
+      <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+        <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+        <button type="button" data-lang="en" aria-label="English">EN</button>
+      </div>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
+  </header>
+
+  <main>
+    <!-- ======== Hero ======== -->
+    <section class="hero" id="hero">
+      <div class="hero-content fade-in">
+        <h1>brenntel<span>.</span> mediadesign</h1>
+        <p class="subtitle" data-de="Kreative digitale Lösungen — Webdesign, Entwicklung und Branding aus einer Hand." data-en="Creative digital solutions — web design, development, and branding from a single source.">Kreative digitale Lösungen — Webdesign, Entwicklung und Branding aus einer Hand.</p>
+        <a href="#contact" class="btn btn-primary" data-de="Projekt anfragen" data-en="Get in touch">Projekt anfragen</a>
+      </div>
+    </section>
+
+    <!-- ======== Services ======== -->
+    <section class="services" id="services">
+      <div class="container">
+        <h2 class="section-title fade-in" data-de="Leistungen" data-en="Services">Leistungen</h2>
+        <p class="section-subtitle fade-in" data-de="Von der Idee bis zum fertigen Produkt — maßgeschneiderte Lösungen für Ihr digitales Projekt." data-en="From concept to finished product — tailored solutions for your digital project.">Von der Idee bis zum fertigen Produkt — maßgeschneiderte Lösungen für Ihr digitales Projekt.</p>
+
+        <div class="services-grid">
+          <!-- Webdesign -->
+          <div class="service-card fade-in">
+            <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="4" y="8" width="40" height="28" rx="3" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="4" y1="16" x2="44" y2="16" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="9" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="14" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+              <line x1="18" y1="40" x2="30" y2="40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="24" y1="36" x2="24" y2="40" stroke="currentColor" stroke-width="2.5"/>
+            </svg>
+            <h3 data-de="Webdesign" data-en="Web Design">Webdesign</h3>
+            <p data-de="Modernes, responsives Webdesign mit Fokus auf Benutzerfreundlichkeit und Ästhetik. Jede Website wird individuell gestaltet." data-en="Modern, responsive web design with a focus on usability and aesthetics. Every website is individually crafted.">Modernes, responsives Webdesign mit Fokus auf Benutzerfreundlichkeit und Ästhetik. Jede Website wird individuell gestaltet.</p>
+          </div>
+
+          <!-- Webentwicklung -->
+          <div class="service-card fade-in">
+            <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polyline points="16,14 6,24 16,34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <polyline points="32,14 42,24 32,34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <line x1="28" y1="10" x2="20" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <h3 data-de="Webentwicklung" data-en="Web Development">Webentwicklung</h3>
+            <p data-de="Performante, saubere Webentwicklung mit modernen Technologien. Schnell, sicher und suchmaschinenoptimiert." data-en="Performant, clean web development using modern technologies. Fast, secure, and SEO-optimized.">Performante, saubere Webentwicklung mit modernen Technologien. Schnell, sicher und suchmaschinenoptimiert.</p>
+          </div>
+
+          <!-- Branding -->
+          <div class="service-card fade-in">
+            <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2.5" fill="none"/>
+              <path d="M24 6C24 6 30 16 30 24C30 32 24 42 24 42" stroke="currentColor" stroke-width="2.5" fill="none"/>
+              <path d="M24 6C24 6 18 16 18 24C18 32 24 42 24 42" stroke="currentColor" stroke-width="2.5" fill="none"/>
+              <line x1="8" y1="18" x2="40" y2="18" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="8" y1="30" x2="40" y2="30" stroke="currentColor" stroke-width="2.5"/>
+            </svg>
+            <h3 data-de="Branding &amp; Corporate Design" data-en="Branding &amp; Corporate Design">Branding &amp; Corporate Design</h3>
+            <p data-de="Einprägsame Markenidentitäten, die Ihre Werte widerspiegeln. Logo, Farbwelt, Typografie und Styleguide." data-en="Memorable brand identities that reflect your values. Logo, color palette, typography, and style guide.">Einprägsame Markenidentitäten, die Ihre Werte widerspiegeln. Logo, Farbwelt, Typografie und Styleguide.</p>
+          </div>
+
+          <!-- Beratung -->
+          <div class="service-card fade-in">
+            <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 10H40C41.1 10 42 10.9 42 12V32C42 33.1 41.1 34 40 34H28L20 42V34H8C6.9 34 6 33.1 6 32V12C6 10.9 6.9 10 8 10Z" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+              <circle cx="16" cy="22" r="2" fill="currentColor"/>
+              <circle cx="24" cy="22" r="2" fill="currentColor"/>
+              <circle cx="32" cy="22" r="2" fill="currentColor"/>
+            </svg>
+            <h3 data-de="Beratung" data-en="Consulting">Beratung</h3>
+            <p data-de="Strategische Beratung für Ihre digitale Präsenz. Gemeinsam finden wir die beste Lösung für Ihr Vorhaben." data-en="Strategic consulting for your digital presence. Together we find the best solution for your project.">Strategische Beratung für Ihre digitale Präsenz. Gemeinsam finden wir die beste Lösung für Ihr Vorhaben.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== About ======== -->
+    <section class="about" id="about">
+      <div class="container">
+        <h2 class="section-title fade-in" data-de="Über mich" data-en="About Me">Über mich</h2>
+        <p class="section-subtitle fade-in" data-de="Der Mensch hinter brenntel mediadesign." data-en="The person behind brenntel mediadesign.">Der Mensch hinter brenntel mediadesign.</p>
+
+        <div class="about-content fade-in">
+          <div class="about-photo" aria-label="Profilfoto Platzhalter">
+            <!-- Replace with: <img src="assets/profile.jpg" alt="Eike Brenneisen" loading="lazy"> -->
+            <span data-de="Foto" data-en="Photo">Foto</span>
+          </div>
+          <div class="about-text">
+            <h3 data-de="Eike Brenneisen" data-en="Eike Brenneisen">Eike Brenneisen</h3>
+            <p data-de="Ich bin Mediendesigner mit Leidenschaft für digitale Lösungen, die funktionieren und begeistern. Mit einem Hintergrund in Mediendesign verbinde ich kreative Gestaltung mit technischer Umsetzung." data-en="I'm a media designer with a passion for digital solutions that work and inspire. With a background in media design, I combine creative design with technical implementation.">Ich bin Mediendesigner mit Leidenschaft für digitale Lösungen, die funktionieren und begeistern. Mit einem Hintergrund in Mediendesign verbinde ich kreative Gestaltung mit technischer Umsetzung.</p>
+            <p data-de="Ob Website, Markenauftritt oder digitale Strategie — ich begleite Sie von der ersten Idee bis zum fertigen Ergebnis. Dabei lege ich Wert auf klares Design, sauberen Code und eine enge Zusammenarbeit." data-en="Whether it's a website, brand presence, or digital strategy — I guide you from the initial idea to the finished result. I value clean design, well-written code, and close collaboration.">Ob Website, Markenauftritt oder digitale Strategie — ich begleite Sie von der ersten Idee bis zum fertigen Ergebnis. Dabei lege ich Wert auf klares Design, sauberen Code und eine enge Zusammenarbeit.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== Projects ======== -->
+    <section class="projects" id="projects">
+      <div class="container">
+        <h2 class="section-title fade-in" data-de="Projekte" data-en="Projects">Projekte</h2>
+        <p class="section-subtitle fade-in" data-de="Eine Auswahl meiner bisherigen Arbeiten." data-en="A selection of my previous work.">Eine Auswahl meiner bisherigen Arbeiten.</p>
+
+        <div class="projects-grid">
+          <div class="project-card fade-in">
+            <div class="project-image">
+              <div class="project-overlay">
+                <span data-de="Projekt ansehen" data-en="View Project">Projekt ansehen</span>
+              </div>
+            </div>
+            <div class="project-info">
+              <h3 data-de="Projekt Eins" data-en="Project One">Projekt Eins</h3>
+              <p data-de="Webdesign und Entwicklung für ein lokales Unternehmen. Responsive, performant und modern." data-en="Web design and development for a local business. Responsive, performant, and modern.">Webdesign und Entwicklung für ein lokales Unternehmen. Responsive, performant und modern.</p>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-image">
+              <div class="project-overlay">
+                <span data-de="Projekt ansehen" data-en="View Project">Projekt ansehen</span>
+              </div>
+            </div>
+            <div class="project-info">
+              <h3 data-de="Projekt Zwei" data-en="Project Two">Projekt Zwei</h3>
+              <p data-de="Corporate Design und Branding für ein Start-up. Logo, Farbkonzept und Geschäftsausstattung." data-en="Corporate design and branding for a startup. Logo, color concept, and business stationery.">Corporate Design und Branding für ein Start-up. Logo, Farbkonzept und Geschäftsausstattung.</p>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-image">
+              <div class="project-overlay">
+                <span data-de="Projekt ansehen" data-en="View Project">Projekt ansehen</span>
+              </div>
+            </div>
+            <div class="project-info">
+              <h3 data-de="Projekt Drei" data-en="Project Three">Projekt Drei</h3>
+              <p data-de="Online-Shop mit individueller Gestaltung und optimierter Nutzererfahrung." data-en="Online shop with custom design and optimized user experience.">Online-Shop mit individueller Gestaltung und optimierter Nutzererfahrung.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== Contact ======== -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <h2 class="section-title fade-in" data-de="Kontakt" data-en="Contact">Kontakt</h2>
+        <p class="section-subtitle fade-in" data-de="Haben Sie ein Projekt im Sinn? Lassen Sie uns darüber sprechen." data-en="Have a project in mind? Let's talk about it.">Haben Sie ein Projekt im Sinn? Lassen Sie uns darüber sprechen.</p>
+
+        <form class="contact-form fade-in" id="contact-form" novalidate>
+          <!--
+            Backend integration:
+            This form currently shows a success message on submit.
+            For production, integrate with Cloudflare Workers, Formspree (https://formspree.io),
+            or set the action to "https://formspree.io/f/YOUR_FORM_ID" with method="POST".
+            Alternatively, use mailto: as a fallback:
+            action="mailto:kontakt@brenntel.de" method="POST" enctype="text/plain"
+          -->
+          <div class="form-group">
+            <label for="name" data-de="Name" data-en="Name">Name</label>
+            <input type="text" id="name" name="name" required autocomplete="name" data-de-placeholder="Ihr Name" data-en-placeholder="Your name" placeholder="Ihr Name">
+          </div>
+          <div class="form-group">
+            <label for="email" data-de="E-Mail" data-en="Email">E-Mail</label>
+            <input type="email" id="email" name="email" required autocomplete="email" data-de-placeholder="ihre@email.de" data-en-placeholder="your@email.com" placeholder="ihre@email.de">
+          </div>
+          <div class="form-group">
+            <label for="subject" data-de="Betreff" data-en="Subject">Betreff</label>
+            <input type="text" id="subject" name="subject" data-de-placeholder="Worum geht es?" data-en-placeholder="What is it about?" placeholder="Worum geht es?">
+          </div>
+          <div class="form-group">
+            <label for="message" data-de="Nachricht" data-en="Message">Nachricht</label>
+            <textarea id="message" name="message" required data-de-placeholder="Erzählen Sie mir von Ihrem Projekt…" data-en-placeholder="Tell me about your project…" placeholder="Erzählen Sie mir von Ihrem Projekt…"></textarea>
+          </div>
+          <div class="form-checkbox">
+            <input type="checkbox" id="privacy" name="privacy" required>
+            <label for="privacy" data-de="Ich stimme der <a href='datenschutz.html'>Datenschutzerklärung</a> zu." data-en="I agree to the <a href='datenschutz.html'>Privacy Policy</a>.">Ich stimme der <a href="datenschutz.html">Datenschutzerklärung</a> zu.</label>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;" data-de="Nachricht senden" data-en="Send Message">Nachricht senden</button>
+        </form>
+
+        <div class="form-success" id="form-success">
+          <h3 data-de="Vielen Dank!" data-en="Thank you!">Vielen Dank!</h3>
+          <p data-de="Ihre Nachricht wurde gesendet. Ich melde mich zeitnah bei Ihnen." data-en="Your message has been sent. I'll get back to you shortly.">Ihre Nachricht wurde gesendet. Ich melde mich zeitnah bei Ihnen.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======== Footer ======== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign — Eike Brenneisen</p>
+      <div class="footer-links">
+        <a href="impressum.html" data-de="Impressum" data-en="Legal Notice">Impressum</a>
+        <a href="datenschutz.html" data-de="Datenschutz" data-en="Privacy Policy">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ========================================
+       Language Switching
+       ======================================== */
+    (function () {
+      const STORAGE_KEY = 'brenntel-lang';
+      let currentLang = localStorage.getItem(STORAGE_KEY) || 'de';
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem(STORAGE_KEY, lang);
+        document.documentElement.lang = lang;
+
+        // Update meta description
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+          metaDesc.content = lang === 'de'
+            ? 'brenntel mediadesign — Kreative digitale Lösungen: Webdesign, Webentwicklung, Branding und Beratung von Eike Brenneisen.'
+            : 'brenntel mediadesign — Creative digital solutions: web design, development, branding, and consulting by Eike Brenneisen.';
+        }
+
+        // Update text content
+        document.querySelectorAll('[data-de]').forEach(function (el) {
+          var text = el.getAttribute('data-' + lang);
+          if (text) {
+            if (el.children.length > 0 && el.tagName !== 'A') {
+              el.innerHTML = text;
+            } else if (el.tagName === 'LABEL' || el.closest('.form-checkbox')) {
+              el.innerHTML = text;
+            } else {
+              el.textContent = text;
+            }
+          }
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-de-placeholder]').forEach(function (el) {
+          var placeholder = el.getAttribute('data-' + lang + '-placeholder');
+          if (placeholder) {
+            el.placeholder = placeholder;
+          }
+        });
+
+        // Update toggle buttons
+        document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        // Update page title
+        document.title = lang === 'de'
+          ? 'brenntel mediadesign — Webdesign, Entwicklung & Branding'
+          : 'brenntel mediadesign — Web Design, Development & Branding';
+      }
+
+      // Bind toggle buttons
+      document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(this.getAttribute('data-lang'));
+        });
+      });
+
+      // Initialize
+      setLanguage(currentLang);
+
+      /* ========================================
+         Mobile Navigation
+         ======================================== */
+      var hamburger = document.querySelector('.hamburger');
+      var navMobile = document.querySelector('.nav-mobile');
+      var navOverlay = document.querySelector('.nav-overlay');
+
+      function toggleMenu() {
+        var isOpen = navMobile.classList.toggle('open');
+        hamburger.classList.toggle('open', isOpen);
+        navOverlay.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+
+      function closeMenu() {
+        navMobile.classList.remove('open');
+        hamburger.classList.remove('open');
+        navOverlay.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      hamburger.addEventListener('click', toggleMenu);
+      navOverlay.addEventListener('click', closeMenu);
+
+      navMobile.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      /* ========================================
+         Header Scroll Shadow
+         ======================================== */
+      var header = document.querySelector('.site-header');
+      window.addEventListener('scroll', function () {
+        header.classList.toggle('scrolled', window.scrollY > 10);
+      }, { passive: true });
+
+      /* ========================================
+         Scroll-triggered Fade-in (Intersection Observer)
+         ======================================== */
+      if ('IntersectionObserver' in window) {
+        var fadeObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              fadeObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(function (el) {
+          fadeObserver.observe(el);
+        });
+      } else {
+        // Fallback: show everything
+        document.querySelectorAll('.fade-in').forEach(function (el) {
+          el.classList.add('visible');
+        });
+      }
+
+      /* ========================================
+         Contact Form
+         ======================================== */
+      var form = document.getElementById('contact-form');
+      var formSuccess = document.getElementById('form-success');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Basic validation
+        var name = document.getElementById('name');
+        var email = document.getElementById('email');
+        var message = document.getElementById('message');
+        var privacy = document.getElementById('privacy');
+
+        if (!name.value.trim() || !email.value.trim() || !message.value.trim() || !privacy.checked) {
+          // Let browser handle validation
+          form.reportValidity();
+          return;
+        }
+
+        // Show success message
+        form.style.display = 'none';
+        formSuccess.classList.add('show');
+
+        // Alternatively, use mailto fallback:
+        // window.location.href = 'mailto:kontakt@brenntel.de?subject=' + encodeURIComponent(document.getElementById('subject').value) + '&body=' + encodeURIComponent('Name: ' + name.value + '\n\n' + message.value);
+      });
+
+      /* ========================================
+         Footer Year
+         ======================================== */
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

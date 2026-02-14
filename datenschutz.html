@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datenschutzerklärung — brenntel mediadesign</title>
+  <meta name="description" content="Datenschutzerklärung von brenntel mediadesign — Informationen zum Umgang mit personenbezogenen Daten.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://brenntel.de/datenschutz.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f5f5f5;
+      --color-text: #1a1a1a;
+      --color-text-light: #555555;
+      --color-accent: #e8720c;
+      --color-accent-hover: #d06000;
+      --color-border: #e0e0e0;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --max-width: 800px;
+      --radius: 8px;
+      --transition: 0.3s ease;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    a:hover { color: var(--color-accent-hover); }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .site-header {
+      border-bottom: 1px solid var(--color-border);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .logo span { color: var(--color-accent); }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .header-nav a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text-light);
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .header-nav a:hover { color: var(--color-accent); }
+
+    .lang-toggle {
+      display: inline-flex;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+
+    .lang-toggle button {
+      background: none;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-light);
+      transition: background var(--transition), color var(--transition);
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lang-toggle button.active {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .lang-toggle button:hover:not(.active) {
+      background: var(--color-bg-alt);
+    }
+
+    .content {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .content h1 {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      font-weight: 700;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .content h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .content h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .content p, .content li {
+      color: var(--color-text-light);
+      margin-bottom: 0.75rem;
+      line-height: 1.7;
+    }
+
+    .content ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .site-footer {
+      background: var(--color-bg-alt);
+      border-top: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: var(--color-text-light);
+      font-size: 0.85rem;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .footer-links a:hover { color: var(--color-accent); }
+    .footer-copy { font-size: 0.8rem; color: var(--color-text-light); }
+
+    @media (min-width: 768px) {
+      .footer-inner {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign — Startseite">brenntel<span>.</span></a>
+      <nav class="header-nav" aria-label="Navigation">
+        <a href="index.html" data-de="Zurück zur Startseite" data-en="Back to Homepage">Zurück zur Startseite</a>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+          <button type="button" data-lang="en" aria-label="English">EN</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <!-- German Version -->
+    <div id="datenschutz-de">
+      <h1>Datenschutzerklärung</h1>
+
+      <h2>1. Verantwortlicher</h2>
+      <p>
+        Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) und anderer nationaler Datenschutzgesetze sowie sonstiger datenschutzrechtlicher Bestimmungen ist:
+      </p>
+      <p>
+        brenntel mediadesign<br>
+        Eike Brenneisen<br>
+        [Straße und Hausnummer]<br>
+        [PLZ Ort]<br>
+        Deutschland<br>
+        E-Mail: <a href="mailto:kontakt@brenntel.de">kontakt@brenntel.de</a><br>
+        Telefon: [Telefonnummer einfügen]
+      </p>
+
+      <h2>2. Hosting</h2>
+      <p>
+        Diese Website wird bei [Hosting-Anbieter einfügen] gehostet. Der Hoster erhebt in sogenannten Logfiles folgende Daten, die Ihr Browser übermittelt:
+      </p>
+      <ul>
+        <li>IP-Adresse</li>
+        <li>Adresse der vorher besuchten Website (Referer)</li>
+        <li>Datum und Uhrzeit der Anfrage</li>
+        <li>Zeitzonendifferenz zur Greenwich Mean Time (GMT)</li>
+        <li>Inhalt der Anforderung (konkrete Seite)</li>
+        <li>Zugriffsstatus / HTTP-Statuscode</li>
+        <li>Übertragene Datenmenge</li>
+        <li>Browsertyp und -version</li>
+        <li>Betriebssystem</li>
+      </ul>
+      <p>
+        Die Erhebung dieser Daten ist für den Betrieb der Website erforderlich und dient der Sicherheit. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Die Logfiles werden nach [Zeitraum] automatisch gelöscht.
+      </p>
+
+      <h2>3. Erhebung personenbezogener Daten beim Besuch der Website</h2>
+      <p>
+        Beim rein informatorischen Besuch unserer Website, also wenn Sie sich nicht registrieren oder uns anderweitig Informationen übermitteln, erheben wir nur die Daten, die Ihr Browser an unseren Server übermittelt (Server-Logfiles, siehe oben).
+      </p>
+
+      <h2>4. Kontaktformular</h2>
+      <p>
+        Wenn Sie uns über das Kontaktformular kontaktieren, werden die von Ihnen angegebenen Daten (Name, E-Mail-Adresse, Betreff, Nachricht) zum Zweck der Bearbeitung Ihrer Anfrage verarbeitet und gespeichert.
+      </p>
+      <p>
+        <strong>Rechtsgrundlage:</strong> Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) bzw. zur Durchführung vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO).
+      </p>
+      <p>
+        <strong>Speicherdauer:</strong> Die über das Kontaktformular übermittelten Daten werden gelöscht, sobald Ihre Anfrage vollständig bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
+      </p>
+
+      <h2>5. Cookies</h2>
+      <p>
+        Diese Website verwendet keine Cookies zu Tracking- oder Analysezwecken. Es wird lediglich ein technisch notwendiger Eintrag im Local Storage Ihres Browsers gespeichert, um Ihre Sprachpräferenz (Deutsch/Englisch) zu merken. Dieser Eintrag enthält keine personenbezogenen Daten.
+      </p>
+
+      <h2>6. Ihre Rechte als betroffene Person</h2>
+      <p>Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:</p>
+      <ul>
+        <li><strong>Recht auf Auskunft</strong> (Art. 15 DSGVO) — Sie können Auskunft über Ihre von uns verarbeiteten personenbezogenen Daten verlangen.</li>
+        <li><strong>Recht auf Berichtigung</strong> (Art. 16 DSGVO) — Sie können die Berichtigung unrichtiger Daten verlangen.</li>
+        <li><strong>Recht auf Löschung</strong> (Art. 17 DSGVO) — Sie können die Löschung Ihrer bei uns gespeicherten Daten verlangen, soweit nicht die Verarbeitung zur Ausübung des Rechts auf freie Meinungsäußerung oder zur Erfüllung einer rechtlichen Verpflichtung erforderlich ist.</li>
+        <li><strong>Recht auf Einschränkung der Verarbeitung</strong> (Art. 18 DSGVO) — Sie können die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten verlangen.</li>
+        <li><strong>Recht auf Datenübertragbarkeit</strong> (Art. 20 DSGVO) — Sie können verlangen, dass wir Ihnen Ihre Daten in einem strukturierten, gängigen und maschinenlesbaren Format übermitteln.</li>
+        <li><strong>Recht auf Widerspruch</strong> (Art. 21 DSGVO) — Sie können jederzeit gegen die Verarbeitung Ihrer personenbezogenen Daten Widerspruch einlegen.</li>
+      </ul>
+
+      <h2>7. Recht auf Beschwerde bei einer Aufsichtsbehörde</h2>
+      <p>
+        Wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt, haben Sie das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO).
+      </p>
+
+      <h2>8. Aktualität und Änderung dieser Datenschutzerklärung</h2>
+      <p>
+        Diese Datenschutzerklärung ist aktuell gültig und hat den Stand [Datum einfügen]. Durch die Weiterentwicklung unserer Website oder aufgrund geänderter gesetzlicher bzw. behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.
+      </p>
+    </div>
+
+    <!-- English Version -->
+    <div id="datenschutz-en" style="display: none;">
+      <h1>Privacy Policy</h1>
+
+      <h2>1. Data Controller</h2>
+      <p>
+        The data controller within the meaning of the General Data Protection Regulation (GDPR) and other national data protection laws is:
+      </p>
+      <p>
+        brenntel mediadesign<br>
+        Eike Brenneisen<br>
+        [Street and Number]<br>
+        [Postal Code, City]<br>
+        Germany<br>
+        Email: <a href="mailto:kontakt@brenntel.de">kontakt@brenntel.de</a><br>
+        Phone: [Insert phone number]
+      </p>
+
+      <h2>2. Hosting</h2>
+      <p>
+        This website is hosted by [Insert hosting provider]. The host collects the following data transmitted by your browser in so-called log files:
+      </p>
+      <ul>
+        <li>IP address</li>
+        <li>Address of the previously visited website (referrer)</li>
+        <li>Date and time of the request</li>
+        <li>Time zone difference to Greenwich Mean Time (GMT)</li>
+        <li>Content of the request (specific page)</li>
+        <li>Access status / HTTP status code</li>
+        <li>Amount of data transferred</li>
+        <li>Browser type and version</li>
+        <li>Operating system</li>
+      </ul>
+      <p>
+        The collection of this data is necessary for the operation of the website and serves security purposes. The legal basis is Art. 6(1)(f) GDPR (legitimate interest). Log files are automatically deleted after [time period].
+      </p>
+
+      <h2>3. Collection of Personal Data When Visiting the Website</h2>
+      <p>
+        When you visit our website for purely informational purposes, i.e., if you do not register or otherwise provide us with information, we only collect the data that your browser transmits to our server (server log files, see above).
+      </p>
+
+      <h2>4. Contact Form</h2>
+      <p>
+        When you contact us via the contact form, the data you provide (name, email address, subject, message) is processed and stored for the purpose of handling your inquiry.
+      </p>
+      <p>
+        <strong>Legal basis:</strong> Processing is based on your consent (Art. 6(1)(a) GDPR) or for the performance of pre-contractual measures (Art. 6(1)(b) GDPR).
+      </p>
+      <p>
+        <strong>Storage duration:</strong> The data transmitted via the contact form will be deleted once your inquiry has been fully processed and no statutory retention obligations apply.
+      </p>
+
+      <h2>5. Cookies</h2>
+      <p>
+        This website does not use cookies for tracking or analytics purposes. Only a technically necessary entry in your browser's local storage is used to remember your language preference (German/English). This entry does not contain any personal data.
+      </p>
+
+      <h2>6. Your Rights as a Data Subject</h2>
+      <p>You have the following rights regarding your personal data processed by us:</p>
+      <ul>
+        <li><strong>Right of access</strong> (Art. 15 GDPR) — You may request information about your personal data processed by us.</li>
+        <li><strong>Right to rectification</strong> (Art. 16 GDPR) — You may request the correction of inaccurate data.</li>
+        <li><strong>Right to erasure</strong> (Art. 17 GDPR) — You may request the deletion of your data stored by us, provided that processing is not required for exercising the right to freedom of expression or for fulfilling a legal obligation.</li>
+        <li><strong>Right to restriction of processing</strong> (Art. 18 GDPR) — You may request the restriction of processing of your personal data.</li>
+        <li><strong>Right to data portability</strong> (Art. 20 GDPR) — You may request that we transmit your data in a structured, commonly used, and machine-readable format.</li>
+        <li><strong>Right to object</strong> (Art. 21 GDPR) — You may object to the processing of your personal data at any time.</li>
+      </ul>
+
+      <h2>7. Right to Lodge a Complaint with a Supervisory Authority</h2>
+      <p>
+        If you believe that the processing of your personal data violates the GDPR, you have the right to lodge a complaint with a data protection supervisory authority (Art. 77 GDPR).
+      </p>
+
+      <h2>8. Updates to This Privacy Policy</h2>
+      <p>
+        This privacy policy is currently valid as of [Insert date]. Due to the further development of our website or due to changed legal or regulatory requirements, it may be necessary to update this privacy policy.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign — Eike Brenneisen</p>
+      <div class="footer-links">
+        <a href="impressum.html" data-de="Impressum" data-en="Legal Notice">Impressum</a>
+        <a href="datenschutz.html" data-de="Datenschutz" data-en="Privacy Policy">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var STORAGE_KEY = 'brenntel-lang';
+      var currentLang = localStorage.getItem(STORAGE_KEY) || 'de';
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem(STORAGE_KEY, lang);
+        document.documentElement.lang = lang;
+
+        document.getElementById('datenschutz-de').style.display = lang === 'de' ? 'block' : 'none';
+        document.getElementById('datenschutz-en').style.display = lang === 'en' ? 'block' : 'none';
+
+        document.querySelectorAll('[data-de]').forEach(function (el) {
+          el.textContent = el.getAttribute('data-' + lang);
+        });
+
+        document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        document.title = lang === 'de'
+          ? 'Datenschutzerklärung — brenntel mediadesign'
+          : 'Privacy Policy — brenntel mediadesign';
+      }
+
+      document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setLanguage(this.getAttribute('data-lang'));
+        });
+      });
+
+      setLanguage(currentLang);
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

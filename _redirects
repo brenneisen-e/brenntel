@@ -1,0 +1,2 @@
+# Redirect www to non-www (handled by Cloudflare DNS, but as fallback)
+# https://www.brenntel.de/* https://brenntel.de/:splat 301
