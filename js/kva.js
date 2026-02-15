@@ -135,10 +135,6 @@
   function runShowcase() {
     showcase.classList.add('active');
 
-    // Load iframe
-    var iframe = showcase.querySelector('iframe[data-src]');
-    if (iframe) iframe.src = iframe.getAttribute('data-src');
-
     // Timeline (ms)
     var t = 0;
 
