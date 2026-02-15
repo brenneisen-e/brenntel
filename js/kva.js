@@ -58,16 +58,21 @@
      ---------------------------------------- */
   var PREFIX = 'KVA-';
 
-  codeInput.addEventListener('input', function () {
+  codeInput.addEventListener('input', function (e) {
     var raw = codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     // Always keep "KVA" prefix
     if (raw.indexOf('KVA') !== 0) raw = 'KVA';
     var after = raw.substring(3); // chars after "KVA"
-    var formatted = 'KVA-';
-    for (var i = 0; i < after.length; i++) {
-      if (i > 0 && i % 2 === 0) formatted += '-';
-      formatted += after[i];
+    // Format: KVA-XX-0000 (2 letters, then 4 digits)
+    var letters = after.substring(0, 2);
+    var digits = after.substring(2, 6);
+    var formatted = 'KVA-' + letters;
+    if (digits.length > 0) {
+      formatted += '-' + digits;
     }
+    // Auto-append dash after 2 letters (only when typing, not deleting)
+    var isTyping = !e.inputType || e.inputType.indexOf('delete') === -1;
+    if (isTyping && letters.length === 2 && digits.length === 0) formatted += '-';
     codeInput.value = formatted;
   });
 
