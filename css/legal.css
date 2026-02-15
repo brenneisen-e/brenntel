@@ -77,3 +77,22 @@
 .footer-inner {
   max-width: 800px;
 }
+
+/* Mobile fixes for legal pages */
+@media (max-width: 600px) {
+  .header-nav {
+    gap: 0.75rem;
+  }
+
+  .header-nav a {
+    font-size: 0.85rem;
+  }
+
+  .content {
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  .content ul {
+    padding-left: 1.1rem;
+  }
+}

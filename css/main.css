@@ -627,7 +627,24 @@
 }
 
 /* ========================================
-   Responsive
+   Responsive: Mobile
+   ======================================== */
+@media (max-width: 600px) {
+  .hero {
+    padding: 5rem 1.25rem 3rem;
+  }
+
+  .service-card {
+    padding: 1.5rem;
+  }
+
+  .contact-form {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+/* ========================================
+   Responsive: Tablet+
    ======================================== */
 @media (min-width: 768px) {
   .services-grid {

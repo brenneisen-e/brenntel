@@ -264,8 +264,8 @@ select:focus-visible {
   top: 70px;
   right: 0;
   bottom: 0;
-  width: 300px;
-  max-width: 85vw;
+  width: 85vw;
+  max-width: 300px;
   background: var(--color-bg);
   z-index: 999;
   transform: translateX(100%);
@@ -385,7 +385,24 @@ select:focus-visible {
 }
 
 /* ========================================
-   Responsive: Desktop (1024px+)
+   Responsive: Mobile (< 768px)
+   ======================================== */
+@media (max-width: 767px) {
+  :root {
+    --section-padding: 3.5rem 1.25rem;
+  }
+
+  .footer-links {
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-size: 0.85rem;
+  }
+}
+
+/* ========================================
+   Responsive: Tablet+ (768px+)
    ======================================== */
 @media (min-width: 768px) {
   .footer-inner {

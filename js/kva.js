@@ -92,7 +92,17 @@
   }
 
   /* ----------------------------------------
-     Transition: Entry → Document
+     DOM: Showcase
+     ---------------------------------------- */
+  var showcase    = document.getElementById('kva-showcase');
+  var stepOld     = document.getElementById('showcase-old');
+  var stepLogo    = document.getElementById('showcase-logo');
+  var stepNew     = document.getElementById('showcase-new');
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ----------------------------------------
+     Transition: Entry → Showcase → Document
      ---------------------------------------- */
   function launchTransition() {
     // 1. Fire particles
@@ -101,18 +111,79 @@
     // 2. Exit entry screen
     entryScreen.classList.add('exit');
 
-    // 3. After exit animation, show document
     setTimeout(function () {
       entryScreen.classList.add('hidden');
-      kvaDoc.classList.add('visible');
-      if (footer) footer.classList.add('visible');
 
-      // 4. Initialize scroll-reveal for sections
-      initScrollReveal();
+      // Skip showcase if reduced motion
+      if (prefersReduced || !showcase) {
+        showDocument();
+        return;
+      }
 
-      // 5. Trigger initial reveals for visible elements
-      setTimeout(triggerVisibleReveals, 200);
+      // 3. Start showcase
+      runShowcase();
     }, 700);
+  }
+
+  function showDocument() {
+    kvaDoc.classList.add('visible');
+    if (footer) footer.classList.add('visible');
+    initScrollReveal();
+    setTimeout(triggerVisibleReveals, 200);
+  }
+
+  function runShowcase() {
+    showcase.classList.add('active');
+
+    // Load iframe
+    var iframe = showcase.querySelector('iframe[data-src]');
+    if (iframe) iframe.src = iframe.getAttribute('data-src');
+
+    // Timeline (ms)
+    var t = 0;
+
+    // Step 1: Show old site
+    setTimeout(function () {
+      stepOld.classList.add('visible');
+    }, t += 200);
+
+    // Step 1b: Blur out old site
+    setTimeout(function () {
+      stepOld.classList.add('blur-out');
+    }, t += 2200);
+
+    // Step 1c: Hide old
+    setTimeout(function () {
+      stepOld.style.display = 'none';
+    }, t += 800);
+
+    // Step 2: Logo
+    setTimeout(function () {
+      stepLogo.classList.add('visible');
+    }, t += 100);
+
+    // Step 2b: Hide logo
+    setTimeout(function () {
+      stepLogo.classList.remove('visible');
+    }, t += 1800);
+
+    // Step 3: Modern preview
+    setTimeout(function () {
+      stepNew.classList.add('visible');
+    }, t += 500);
+
+    // Step 3b: Fade out showcase
+    setTimeout(function () {
+      showcase.style.opacity = '0';
+      showcase.style.transition = 'opacity 0.6s ease';
+    }, t += 2000);
+
+    // Step 4: Show document
+    setTimeout(function () {
+      showcase.classList.remove('active');
+      showcase.style.display = 'none';
+      showDocument();
+    }, t += 700);
   }
 
   /* ----------------------------------------
