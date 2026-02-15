@@ -47,6 +47,31 @@
   }
 
   /* ========================================
+     Hero preview visibility fallback (mobile)
+     ======================================== */
+  setTimeout(function () {
+    var previews = document.querySelector('.hero-previews');
+    if (previews) {
+      previews.style.opacity = '1';
+      previews.style.transform = 'translateY(0)';
+    }
+    var subtitle = document.querySelector('.hero .subtitle');
+    if (subtitle) {
+      subtitle.style.opacity = '1';
+      subtitle.style.transform = 'translateY(0)';
+    }
+    var cta = document.querySelector('.hero-cta');
+    if (cta) {
+      cta.style.opacity = '1';
+      cta.style.transform = 'translateY(0)';
+    }
+    // Force all inner preview elements visible
+    document.querySelectorAll('.preview-square *').forEach(function (el) {
+      el.style.opacity = '1';
+    });
+  }, 3500);
+
+  /* ========================================
      Custom Cursor
      ======================================== */
   var cursorDot = document.querySelector('.cursor-dot');
