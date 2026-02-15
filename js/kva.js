@@ -54,6 +54,44 @@
   }
 
   /* ----------------------------------------
+     Auto-format: KVA-XX-XXXX
+     ---------------------------------------- */
+  var PREFIX = 'KVA-';
+
+  codeInput.addEventListener('input', function () {
+    var raw = codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    // Always keep "KVA" prefix
+    if (raw.indexOf('KVA') !== 0) raw = 'KVA';
+    var after = raw.substring(3); // chars after "KVA"
+    var formatted = 'KVA-';
+    for (var i = 0; i < after.length; i++) {
+      if (i > 0 && i % 2 === 0) formatted += '-';
+      formatted += after[i];
+    }
+    codeInput.value = formatted;
+  });
+
+  codeInput.addEventListener('keydown', function (e) {
+    // Prevent deleting the "KVA-" prefix
+    if ((e.key === 'Backspace' || e.key === 'Delete') && codeInput.selectionStart <= PREFIX.length) {
+      e.preventDefault();
+    }
+  });
+
+  codeInput.addEventListener('click', function () {
+    if (codeInput.selectionStart < PREFIX.length) {
+      codeInput.setSelectionRange(codeInput.value.length, codeInput.value.length);
+    }
+  });
+
+  codeInput.addEventListener('focus', function () {
+    if (!codeInput.value) codeInput.value = PREFIX;
+    setTimeout(function () {
+      codeInput.setSelectionRange(codeInput.value.length, codeInput.value.length);
+    }, 0);
+  });
+
+  /* ----------------------------------------
      Form Submission
      ---------------------------------------- */
   codeForm.addEventListener('submit', function (e) {
