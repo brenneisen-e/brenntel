@@ -1155,6 +1155,190 @@
 }
 
 /* ========================================
+   PDF Mode — clean A4 document styling
+   ======================================== */
+.pdf-mode .site-header,
+.pdf-mode .site-footer,
+.pdf-mode .kva-entry,
+.pdf-mode #kva-particles,
+.pdf-mode .showcase,
+.pdf-mode .kva-pdf-bar {
+  display: none !important;
+}
+
+.pdf-mode .kva-document {
+  display: block !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  animation: none !important;
+}
+
+.pdf-mode .kva-container {
+  max-width: 100% !important;
+  background: #fff !important;
+}
+
+.pdf-mode .kva-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.pdf-mode .kva-divider-full,
+.pdf-mode .kva-title-line,
+.pdf-mode .kva-section-line {
+  transform: scaleX(1) !important;
+  transition: none !important;
+}
+
+/* Phases: clean flat list, no cards */
+.pdf-mode .kva-phase {
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 1rem 0 !important;
+  margin-bottom: 0.5rem !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.pdf-mode .kva-phase::before {
+  display: none !important;
+}
+
+.pdf-mode .kva-phase:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.pdf-mode .kva-phase:last-child {
+  border-bottom: none !important;
+}
+
+/* Phase list bullets */
+.pdf-mode .kva-phase-list li {
+  color: #1a1a1a !important;
+  font-size: 10pt !important;
+  line-height: 1.6 !important;
+}
+
+.pdf-mode .kva-phase-list li::before {
+  background: #555 !important;
+  width: 4px !important;
+  height: 4px !important;
+  top: 0.65em !important;
+  border-radius: 50% !important;
+}
+
+/* Sum block */
+.pdf-mode .kva-sum-block {
+  background: #fff !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  padding: 1.25rem !important;
+}
+
+.pdf-mode .kva-total-value {
+  color: #1a1a1a !important;
+}
+
+/* Highlight box */
+.pdf-mode .kva-highlight-box {
+  border-radius: 4px !important;
+  background: #fafafa !important;
+}
+
+/* Conditions */
+.pdf-mode .kva-condition {
+  border-left-color: #ccc !important;
+}
+
+/* Payment steps */
+.pdf-mode .kva-payment-num {
+  background: #1a1a1a !important;
+}
+
+/* Legal */
+.pdf-mode .kva-legal-footer {
+  border-top-color: #ccc !important;
+}
+
+/* Typography for PDF */
+.pdf-mode .kva-sender-logo {
+  font-size: 14pt !important;
+}
+
+.pdf-mode .kva-sender-people {
+  font-size: 10pt !important;
+}
+
+.pdf-mode .kva-sender-address {
+  font-size: 9pt !important;
+  color: #555 !important;
+}
+
+.pdf-mode .kva-title {
+  font-size: 20pt !important;
+}
+
+.pdf-mode .kva-subtitle {
+  font-size: 10pt !important;
+  color: #555 !important;
+}
+
+.pdf-mode .kva-section-title {
+  font-size: 13pt !important;
+}
+
+.pdf-mode .kva-phase-title h3 {
+  font-size: 11pt !important;
+}
+
+.pdf-mode .kva-phase-amount {
+  font-size: 11pt !important;
+}
+
+.pdf-mode .kva-text,
+.pdf-mode .kva-recipient p,
+.pdf-mode .kva-meta p,
+.pdf-mode .kva-condition p,
+.pdf-mode .kva-payment-step p,
+.pdf-mode .kva-payment-step strong {
+  font-size: 10pt !important;
+  color: #1a1a1a !important;
+}
+
+.pdf-mode .kva-text-muted {
+  color: #666 !important;
+  font-size: 9pt !important;
+}
+
+.pdf-mode .kva-ref {
+  color: #555 !important;
+}
+
+.pdf-mode .kva-section {
+  margin-bottom: 1.5rem !important;
+}
+
+.pdf-mode .kva-closing .kva-text {
+  font-size: 10pt !important;
+}
+
+.pdf-mode .kva-signature {
+  font-size: 11pt !important;
+}
+
+.pdf-mode .kva-signature-company {
+  font-size: 12pt !important;
+}
+
+.pdf-mode .kva-legal-footer p {
+  font-size: 8pt !important;
+  color: #888 !important;
+}
+
+/* ========================================
    Print Stylesheet
    ======================================== */
 @media print {

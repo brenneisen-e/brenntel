@@ -317,22 +317,38 @@
       pdfBtn.disabled = true;
       pdfBtn.textContent = 'PDF wird erstellt…';
 
-      var opt = {
-        margin:       [12, 14, 12, 14],
-        filename:     'KVA-AF-2602_brenntel.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-      };
+      // Activate PDF mode for clean rendering
+      document.body.classList.add('pdf-mode');
 
-      html2pdf().set(opt).from(doc).save().then(function () {
-        pdfBtn.disabled = false;
-        pdfBtn.textContent = btnText;
-      }).catch(function () {
-        pdfBtn.disabled = false;
-        pdfBtn.textContent = btnText;
-      });
+      // Force all reveals visible
+      var reveals = doc.querySelectorAll('.kva-reveal');
+      reveals.forEach(function (el) { el.classList.add('visible'); });
+
+      // Force all animated lines visible
+      var lines = doc.querySelectorAll('.kva-divider-full, .kva-title-line, .kva-section-line');
+      lines.forEach(function (el) { el.style.transform = 'scaleX(1)'; });
+
+      // Small delay so styles apply before html2canvas captures
+      setTimeout(function () {
+        var opt = {
+          margin:       [15, 18, 15, 18],
+          filename:     'KVA-AF-2602_brenntel.pdf',
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800 },
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        html2pdf().set(opt).from(doc).save().then(function () {
+          document.body.classList.remove('pdf-mode');
+          pdfBtn.disabled = false;
+          pdfBtn.textContent = btnText;
+        }).catch(function () {
+          document.body.classList.remove('pdf-mode');
+          pdfBtn.disabled = false;
+          pdfBtn.textContent = btnText;
+        });
+      }, 100);
     });
   }
 
