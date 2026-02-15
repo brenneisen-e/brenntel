@@ -1,5 +1,9 @@
 # Redirect www to non-www
 https://www.brenntelmediadesign.com/* https://brenntelmediadesign.com/:splat 301
 
-# Clean URLs — /kva → /kva.html
-/kva   /kva.html   200
+# Clean URLs & case-insensitive redirects for /kva
+/kva        /kva.html   200
+/KVA        /kva.html   301
+/KVA.html   /kva.html   301
+/Kva        /kva.html   301
+/Kva.html   /kva.html   301
