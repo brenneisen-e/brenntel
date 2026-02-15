@@ -3,216 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Datenschutzerklärung — brenntel mediadesign</title>
-  <meta name="description" content="Datenschutzerklärung von brenntel mediadesign — Informationen zum Umgang mit personenbezogenen Daten.">
+  <title>Datenschutzerklärung — brenntel mediadesign GbR</title>
+  <meta name="description" content="Datenschutzerklärung von brenntel mediadesign GbR — Informationen zum Umgang mit personenbezogenen Daten.">
   <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="https://brenntel.de/datenschutz.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --color-bg: #ffffff;
-      --color-bg-alt: #f5f5f5;
-      --color-text: #1a1a1a;
-      --color-text-light: #555555;
-      --color-accent: #e8720c;
-      --color-accent-hover: #d06000;
-      --color-border: #e0e0e0;
-      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --max-width: 800px;
-      --radius: 8px;
-      --transition: 0.3s ease;
-    }
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-family);
-      color: var(--color-text);
-      background: var(--color-bg);
-      line-height: 1.7;
-      font-size: 1rem;
-    }
-
-    a {
-      color: var(--color-accent);
-      text-decoration: none;
-      transition: color var(--transition);
-    }
-
-    a:hover { color: var(--color-accent-hover); }
-
-    a:focus-visible, button:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-
-    .site-header {
-      border-bottom: 1px solid var(--color-border);
-      padding: 1rem 1.5rem;
-    }
-
-    .header-inner {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .logo {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--color-text);
-    }
-
-    .logo span { color: var(--color-accent); }
-
-    .header-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .header-nav a {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--color-text-light);
-      min-height: 44px;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .header-nav a:hover { color: var(--color-accent); }
-
-    .lang-toggle {
-      display: inline-flex;
-      border: 1px solid var(--color-border);
-      border-radius: 20px;
-      overflow: hidden;
-      font-size: 0.8rem;
-    }
-
-    .lang-toggle button {
-      background: none;
-      border: none;
-      padding: 0.4rem 0.75rem;
-      cursor: pointer;
-      font-family: var(--font-family);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--color-text-light);
-      transition: background var(--transition), color var(--transition);
-      min-width: 44px;
-      min-height: 44px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lang-toggle button.active {
-      background: var(--color-accent);
-      color: #fff;
-    }
-
-    .lang-toggle button:hover:not(.active) {
-      background: var(--color-bg-alt);
-    }
-
-    .content {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 3rem 1.5rem 5rem;
-    }
-
-    .content h1 {
-      font-size: clamp(1.5rem, 4vw, 2.25rem);
-      font-weight: 700;
-      margin-bottom: 2rem;
-      letter-spacing: -0.02em;
-    }
-
-    .content h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .content h3 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .content p, .content li {
-      color: var(--color-text-light);
-      margin-bottom: 0.75rem;
-      line-height: 1.7;
-    }
-
-    .content ul {
-      padding-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .site-footer {
-      background: var(--color-bg-alt);
-      border-top: 1px solid var(--color-border);
-      padding: 2rem 1.5rem;
-      text-align: center;
-    }
-
-    .footer-inner {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .footer-links a {
-      color: var(--color-text-light);
-      font-size: 0.85rem;
-      min-height: 44px;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .footer-links a:hover { color: var(--color-accent); }
-    .footer-copy { font-size: 0.8rem; color: var(--color-text-light); }
-
-    @media (min-width: 768px) {
-      .footer-inner {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/legal.css">
 </head>
 <body>
 
   <header class="site-header" role="banner">
     <div class="header-inner">
-      <a href="index.html" class="logo" aria-label="brenntel mediadesign — Startseite">brenntel<span>.</span></a>
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
       <nav class="header-nav" aria-label="Navigation">
         <a href="index.html" data-de="Zurück zur Startseite" data-en="Back to Homepage">Zurück zur Startseite</a>
         <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
@@ -233,10 +38,10 @@
         Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) und anderer nationaler Datenschutzgesetze sowie sonstiger datenschutzrechtlicher Bestimmungen ist:
       </p>
       <p>
-        brenntel mediadesign<br>
-        Eike Brenneisen<br>
-        [Straße und Hausnummer]<br>
-        [PLZ Ort]<br>
+        brenntel mediadesign GbR<br>
+        Irena-Marie Rentel und Eike Brenneisen<br>
+        Schirmerstr. 18<br>
+        50823 Köln<br>
         Deutschland<br>
         E-Mail: <a href="mailto:kontakt@brenntel.de">kontakt@brenntel.de</a><br>
         Telefon: [Telefonnummer einfügen]
@@ -244,7 +49,7 @@
 
       <h2>2. Hosting</h2>
       <p>
-        Diese Website wird bei [Hosting-Anbieter einfügen] gehostet. Der Hoster erhebt in sogenannten Logfiles folgende Daten, die Ihr Browser übermittelt:
+        Diese Website wird bei Cloudflare, Inc. (101 Townsend St, San Francisco, CA 94107, USA) gehostet. Der Hoster erhebt in sogenannten Logfiles folgende Daten, die Ihr Browser übermittelt:
       </p>
       <ul>
         <li>IP-Adresse</li>
@@ -258,7 +63,7 @@
         <li>Betriebssystem</li>
       </ul>
       <p>
-        Die Erhebung dieser Daten ist für den Betrieb der Website erforderlich und dient der Sicherheit. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Die Logfiles werden nach [Zeitraum] automatisch gelöscht.
+        Die Erhebung dieser Daten ist für den Betrieb der Website erforderlich und dient der Sicherheit. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Die Logfiles werden nach 24 Stunden automatisch gelöscht.
       </p>
 
       <h2>3. Erhebung personenbezogener Daten beim Besuch der Website</h2>
@@ -300,7 +105,7 @@
 
       <h2>8. Aktualität und Änderung dieser Datenschutzerklärung</h2>
       <p>
-        Diese Datenschutzerklärung ist aktuell gültig und hat den Stand [Datum einfügen]. Durch die Weiterentwicklung unserer Website oder aufgrund geänderter gesetzlicher bzw. behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.
+        Diese Datenschutzerklärung ist aktuell gültig und hat den Stand Februar 2026. Durch die Weiterentwicklung unserer Website oder aufgrund geänderter gesetzlicher bzw. behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.
       </p>
     </div>
 
@@ -313,10 +118,10 @@
         The data controller within the meaning of the General Data Protection Regulation (GDPR) and other national data protection laws is:
       </p>
       <p>
-        brenntel mediadesign<br>
-        Eike Brenneisen<br>
-        [Street and Number]<br>
-        [Postal Code, City]<br>
+        brenntel mediadesign GbR<br>
+        Irena-Marie Rentel and Eike Brenneisen<br>
+        Schirmerstr. 18<br>
+        50823 Cologne<br>
         Germany<br>
         Email: <a href="mailto:kontakt@brenntel.de">kontakt@brenntel.de</a><br>
         Phone: [Insert phone number]
@@ -324,7 +129,7 @@
 
       <h2>2. Hosting</h2>
       <p>
-        This website is hosted by [Insert hosting provider]. The host collects the following data transmitted by your browser in so-called log files:
+        This website is hosted by Cloudflare, Inc. (101 Townsend St, San Francisco, CA 94107, USA). The host collects the following data transmitted by your browser in so-called log files:
       </p>
       <ul>
         <li>IP address</li>
@@ -338,7 +143,7 @@
         <li>Operating system</li>
       </ul>
       <p>
-        The collection of this data is necessary for the operation of the website and serves security purposes. The legal basis is Art. 6(1)(f) GDPR (legitimate interest). Log files are automatically deleted after [time period].
+        The collection of this data is necessary for the operation of the website and serves security purposes. The legal basis is Art. 6(1)(f) GDPR (legitimate interest). Log files are automatically deleted after 24 hours.
       </p>
 
       <h2>3. Collection of Personal Data When Visiting the Website</h2>
@@ -380,14 +185,14 @@
 
       <h2>8. Updates to This Privacy Policy</h2>
       <p>
-        This privacy policy is currently valid as of [Insert date]. Due to the further development of our website or due to changed legal or regulatory requirements, it may be necessary to update this privacy policy.
+        This privacy policy is currently valid as of February 2026. Due to the further development of our website or due to changed legal or regulatory requirements, it may be necessary to update this privacy policy.
       </p>
     </div>
   </main>
 
   <footer class="site-footer" role="contentinfo">
     <div class="footer-inner">
-      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign — Eike Brenneisen</p>
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign GbR</p>
       <div class="footer-links">
         <a href="impressum.html" data-de="Impressum" data-en="Legal Notice">Impressum</a>
         <a href="datenschutz.html" data-de="Datenschutz" data-en="Privacy Policy">Datenschutz</a>
@@ -395,41 +200,16 @@
     </div>
   </footer>
 
+  <script src="js/shared.js"></script>
   <script>
-    (function () {
-      var STORAGE_KEY = 'brenntel-lang';
-      var currentLang = localStorage.getItem(STORAGE_KEY) || 'de';
-
-      function setLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem(STORAGE_KEY, lang);
-        document.documentElement.lang = lang;
-
-        document.getElementById('datenschutz-de').style.display = lang === 'de' ? 'block' : 'none';
-        document.getElementById('datenschutz-en').style.display = lang === 'en' ? 'block' : 'none';
-
-        document.querySelectorAll('[data-de]').forEach(function (el) {
-          el.textContent = el.getAttribute('data-' + lang);
-        });
-
-        document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
-          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-        });
-
-        document.title = lang === 'de'
-          ? 'Datenschutzerklärung — brenntel mediadesign'
-          : 'Privacy Policy — brenntel mediadesign';
-      }
-
-      document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          setLanguage(this.getAttribute('data-lang'));
-        });
-      });
-
-      setLanguage(currentLang);
-      document.getElementById('year').textContent = new Date().getFullYear();
-    })();
+    document.addEventListener('langchange', function (e) {
+      var lang = e.detail.lang;
+      document.getElementById('datenschutz-de').style.display = lang === 'de' ? 'block' : 'none';
+      document.getElementById('datenschutz-en').style.display = lang === 'en' ? 'block' : 'none';
+      document.title = lang === 'de'
+        ? 'Datenschutzerklärung — brenntel mediadesign GbR'
+        : 'Privacy Policy — brenntel mediadesign GbR';
+    });
   </script>
 </body>
 </html>

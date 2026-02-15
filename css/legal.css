@@ -1,0 +1,79 @@
+/* ========================================
+   Legal Pages (Impressum, Datenschutz)
+   Override max-width for content pages
+   ======================================== */
+.site-header {
+  position: relative;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  max-width: 800px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header-nav a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-nav a:hover {
+  color: var(--color-accent);
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.content h1 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.content h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.content p,
+.content li {
+  color: var(--color-text-light);
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+
+.content ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.site-footer {
+  background: var(--color-bg-alt);
+}
+
+.footer-inner {
+  max-width: 800px;
+}
