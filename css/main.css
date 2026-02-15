@@ -250,7 +250,7 @@
   font-size: clamp(1rem, 2.2vw, 1.3rem);
   font-weight: 300;
   color: var(--color-text-light);
-  max-width: 580px;
+  max-width: 720px;
   margin: 1.25rem auto 2.5rem;
   line-height: 1.6;
   opacity: 0;

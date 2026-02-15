@@ -305,12 +305,34 @@
   }
 
   /* ----------------------------------------
-     PDF Download (triggers browser print)
+     PDF Download (html2pdf.js)
      ---------------------------------------- */
   var pdfBtn = document.getElementById('kva-pdf-btn');
   if (pdfBtn) {
     pdfBtn.addEventListener('click', function () {
-      window.print();
+      var doc = document.getElementById('kva-document');
+      if (!doc || typeof html2pdf === 'undefined') return;
+
+      var btnText = pdfBtn.textContent;
+      pdfBtn.disabled = true;
+      pdfBtn.textContent = 'PDF wird erstellt…';
+
+      var opt = {
+        margin:       [12, 14, 12, 14],
+        filename:     'KVA-AF-2602_brenntel.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      html2pdf().set(opt).from(doc).save().then(function () {
+        pdfBtn.disabled = false;
+        pdfBtn.textContent = btnText;
+      }).catch(function () {
+        pdfBtn.disabled = false;
+        pdfBtn.textContent = btnText;
+      });
     });
   }
 
