@@ -264,7 +264,7 @@ select:focus-visible {
   top: 70px;
   left: 0;
   right: 0;
-  background: var(--color-bg);
+  background: #ffffff;
   z-index: 999;
   max-height: 0;
   overflow: hidden;
@@ -275,51 +275,71 @@ select:focus-visible {
 
 .nav-mobile.open {
   max-height: 400px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 .nav-mobile-inner {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem 1.25rem 1.25rem;
+  gap: 0.625rem;
+  padding: 1rem 1rem 1.25rem;
 }
 
 .nav-mobile a {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
   gap: 0.875rem;
   padding: 0.875rem 1rem;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text);
-  background: var(--color-bg-alt);
-  border-radius: var(--radius);
-  min-height: 52px;
-  transition: background var(--transition), color var(--transition),
-              transform 0.2s ease;
+  color: #1a1a1a !important;
+  text-decoration: none !important;
+  background: #f3f3f3;
+  border: none !important;
+  border-radius: 14px;
+  min-height: 56px;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .nav-mobile a:hover,
 .nav-mobile a:active {
-  background: var(--color-accent-glow);
-  color: var(--color-accent);
+  background: rgba(232, 114, 12, 0.12) !important;
+  color: #e8720c !important;
 }
 
 .nav-mobile a:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .nav-mobile-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--color-accent);
-  color: #fff;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px;
+  border-radius: 12px;
+  background: #e8720c !important;
+  color: #ffffff !important;
   flex-shrink: 0;
+}
+
+.nav-mobile-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff !important;
+  fill: none;
+}
+
+.nav-mobile a > span:not(.nav-mobile-icon) {
+  flex: 1;
+}
+
+.nav-mobile-chevron {
+  margin-left: auto;
+  opacity: 0.3;
+  flex-shrink: 0;
+  stroke: currentColor;
 }
 
 .nav-overlay {
