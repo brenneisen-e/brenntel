@@ -14,8 +14,8 @@
     var metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.content = lang === 'de'
-        ? 'brenntel mediadesign GbR — Kreative digitale Lösungen: Webdesign, Webentwicklung, Branding und Beratung von Irena-Marie Rentel und Eike Brenneisen in Köln.'
-        : 'brenntel mediadesign GbR — Creative digital solutions: web design, development, branding, and consulting by Irena-Marie Rentel and Eike Brenneisen in Cologne.';
+        ? 'brenntel mediadesign GbR — Wir gestalten digitale Erlebnisse: Webdesign, Webentwicklung, Branding und Beratung von Irena-Marie Rentel und Eike Brenneisen in Köln.'
+        : 'brenntel mediadesign GbR — We create digital experiences: web design, development, branding, and consulting by Irena-Marie Rentel and Eike Brenneisen in Cologne.';
     }
 
     // Update page title
