@@ -97,7 +97,6 @@
   var showcase    = document.getElementById('kva-showcase');
   var stepOld     = document.getElementById('showcase-old');
   var stepLogo    = document.getElementById('showcase-logo');
-  var stepNew     = document.getElementById('showcase-new');
 
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -153,28 +152,18 @@
       stepOld.style.display = 'none';
     }, t += 800);
 
-    // Step 2: Logo
+    // Step 2: Logo loader
     setTimeout(function () {
       stepLogo.classList.add('visible');
     }, t += 100);
 
-    // Step 2b: Hide logo
-    setTimeout(function () {
-      stepLogo.classList.remove('visible');
-    }, t += 1800);
-
-    // Step 3: Modern preview
-    setTimeout(function () {
-      stepNew.classList.add('visible');
-    }, t += 500);
-
-    // Step 3b: Fade out showcase
+    // Step 2b: Fade out showcase
     setTimeout(function () {
       showcase.style.opacity = '0';
       showcase.style.transition = 'opacity 0.6s ease';
     }, t += 2000);
 
-    // Step 4: Show document
+    // Step 3: Show KVA document
     setTimeout(function () {
       showcase.classList.remove('active');
       showcase.style.display = 'none';
