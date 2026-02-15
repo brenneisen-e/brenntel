@@ -39,22 +39,24 @@
         </div>
       </nav>
 
-      <!-- Mobile Hamburger -->
-      <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <!-- Mobile: Language Toggle + Hamburger -->
+      <div class="header-mobile-actions">
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+          <button type="button" data-lang="en" aria-label="English">EN</button>
+        </div>
+        <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
 
     <!-- Mobile Navigation -->
     <nav class="nav-mobile" aria-label="Mobile Navigation">
       <a href="#services" data-de="Leistungen" data-en="Services">Leistungen</a>
       <a href="#contact" data-de="Kontakt" data-en="Contact">Kontakt</a>
-      <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
-        <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
-        <button type="button" data-lang="en" aria-label="English">EN</button>
-      </div>
     </nav>
     <div class="nav-overlay" aria-hidden="true"></div>
   </header>

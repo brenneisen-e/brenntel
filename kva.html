@@ -24,16 +24,18 @@
           <button type="button" data-lang="en" aria-label="English">EN</button>
         </div>
       </nav>
-      <button class="hamburger" aria-label="Menue oeffnen" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-mobile-actions">
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+          <button type="button" data-lang="en" aria-label="English">EN</button>
+        </div>
+        <button class="hamburger" aria-label="Menue oeffnen" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
     <nav class="nav-mobile" aria-label="Mobile Navigation">
       <a href="index.html" data-de="Startseite" data-en="Home">Startseite</a>
-      <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
-        <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
-        <button type="button" data-lang="en" aria-label="English">EN</button>
-      </div>
     </nav>
     <div class="nav-overlay" aria-hidden="true"></div>
   </header>
