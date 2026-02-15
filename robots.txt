@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brenntel.de/sitemap.xml
+Sitemap: https://brenntelmediadesign.com/sitemap.xml
