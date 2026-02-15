@@ -60,7 +60,18 @@
   var navOverlay = document.querySelector('.nav-overlay');
 
   if (hamburger && navMobile && navOverlay) {
+    // Set nav top position based on actual header height
+    var siteHeader = document.querySelector('.site-header');
+    function updateNavTop() {
+      if (siteHeader) {
+        navMobile.style.top = siteHeader.offsetHeight + 'px';
+      }
+    }
+    updateNavTop();
+    window.addEventListener('resize', updateNavTop);
+
     function toggleMenu() {
+      updateNavTop();
       var isOpen = navMobile.classList.toggle('open');
       hamburger.classList.toggle('open', isOpen);
       navOverlay.classList.toggle('open', isOpen);
