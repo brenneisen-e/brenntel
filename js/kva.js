@@ -310,45 +310,93 @@
   var pdfBtn = document.getElementById('kva-pdf-btn');
   if (pdfBtn) {
     pdfBtn.addEventListener('click', function () {
-      var doc = document.getElementById('kva-document');
-      if (!doc || typeof html2pdf === 'undefined') return;
+      if (typeof html2pdf === 'undefined') return;
 
-      var btnText = pdfBtn.textContent;
       pdfBtn.disabled = true;
-      pdfBtn.textContent = 'PDF wird erstellt…';
 
-      // Activate PDF mode for clean rendering
+      // Show loading overlay
+      var overlay = document.createElement('div');
+      overlay.className = 'pdf-overlay';
+      overlay.innerHTML = '<div class="pdf-spinner"></div><span class="pdf-overlay-text">PDF wird generiert…</span>';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function () {
+        overlay.classList.add('visible');
+      });
+
+      // Clone the document for clean rendering
+      var source = document.getElementById('kva-document');
+      var clone = source.cloneNode(true);
+      clone.id = 'kva-pdf-clone';
+
+      // Remove PDF button bar from clone
+      var pdfBar = clone.querySelector('.kva-pdf-bar');
+      if (pdfBar) pdfBar.remove();
+
+      // Force all reveals visible in clone
+      clone.querySelectorAll('.kva-reveal').forEach(function (el) {
+        el.classList.add('visible');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+
+      // Force animated lines
+      clone.querySelectorAll('.kva-divider-full, .kva-title-line, .kva-section-line').forEach(function (el) {
+        el.style.transform = 'scaleX(1)';
+      });
+
+      // Style the clone container for A4
+      clone.style.cssText = 'display:block !important; opacity:1 !important; padding:0 !important; margin:0 !important; width:794px !important; position:absolute; left:-9999px; top:0; background:#fff; animation:none !important;';
+
+      var container = clone.querySelector('.kva-container');
+      if (container) {
+        container.style.cssText = 'width:100% !important; max-width:100% !important; margin:0 !important; padding:0 40px !important; background:#fff !important;';
+      }
+
+      // Flatten phase cards in clone
+      clone.querySelectorAll('.kva-phase').forEach(function (el) {
+        el.style.cssText = 'border:none !important; border-bottom:1px solid #ddd !important; border-radius:0 !important; padding:12px 0 !important; margin-bottom:4px !important; box-shadow:none !important; background:transparent !important; overflow:visible !important; page-break-inside:avoid;';
+        var before = el.querySelector('::before');
+      });
+
+      // Remove hover pseudo-elements (can't remove ::before via JS, but it won't show in static render)
+
       document.body.classList.add('pdf-mode');
+      document.body.appendChild(clone);
 
-      // Force all reveals visible
-      var reveals = doc.querySelectorAll('.kva-reveal');
-      reveals.forEach(function (el) { el.classList.add('visible'); });
-
-      // Force all animated lines visible
-      var lines = doc.querySelectorAll('.kva-divider-full, .kva-title-line, .kva-section-line');
-      lines.forEach(function (el) { el.style.transform = 'scaleX(1)'; });
-
-      // Small delay so styles apply before html2canvas captures
       setTimeout(function () {
         var opt = {
-          margin:       [15, 18, 15, 18],
+          margin:       [12, 0, 12, 0],
           filename:     'KVA-AF-2602_brenntel.pdf',
           image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800 },
+          html2canvas:  {
+            scale: 2,
+            useCORS: true,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: 794,
+            x: 0,
+            y: 0
+          },
           jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+          pagebreak:    { mode: ['css'] }
         };
 
-        html2pdf().set(opt).from(doc).save().then(function () {
-          document.body.classList.remove('pdf-mode');
-          pdfBtn.disabled = false;
-          pdfBtn.textContent = btnText;
+        html2pdf().set(opt).from(clone).save().then(function () {
+          cleanup();
         }).catch(function () {
-          document.body.classList.remove('pdf-mode');
-          pdfBtn.disabled = false;
-          pdfBtn.textContent = btnText;
+          cleanup();
         });
-      }, 100);
+
+        function cleanup() {
+          document.body.classList.remove('pdf-mode');
+          clone.remove();
+          overlay.classList.remove('visible');
+          setTimeout(function () {
+            overlay.remove();
+          }, 300);
+          pdfBtn.disabled = false;
+        }
+      }, 200);
     });
   }
 

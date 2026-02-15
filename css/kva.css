@@ -1155,14 +1155,65 @@
 }
 
 /* ========================================
+   PDF Loading Overlay
+   ======================================== */
+.pdf-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pdf-overlay.visible {
+  opacity: 1;
+}
+
+.pdf-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e0e0e0;
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: pdfSpin 0.8s linear infinite;
+}
+
+@keyframes pdfSpin {
+  to { transform: rotate(360deg); }
+}
+
+.pdf-overlay-text {
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ========================================
    PDF Mode — clean A4 document styling
    ======================================== */
+.pdf-mode,
+.pdf-mode body {
+  width: 794px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #fff !important;
+}
+
 .pdf-mode .site-header,
 .pdf-mode .site-footer,
 .pdf-mode .kva-entry,
 .pdf-mode #kva-particles,
 .pdf-mode .showcase,
-.pdf-mode .kva-pdf-bar {
+.pdf-mode .kva-pdf-bar,
+.pdf-mode .pdf-overlay {
   display: none !important;
 }
 
@@ -1170,72 +1221,78 @@
   display: block !important;
   opacity: 1 !important;
   padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
   animation: none !important;
 }
 
 .pdf-mode .kva-container {
+  width: 100% !important;
   max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 40px !important;
   background: #fff !important;
+}
+
+.pdf-mode * {
+  transition: none !important;
+  animation: none !important;
 }
 
 .pdf-mode .kva-reveal {
   opacity: 1 !important;
   transform: none !important;
-  transition: none !important;
 }
 
 .pdf-mode .kva-divider-full,
 .pdf-mode .kva-title-line,
 .pdf-mode .kva-section-line {
   transform: scaleX(1) !important;
-  transition: none !important;
 }
 
 /* Phases: clean flat list, no cards */
 .pdf-mode .kva-phase {
   border: none !important;
   border-radius: 0 !important;
-  padding: 1rem 0 !important;
-  margin-bottom: 0.5rem !important;
-  border-bottom: 1px solid #e0e0e0 !important;
+  padding: 0.75rem 0 !important;
+  margin-bottom: 0.25rem !important;
+  border-bottom: 1px solid #ddd !important;
   box-shadow: none !important;
   background: transparent !important;
+  overflow: visible !important;
+  page-break-inside: avoid;
 }
 
 .pdf-mode .kva-phase::before {
   display: none !important;
 }
 
-.pdf-mode .kva-phase:hover {
-  transform: none !important;
-  box-shadow: none !important;
-}
-
 .pdf-mode .kva-phase:last-child {
   border-bottom: none !important;
 }
 
-/* Phase list bullets */
 .pdf-mode .kva-phase-list li {
-  color: #1a1a1a !important;
-  font-size: 10pt !important;
-  line-height: 1.6 !important;
+  color: #333 !important;
+  font-size: 9pt !important;
+  line-height: 1.55 !important;
+  margin-bottom: 0.15rem !important;
 }
 
 .pdf-mode .kva-phase-list li::before {
-  background: #555 !important;
+  background: #666 !important;
   width: 4px !important;
   height: 4px !important;
-  top: 0.65em !important;
+  top: 0.6em !important;
   border-radius: 50% !important;
 }
 
 /* Sum block */
 .pdf-mode .kva-sum-block {
-  background: #fff !important;
-  border: 1px solid #ccc !important;
+  background: #f9f9f9 !important;
+  border: 1px solid #ddd !important;
   border-radius: 4px !important;
-  padding: 1.25rem !important;
+  padding: 1rem 1.25rem !important;
+  page-break-inside: avoid;
 }
 
 .pdf-mode .kva-total-value {
@@ -1244,8 +1301,8 @@
 
 /* Highlight box */
 .pdf-mode .kva-highlight-box {
-  border-radius: 4px !important;
-  background: #fafafa !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
 }
 
 /* Conditions */
@@ -1258,85 +1315,54 @@
   background: #1a1a1a !important;
 }
 
-/* Legal */
 .pdf-mode .kva-legal-footer {
-  border-top-color: #ccc !important;
+  border-top-color: #ddd !important;
 }
 
-/* Typography for PDF */
-.pdf-mode .kva-sender-logo {
-  font-size: 14pt !important;
-}
-
-.pdf-mode .kva-sender-people {
-  font-size: 10pt !important;
-}
-
-.pdf-mode .kva-sender-address {
-  font-size: 9pt !important;
-  color: #555 !important;
-}
-
-.pdf-mode .kva-title {
-  font-size: 20pt !important;
-}
-
-.pdf-mode .kva-subtitle {
-  font-size: 10pt !important;
-  color: #555 !important;
-}
-
-.pdf-mode .kva-section-title {
-  font-size: 13pt !important;
-}
-
-.pdf-mode .kva-phase-title h3 {
-  font-size: 11pt !important;
-}
-
-.pdf-mode .kva-phase-amount {
-  font-size: 11pt !important;
-}
+/* Typography */
+.pdf-mode .kva-sender-logo { font-size: 13pt !important; }
+.pdf-mode .kva-sender-people { font-size: 9pt !important; }
+.pdf-mode .kva-sender-address { font-size: 8pt !important; color: #555 !important; }
+.pdf-mode .kva-divider-full { margin: 1rem 0 1.25rem !important; }
+.pdf-mode .kva-title { font-size: 18pt !important; margin-bottom: 0.3rem !important; }
+.pdf-mode .kva-subtitle { font-size: 9pt !important; color: #555 !important; margin-bottom: 0.5rem !important; }
+.pdf-mode .kva-title-line { margin-bottom: 1.5rem !important; }
+.pdf-mode .kva-section-title { font-size: 11pt !important; }
+.pdf-mode .kva-section-line { margin-bottom: 1rem !important; }
+.pdf-mode .kva-phase-header { margin-bottom: 0.75rem !important; }
+.pdf-mode .kva-phase-title h3 { font-size: 10pt !important; }
+.pdf-mode .kva-phase-amount { font-size: 10pt !important; }
+.pdf-mode .kva-phase-label { font-size: 7pt !important; }
+.pdf-mode .kva-phase-icon { font-size: 1.2rem !important; }
+.pdf-mode .kva-phase-num { font-size: 0.6rem !important; }
+.pdf-mode .kva-phase-icon-wrap { min-width: 36px !important; }
 
 .pdf-mode .kva-text,
 .pdf-mode .kva-recipient p,
 .pdf-mode .kva-meta p,
 .pdf-mode .kva-condition p,
 .pdf-mode .kva-payment-step p,
-.pdf-mode .kva-payment-step strong {
-  font-size: 10pt !important;
+.pdf-mode .kva-payment-step strong,
+.pdf-mode .kva-sum-row,
+.pdf-mode .kva-highlight-row {
+  font-size: 9pt !important;
   color: #1a1a1a !important;
 }
 
-.pdf-mode .kva-text-muted {
-  color: #666 !important;
-  font-size: 9pt !important;
-}
-
-.pdf-mode .kva-ref {
-  color: #555 !important;
-}
-
-.pdf-mode .kva-section {
-  margin-bottom: 1.5rem !important;
-}
-
-.pdf-mode .kva-closing .kva-text {
-  font-size: 10pt !important;
-}
-
-.pdf-mode .kva-signature {
-  font-size: 11pt !important;
-}
-
-.pdf-mode .kva-signature-company {
-  font-size: 12pt !important;
-}
-
-.pdf-mode .kva-legal-footer p {
-  font-size: 8pt !important;
-  color: #888 !important;
-}
+.pdf-mode .kva-text-muted { color: #666 !important; font-size: 8pt !important; }
+.pdf-mode .kva-ref { color: #555 !important; }
+.pdf-mode .kva-section { margin-bottom: 1.25rem !important; }
+.pdf-mode .kva-recipient-row { margin-bottom: 1.5rem !important; }
+.pdf-mode .kva-closing .kva-text { font-size: 9pt !important; }
+.pdf-mode .kva-signature { font-size: 10pt !important; }
+.pdf-mode .kva-signature-company { font-size: 11pt !important; }
+.pdf-mode .kva-legal-footer p { font-size: 7pt !important; color: #888 !important; }
+.pdf-mode .kva-legal-footer { margin-top: 1.5rem !important; padding-top: 1rem !important; }
+.pdf-mode .kva-sum-total { font-size: 10pt !important; }
+.pdf-mode .kva-total-value { font-size: 12pt !important; }
+.pdf-mode .kva-payment-steps { margin-top: 1rem !important; gap: 0.75rem !important; }
+.pdf-mode .kva-payment-num { width: 24px !important; height: 24px !important; min-width: 24px !important; font-size: 0.75rem !important; }
+.pdf-mode .kva-conditions { gap: 0.75rem !important; }
 
 /* ========================================
    Print Stylesheet
