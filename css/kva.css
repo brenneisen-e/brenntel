@@ -1199,11 +1199,7 @@
 /* ========================================
    PDF Mode — clean A4 document styling
    ======================================== */
-.pdf-mode,
-.pdf-mode body {
-  width: 794px !important;
-  margin: 0 !important;
-  padding: 0 !important;
+.pdf-mode {
   background: #fff !important;
 }
 
@@ -1212,8 +1208,7 @@
 .pdf-mode .kva-entry,
 .pdf-mode #kva-particles,
 .pdf-mode .showcase,
-.pdf-mode .kva-pdf-bar,
-.pdf-mode .pdf-overlay {
+.pdf-mode .kva-pdf-bar {
   display: none !important;
 }
 
@@ -1222,21 +1217,24 @@
   opacity: 1 !important;
   padding: 0 !important;
   margin: 0 !important;
-  width: 100% !important;
   animation: none !important;
 }
 
 .pdf-mode .kva-container {
-  width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
-  padding: 0 40px !important;
+  padding: 0 !important;
   background: #fff !important;
 }
 
-.pdf-mode * {
+.pdf-mode *:not(.pdf-overlay):not(.pdf-spinner):not(.pdf-overlay-text) {
   transition: none !important;
-  animation: none !important;
+  animation-duration: 0s !important;
+}
+
+/* Keep overlay spinner animation running */
+.pdf-mode .pdf-spinner {
+  animation: pdfSpin 0.8s linear infinite !important;
 }
 
 .pdf-mode .kva-reveal {
@@ -1260,7 +1258,19 @@
   box-shadow: none !important;
   background: transparent !important;
   overflow: visible !important;
-  page-break-inside: avoid;
+  page-break-inside: avoid !important;
+}
+
+.pdf-mode .kva-section {
+  page-break-inside: avoid !important;
+}
+
+.pdf-mode .kva-sum-block,
+.pdf-mode .kva-payment-steps,
+.pdf-mode .kva-highlight-box,
+.pdf-mode .kva-conditions,
+.pdf-mode .kva-closing {
+  page-break-inside: avoid !important;
 }
 
 .pdf-mode .kva-phase::before {

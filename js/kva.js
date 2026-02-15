@@ -310,7 +310,9 @@
   var pdfBtn = document.getElementById('kva-pdf-btn');
   if (pdfBtn) {
     pdfBtn.addEventListener('click', function () {
-      if (typeof html2pdf === 'undefined') return;
+      var doc = document.getElementById('kva-document');
+      if (!doc || typeof html2pdf === 'undefined') return;
+      if (pdfBtn.disabled) return;
 
       pdfBtn.disabled = true;
 
@@ -319,84 +321,53 @@
       overlay.className = 'pdf-overlay';
       overlay.innerHTML = '<div class="pdf-spinner"></div><span class="pdf-overlay-text">PDF wird generiert…</span>';
       document.body.appendChild(overlay);
-      requestAnimationFrame(function () {
-        overlay.classList.add('visible');
-      });
+      requestAnimationFrame(function () { overlay.classList.add('visible'); });
 
-      // Clone the document for clean rendering
-      var source = document.getElementById('kva-document');
-      var clone = source.cloneNode(true);
-      clone.id = 'kva-pdf-clone';
+      // Activate PDF mode on body (CSS handles layout overrides)
+      document.body.classList.add('pdf-mode');
 
-      // Remove PDF button bar from clone
-      var pdfBar = clone.querySelector('.kva-pdf-bar');
-      if (pdfBar) pdfBar.remove();
-
-      // Force all reveals visible in clone
-      clone.querySelectorAll('.kva-reveal').forEach(function (el) {
-        el.classList.add('visible');
+      // Force all reveals + animated lines visible via inline styles
+      var reveals = doc.querySelectorAll('.kva-reveal');
+      reveals.forEach(function (el) {
         el.style.opacity = '1';
         el.style.transform = 'none';
       });
+      var lines = doc.querySelectorAll('.kva-divider-full, .kva-title-line, .kva-section-line');
+      lines.forEach(function (el) { el.style.transform = 'scaleX(1)'; });
 
-      // Force animated lines
-      clone.querySelectorAll('.kva-divider-full, .kva-title-line, .kva-section-line').forEach(function (el) {
-        el.style.transform = 'scaleX(1)';
-      });
+      // Scroll to top so html2canvas captures from the start
+      window.scrollTo(0, 0);
 
-      // Style the clone container for A4
-      clone.style.cssText = 'display:block !important; opacity:1 !important; padding:0 !important; margin:0 !important; width:794px !important; position:absolute; left:-9999px; top:0; background:#fff; animation:none !important;';
-
-      var container = clone.querySelector('.kva-container');
-      if (container) {
-        container.style.cssText = 'width:100% !important; max-width:100% !important; margin:0 !important; padding:0 40px !important; background:#fff !important;';
-      }
-
-      // Flatten phase cards in clone
-      clone.querySelectorAll('.kva-phase').forEach(function (el) {
-        el.style.cssText = 'border:none !important; border-bottom:1px solid #ddd !important; border-radius:0 !important; padding:12px 0 !important; margin-bottom:4px !important; box-shadow:none !important; background:transparent !important; overflow:visible !important; page-break-inside:avoid;';
-        var before = el.querySelector('::before');
-      });
-
-      // Remove hover pseudo-elements (can't remove ::before via JS, but it won't show in static render)
-
-      document.body.classList.add('pdf-mode');
-      document.body.appendChild(clone);
-
+      // Wait for styles to apply, then render
       setTimeout(function () {
-        var opt = {
-          margin:       [12, 0, 12, 0],
-          filename:     'KVA-AF-2602_brenntel.pdf',
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  {
-            scale: 2,
-            useCORS: true,
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: 794,
-            x: 0,
-            y: 0
-          },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak:    { mode: ['css'] }
-        };
+        html2pdf()
+          .set({
+            margin:      [10, 10, 10, 10],
+            filename:    'KVA-AF-2602_brenntel.pdf',
+            image:       { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+            jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
+          })
+          .from(doc)
+          .save()
+          .then(cleanup)
+          .catch(cleanup);
+      }, 300);
 
-        html2pdf().set(opt).from(clone).save().then(function () {
-          cleanup();
-        }).catch(function () {
-          cleanup();
+      function cleanup() {
+        document.body.classList.remove('pdf-mode');
+        // Remove inline overrides
+        reveals.forEach(function (el) {
+          el.style.opacity = '';
+          el.style.transform = '';
         });
-
-        function cleanup() {
-          document.body.classList.remove('pdf-mode');
-          clone.remove();
-          overlay.classList.remove('visible');
-          setTimeout(function () {
-            overlay.remove();
-          }, 300);
-          pdfBtn.disabled = false;
-        }
-      }, 200);
+        lines.forEach(function (el) { el.style.transform = ''; });
+        // Fade out overlay
+        overlay.classList.remove('visible');
+        setTimeout(function () { overlay.remove(); }, 300);
+        pdfBtn.disabled = false;
+      }
     });
   }
 
