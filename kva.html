@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kostenvoranschlag — brenntel. mediadesign</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/kva.css">
+</head>
+<body>
+
+  <!-- ======== Header ======== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
+      <nav class="nav-desktop" aria-label="Navigation">
+        <a href="index.html" data-de="Startseite" data-en="Home">Startseite</a>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+          <button type="button" data-lang="en" aria-label="English">EN</button>
+        </div>
+      </nav>
+      <button class="hamburger" aria-label="Menue oeffnen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" aria-label="Mobile Navigation">
+      <a href="index.html" data-de="Startseite" data-en="Home">Startseite</a>
+      <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
+        <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
+        <button type="button" data-lang="en" aria-label="English">EN</button>
+      </div>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
+  </header>
+
+  <!-- ======== Code Entry Screen ======== -->
+  <section class="kva-entry" id="kva-entry">
+    <div class="kva-entry-gradient" aria-hidden="true"></div>
+    <div class="kva-entry-shapes" aria-hidden="true">
+      <div class="kva-shape kva-shape-1"></div>
+      <div class="kva-shape kva-shape-2"></div>
+      <div class="kva-shape kva-shape-3"></div>
+    </div>
+
+    <div class="kva-entry-content">
+      <div class="kva-entry-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="4" width="48" height="56" rx="4" stroke="currentColor" stroke-width="2.5"/>
+          <line x1="18" y1="18" x2="46" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="26" x2="46" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="34" x2="38" y2="34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="42" x2="32" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="46" cy="46" r="12" fill="#ffffff" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M42 46L45 49L50 43" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 class="kva-entry-title">Kostenvoranschlag</h1>
+      <p class="kva-entry-sub" data-de="Bitte geben Sie Ihren Zugangscode ein, um den Kostenvoranschlag aufzurufen." data-en="Please enter your access code to view the cost estimate.">Bitte geben Sie Ihren Zugangscode ein, um den Kostenvoranschlag aufzurufen.</p>
+
+      <form class="kva-code-form" id="kva-code-form" autocomplete="off">
+        <div class="kva-input-wrapper">
+          <input type="text" id="kva-code-input" class="kva-code-input" placeholder="z.B. KVA-AF-2602" maxlength="20" spellcheck="false" autocomplete="off" aria-label="Zugangscode">
+          <div class="kva-input-glow" aria-hidden="true"></div>
+        </div>
+        <button type="submit" class="kva-submit-btn" data-de="Aufrufen" data-en="Access">
+          Aufrufen <span class="kva-submit-arrow">&#8594;</span>
+        </button>
+      </form>
+
+      <p class="kva-error" id="kva-error" aria-live="polite" data-de="Ungültiger Code. Bitte überprüfen Sie Ihre Eingabe." data-en="Invalid code. Please check your input."></p>
+    </div>
+  </section>
+
+  <!-- ======== Particle Canvas ======== -->
+  <canvas id="kva-particles" aria-hidden="true"></canvas>
+
+  <!-- ======== KVA Document ======== -->
+  <main class="kva-document" id="kva-document">
+    <div class="kva-container">
+
+      <!-- Sender Block -->
+      <div class="kva-section kva-reveal" id="kva-sender">
+        <div class="kva-sender-block">
+          <div class="kva-sender-logo">brenntel<span class="accent">.</span> mediadesign GbR</div>
+          <p class="kva-sender-people">Irena-Marie Rentel und Eike Brenneisen</p>
+          <p class="kva-sender-address">Schirmerstr. 18 &ensp;|&ensp; 50823 Köln &ensp;|&ensp; eike@brenneisen.info &ensp;|&ensp; +49 171 5518420</p>
+        </div>
+        <div class="kva-divider-full"></div>
+      </div>
+
+      <!-- Recipient + Date -->
+      <div class="kva-section kva-reveal">
+        <div class="kva-recipient-row">
+          <div class="kva-recipient">
+            <p><strong>Natalie &amp; Marcel Wernet</strong></p>
+            <p>almhuette-falkert.at</p>
+            <p>Falkertsee 151</p>
+            <p>9564 Patergassen, Österreich</p>
+          </div>
+          <div class="kva-meta">
+            <p>Köln, <span id="kva-date"></span></p>
+            <p class="kva-ref">Referenz: <strong>KVA-AF-2602</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="kva-section kva-reveal">
+        <h1 class="kva-title">Kostenvoranschlag</h1>
+        <p class="kva-subtitle">Frontend-Redesign almhuette-falkert.at mit Smoobu-Buchungsintegration und CMS</p>
+        <div class="kva-title-line"></div>
+      </div>
+
+      <!-- Introduction -->
+      <div class="kva-section kva-reveal">
+        <p class="kva-text">Liebe Natalie, lieber Marcel,</p>
+        <p class="kva-text">vielen Dank für euer Interesse an einer Zusammenarbeit. Gerne unterbreiten wir euch den folgenden Kostenvoranschlag für das komplette Frontend-Redesign eurer Webseite almhuette-falkert.at. Ziel ist ein moderner, professioneller Webauftritt für die Murmeltierhütte und die Steinbockhütte mit integriertem Smoobu-Buchungssystem und einem Content-Management-System, über das ihr Texte und Bilder eigenständig anpassen könnt.</p>
+      </div>
+
+      <!-- Project Scope -->
+      <div class="kva-section kva-reveal">
+        <h2 class="kva-section-title">Projektumfang</h2>
+        <div class="kva-section-line"></div>
+        <p class="kva-text">Das Redesign umfasst die vollständige Neugestaltung des Frontends mit Fokus auf eine zeitgemäße Bildsprache, nahtlose Buchungsintegration über Smoobu (Verfügbarkeitskalender und Booking Engine für beide Hütten) sowie technische Optimierungen in den Bereichen Performance, SEO und DSGVO-Konformität.</p>
+      </div>
+
+      <!-- Phases -->
+      <div class="kva-section kva-reveal">
+        <h2 class="kva-section-title">Leistungsübersicht</h2>
+        <div class="kva-section-line"></div>
+      </div>
+
+      <!-- Phase 1 -->
+      <div class="kva-phase kva-reveal">
+        <div class="kva-phase-header">
+          <div class="kva-phase-icon-wrap">
+            <span class="kva-phase-icon">&#9670;</span>
+            <span class="kva-phase-num">01</span>
+          </div>
+          <div class="kva-phase-title">
+            <h3>Entwurf &amp; Konzeption</h3>
+            <span class="kva-phase-label">Phase 1</span>
+          </div>
+          <div class="kva-phase-amount" data-amount="1425">1.425,00 EUR</div>
+        </div>
+        <ul class="kva-phase-list">
+          <li>Analyse der bestehenden Webseite almhuette-falkert.at und Anforderungsaufnahme</li>
+          <li>Erstellung von Wireframes und Designkonzept für Murmeltierhütte und Steinbockhütte</li>
+          <li>Definition der Seitenstruktur: Startseite, Hüttendetailseiten, Buchung, Lage &amp; Aktivitäten, Kontakt</li>
+          <li>Auswahl von Farbschema, Typografie und visueller Sprache</li>
+          <li>Abstimmung und Freigabe des finalen Entwurfs</li>
+        </ul>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="kva-phase kva-reveal">
+        <div class="kva-phase-header">
+          <div class="kva-phase-icon-wrap">
+            <span class="kva-phase-icon">&#11042;</span>
+            <span class="kva-phase-num">02</span>
+          </div>
+          <div class="kva-phase-title">
+            <h3>Entwicklung &amp; Coding</h3>
+            <span class="kva-phase-label">Phase 2</span>
+          </div>
+          <div class="kva-phase-amount" data-amount="2280">2.280,00 EUR</div>
+        </div>
+        <ul class="kva-phase-list">
+          <li>Frontend-Entwicklung auf Basis des freigegebenen Designs</li>
+          <li>Responsive Umsetzung für Desktop, Tablet und Mobile</li>
+          <li>Integration des Smoobu-Buchungssystems (Verfügbarkeitskalender und Booking Engine für beide Hütten)</li>
+          <li>Einrichtung eines Content-Management-Systems (CMS) zur eigenständigen Pflege von Texten und Bildern</li>
+          <li>Automatische Bildoptimierung (WebP/AVIF-Konvertierung)</li>
+          <li>SEO-Grundkonfiguration inkl. Schema.org-Markup (VacationRental), Meta-Tags und Open-Graph-Tags</li>
+          <li>DSGVO-konforme Einbindung aller Drittdienste (Smoobu, Bewertungen, Kontaktformular)</li>
+        </ul>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="kva-phase kva-reveal">
+        <div class="kva-phase-header">
+          <div class="kva-phase-icon-wrap">
+            <span class="kva-phase-icon">&#9678;</span>
+            <span class="kva-phase-num">03</span>
+          </div>
+          <div class="kva-phase-title">
+            <h3>Rollout &amp; Testing</h3>
+            <span class="kva-phase-label">Phase 3</span>
+          </div>
+          <div class="kva-phase-amount" data-amount="1140">1.140,00 EUR</div>
+        </div>
+        <ul class="kva-phase-list">
+          <li>Cross-Browser- und Gerätetests auf gängigen Endgeräten</li>
+          <li>Deployment auf die Zielumgebung inkl. SSL und Security-Headers</li>
+          <li>DNS-Umstellung der Domain almhuette-falkert.at</li>
+          <li>Funktionstest der Smoobu-Buchungsstrecke für beide Hütten</li>
+          <li>Bugfixing und Feinschliff</li>
+        </ul>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="kva-phase kva-reveal">
+        <div class="kva-phase-header">
+          <div class="kva-phase-icon-wrap">
+            <span class="kva-phase-icon">&#9654;</span>
+            <span class="kva-phase-num">04</span>
+          </div>
+          <div class="kva-phase-title">
+            <h3>Übergabe &amp; Betrieb</h3>
+            <span class="kva-phase-label">Phase 4</span>
+          </div>
+          <div class="kva-phase-amount" data-amount="855">855,00 EUR</div>
+        </div>
+        <ul class="kva-phase-list">
+          <li>Einweisung in das CMS zur eigenständigen Pflege von Texten und Bildern</li>
+          <li>Dokumentation der Smoobu-Widget-Konfiguration und Anpassungsmöglichkeiten</li>
+          <li>Übergabe aller Quelldateien und Zugänge</li>
+          <li>30 Tage Support nach Go-Live</li>
+          <li>Optionale Wartungsvereinbarung (siehe Hosting-Paket)</li>
+        </ul>
+      </div>
+
+      <!-- Sum Block -->
+      <div class="kva-section kva-reveal">
+        <div class="kva-sum-block">
+          <div class="kva-sum-row">
+            <span>Nettobetrag</span>
+            <span class="kva-sum-value" data-count="5700">5.700,00 EUR</span>
+          </div>
+          <div class="kva-sum-row">
+            <span>USt. 19%</span>
+            <span class="kva-sum-value" data-count="1083">1.083,00 EUR</span>
+          </div>
+          <div class="kva-sum-divider"></div>
+          <div class="kva-sum-row kva-sum-total">
+            <span>Gesamtbetrag</span>
+            <span class="kva-sum-value kva-total-value" data-count="6783">6.783,00 EUR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Terms -->
+      <div class="kva-section kva-reveal">
+        <h2 class="kva-section-title">Zahlungskonditionen</h2>
+        <div class="kva-section-line"></div>
+        <p class="kva-text">Die Abrechnung erfolgt in zwei Teilzahlungen:</p>
+        <div class="kva-payment-steps">
+          <div class="kva-payment-step">
+            <span class="kva-payment-num">1</span>
+            <div>
+              <strong>Teilzahlung — Phase 1 (1.425,00 EUR netto)</strong>
+              <p>wird bei Auftragserteilung fällig.</p>
+            </div>
+          </div>
+          <div class="kva-payment-step">
+            <span class="kva-payment-num">2</span>
+            <div>
+              <strong>Teilzahlung — Phasen 2–4 (4.275,00 EUR netto)</strong>
+              <p>werden nach gemeinsamer Abstimmung und Freigabe des finalen Entwurfs und Designs fällig.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optional Hosting -->
+      <div class="kva-section kva-reveal">
+        <h2 class="kva-section-title">Optionales Webhosting</h2>
+        <div class="kva-section-line"></div>
+        <p class="kva-text">Auf Wunsch kann das Hosting der neuen Webseite über uns erfolgen. Das Hosting-Paket umfasst die Bereitstellung und den Betrieb der Webseite, SSL-Zertifikat, automatische Bildoptimierung, Sicherheitskonfiguration, regelmäßige Backups sowie laufende technische Betreuung.</p>
+        <div class="kva-highlight-box">
+          <div class="kva-highlight-row">
+            <span>Monatliche Pauschale</span>
+            <strong>29,99 EUR netto zzgl. USt.</strong>
+          </div>
+          <div class="kva-highlight-row">
+            <span>Kündigung</span>
+            <strong>monatlich kündbar</strong>
+          </div>
+        </div>
+        <p class="kva-text kva-text-muted">Die Nutzung unseres Hosting-Angebots ist optional. Die neue Webseite kann selbstverständlich auch auf einer bestehenden oder eigenen Hosting-Infrastruktur betrieben werden.</p>
+      </div>
+
+      <!-- Smoobu Note -->
+      <div class="kva-section kva-reveal">
+        <h2 class="kva-section-title">Hinweis zu Smoobu</h2>
+        <div class="kva-section-line"></div>
+        <p class="kva-text">Die Kosten für das Smoobu-Abonnement (derzeit ca. 47 EUR/Monat für zwei Unterkünfte im Professional-Tarif) sind nicht Bestandteil dieses Kostenvoranschlags und werden direkt mit Smoobu abgerechnet. Wir übernehmen die technische Integration und Konfiguration der Widgets auf der neuen Webseite.</p>
+      </div>
+
+      <!-- Further Conditions -->
+      <div class="kva-section kva-reveal">
+        <h2 class="kva-section-title">Weitere Konditionen</h2>
+        <div class="kva-section-line"></div>
+        <div class="kva-conditions">
+          <div class="kva-condition">
+            <span class="kva-condition-label">Gültigkeit</span>
+            <p>Dieser Kostenvoranschlag ist gültig bis zum <strong id="kva-valid-until"></strong>.</p>
+          </div>
+          <div class="kva-condition">
+            <span class="kva-condition-label">Zeitrahmen</span>
+            <p>Die voraussichtliche Projektdauer beträgt 4–6 Wochen ab Auftragserteilung.</p>
+          </div>
+          <div class="kva-condition">
+            <span class="kva-condition-label">Änderungen</span>
+            <p>Zusätzliche Leistungen, die über den beschriebenen Umfang hinausgehen, werden nach Absprache gesondert berechnet.</p>
+          </div>
+          <div class="kva-condition">
+            <span class="kva-condition-label">Bildmaterial</span>
+            <p>Das vorhandene Bildmaterial wird von euch bereitgestellt. Professionelle Fotografie kann bei Bedarf separat beauftragt werden.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Closing -->
+      <div class="kva-section kva-reveal">
+        <div class="kva-closing">
+          <p class="kva-text">Wir freuen uns auf eure Rückmeldung und stehen für Rückfragen jederzeit zur Verfügung.</p>
+          <p class="kva-text" style="margin-top: 2rem;">Mit freundlichen Grüßen</p>
+          <p class="kva-signature">Irena-Marie Rentel und Eike Brenneisen</p>
+          <p class="kva-signature-company">brenntel<span class="accent">.</span> mediadesign GbR</p>
+        </div>
+      </div>
+
+      <!-- Legal Footer -->
+      <div class="kva-section kva-reveal">
+        <div class="kva-legal-footer">
+          <p>Hinweis: Dieser Kostenvoranschlag ist unverbindlich. Alle Preise verstehen sich in Euro. Es gelten die gesetzlichen Regelungen für Kostenvoranschläge nach § 632 Abs. 2 BGB. Die Steuernummer wird auf der finalen Rechnung ausgewiesen.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ======== Footer ======== -->
+  <footer class="site-footer" role="contentinfo" id="site-footer">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign GbR</p>
+      <div class="footer-links">
+        <a href="impressum.html" data-de="Impressum" data-en="Legal Notice">Impressum</a>
+        <a href="datenschutz.html" data-de="Datenschutz" data-en="Privacy Policy">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/shared.js"></script>
+  <script src="js/kva.js"></script>
+</body>
+</html>
