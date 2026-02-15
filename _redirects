@@ -1,2 +1,5 @@
-# Redirect www to non-www (handled by Cloudflare DNS, but as fallback)
-# https://www.brenntelmediadesign.com/* https://brenntelmediadesign.com/:splat 301
+# Redirect www to non-www
+https://www.brenntelmediadesign.com/* https://brenntelmediadesign.com/:splat 301
+
+# Clean URLs — /kva → /kva.html
+/kva   /kva.html   200
