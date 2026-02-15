@@ -596,6 +596,44 @@
 }
 
 /* ========================================
+   PDF Download Bar
+   ======================================== */
+.kva-pdf-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.kva-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 44px;
+}
+
+.kva-pdf-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.kva-pdf-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ========================================
    Recipient & Meta
    ======================================== */
 .kva-recipient-row {
@@ -1113,7 +1151,8 @@
   .site-footer,
   .kva-entry,
   #kva-particles,
-  .showcase {
+  .showcase,
+  .kva-pdf-bar {
     display: none !important;
   }
 

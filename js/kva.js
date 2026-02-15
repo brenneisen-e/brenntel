@@ -305,6 +305,16 @@
   }
 
   /* ----------------------------------------
+     PDF Download (triggers browser print)
+     ---------------------------------------- */
+  var pdfBtn = document.getElementById('kva-pdf-btn');
+  if (pdfBtn) {
+    pdfBtn.addEventListener('click', function () {
+      window.print();
+    });
+  }
+
+  /* ----------------------------------------
      Counter Animation
      ---------------------------------------- */
   function animateCounter(el) {
