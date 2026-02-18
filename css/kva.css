@@ -924,6 +924,13 @@
   color: var(--color-accent);
 }
 
+.kva-kleinunternehmer-hinweis {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
 /* Counter animation glow */
 .kva-total-value.counting {
   animation: kvaTotalPulse 0.5s ease;
