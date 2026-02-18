@@ -388,7 +388,7 @@
             margin:      [10, 10, 10, 10],
             filename:    'KVA-AF-2602_brenntel.pdf',
             image:       { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+            html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
             jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
           })

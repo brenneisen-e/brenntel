@@ -1225,13 +1225,18 @@
   padding: 0 !important;
   margin: 0 !important;
   animation: none !important;
+  max-width: 774px !important;
+  overflow: hidden !important;
 }
 
 .pdf-mode .kva-container {
-  max-width: 100% !important;
+  max-width: 774px !important;
+  width: 774px !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 10px !important;
   background: #fff !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 .pdf-mode *:not(.pdf-overlay):not(.pdf-spinner):not(.pdf-overlay-text) {
@@ -1346,7 +1351,8 @@
 .pdf-mode .kva-title-line { margin-bottom: 1.5rem !important; }
 .pdf-mode .kva-section-title { font-size: 11pt !important; }
 .pdf-mode .kva-section-line { margin-bottom: 1rem !important; }
-.pdf-mode .kva-phase-header { margin-bottom: 0.75rem !important; }
+.pdf-mode .kva-phase-header { margin-bottom: 0.75rem !important; flex-wrap: nowrap !important; }
+.pdf-mode .kva-phase-title { min-width: 0 !important; flex: 1 !important; }
 .pdf-mode .kva-phase-title h3 { font-size: 10pt !important; }
 .pdf-mode .kva-phase-amount { font-size: 10pt !important; }
 .pdf-mode .kva-phase-label { font-size: 7pt !important; }
