@@ -1190,11 +1190,7 @@
 
   .hero .subtitle {
     font-size: 0.95rem;
-    padding: 0 0.25rem;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
-    -webkit-hyphens: auto;
+    white-space: pre-line;
   }
 
   .hero-previews {
