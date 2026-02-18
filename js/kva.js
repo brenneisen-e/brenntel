@@ -37,7 +37,7 @@
   if (dateEl) dateEl.textContent = formatDate(today);
 
   var validDate = new Date(today);
-  validDate.setDate(validDate.getDate() + 30);
+  validDate.setDate(validDate.getDate() + 14);
   if (validEl) validEl.textContent = formatDate(validDate);
 
   /* ----------------------------------------
