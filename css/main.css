@@ -1194,6 +1194,7 @@
   }
 
   .hero-previews {
+    justify-content: flex-start;
     gap: 1rem;
     margin: 1.5rem auto 0.75rem;
     flex-wrap: nowrap;
