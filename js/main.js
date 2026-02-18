@@ -145,9 +145,10 @@
       scrollToItem(allItems[count]); // first real item
     });
 
-    // --- Scroll end handling: reposition if on clone ---
+    // --- Live dot updates + infinite loop reposition ---
     var isRepositioning = false;
     var scrollTimer;
+    var rafId;
 
     function getClosestIndex() {
       var containerRect = container.getBoundingClientRect();
@@ -166,22 +167,25 @@
       return closest;
     }
 
+    // Live dot update (runs every frame during scroll)
+    function updateDotsLive() {
+      var idx = getClosestIndex();
+      var realIdx = idx % count;
+      dots.forEach(function (d, i) {
+        d.classList.toggle('active', i === realIdx);
+      });
+    }
+
+    // Reposition to real items when scroll settles on a clone
     function onScrollEnd() {
       if (isRepositioning) return;
 
       var idx = getClosestIndex();
       var realIdx = idx % count;
 
-      // Update dots
-      dots.forEach(function (d, i) {
-        d.classList.toggle('active', i === realIdx);
-      });
-
-      // If on a clone, silently jump to the real counterpart
       if (idx < count || idx >= count * 2) {
         isRepositioning = true;
         scrollToItem(allItems[count + realIdx]);
-        // Let the browser settle before allowing scroll events again
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
             isRepositioning = false;
@@ -192,8 +196,14 @@
 
     container.addEventListener('scroll', function () {
       if (isRepositioning) return;
+
+      // Live dot update via rAF (smooth, not debounced)
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateDotsLive);
+
+      // Reposition check only after scroll stops
       clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(onScrollEnd, 120);
+      scrollTimer = setTimeout(onScrollEnd, 150);
     }, { passive: true });
   })();
 
