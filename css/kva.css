@@ -1092,6 +1092,13 @@
     font-size: 0.9rem;
     word-break: break-word;
   }
+  .kva-sender-addr,
+  .kva-sender-contact {
+    display: block;
+  }
+  .kva-sender-sep {
+    display: none;
+  }
 
   .kva-phase-header {
     flex-direction: column;
