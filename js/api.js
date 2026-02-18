@@ -368,7 +368,36 @@
     URL.revokeObjectURL(url);
   }
 
-  async function downloadZip() {
+  /**
+   * Extract media file URLs from extracted media data.
+   * Each media item has source_url or guid.rendered.
+   */
+  function getMediaFileUrls(mediaData) {
+    if (!Array.isArray(mediaData)) return [];
+    return mediaData.map(function (item) {
+      var url = item.source_url || (item.guid && item.guid.rendered) || '';
+      var filename = url.split('/').pop() || ('media-' + item.id);
+      return { id: item.id, url: url, filename: filename };
+    }).filter(function (item) { return item.url; });
+  }
+
+  /**
+   * Download a single media file through the proxy.
+   * Returns { filename, blob } or null on error.
+   */
+  async function fetchMediaFile(fileUrl) {
+    try {
+      var proxyUrl = '/wp-proxy?url=' + encodeURIComponent(fileUrl);
+      var res = await fetch(proxyUrl, { signal: AbortSignal.timeout(60000) });
+      if (!res.ok) return null;
+      var blob = await res.blob();
+      return blob;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function downloadZip(includeMediaFiles, onMediaProgress) {
     // Build ZIP using JSZip if available, otherwise fallback to individual downloads
     if (typeof JSZip === 'undefined') {
       // Load JSZip dynamically
@@ -391,6 +420,37 @@
     const contentFolder = folder.folder('content');
     for (const [type, data] of Object.entries(state.extractedData)) {
       contentFolder.file(type + '.json', JSON.stringify(data, null, 2));
+    }
+
+    // Download and add actual media files if requested
+    if (includeMediaFiles && state.extractedData.media) {
+      const mediaFolder = folder.folder('media');
+      const files = getMediaFileUrls(state.extractedData.media);
+      let downloaded = 0;
+      let failed = 0;
+
+      for (const file of files) {
+        if (onMediaProgress) onMediaProgress(downloaded, files.length, file.filename);
+        const blob = await fetchMediaFile(file.url);
+        if (blob) {
+          mediaFolder.file(file.filename, blob);
+          downloaded++;
+        } else {
+          failed++;
+        }
+        // Small delay to not overwhelm the server
+        await new Promise(function (r) { setTimeout(r, 100); });
+      }
+
+      if (onMediaProgress) onMediaProgress(downloaded, files.length, 'done');
+
+      // Add media download summary to manifest
+      folder.file('media-summary.json', JSON.stringify({
+        total: files.length,
+        downloaded: downloaded,
+        failed: failed,
+        files: files.map(function (f) { return f.filename; }),
+      }, null, 2));
     }
 
     const blob = await zip.generateAsync({ type: 'blob' });
@@ -556,6 +616,13 @@
       list.appendChild(div);
     }
 
+    // Update ZIP button text based on media download option
+    const zipBtn = $('#btn-download-zip');
+    if (state.includeMediaFiles && state.extractedData.media) {
+      const mediaCount = Array.isArray(state.extractedData.media) ? state.extractedData.media.length : 0;
+      zipBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> ZIP mit ' + mediaCount + ' Mediendateien herunterladen';
+    }
+
     showPanel('download');
   }
 
@@ -673,7 +740,28 @@
     $('#btn-extract').addEventListener('click', startExtraction);
 
     // Download buttons
-    $('#btn-download-zip').addEventListener('click', () => downloadZip());
+    $('#btn-download-zip').addEventListener('click', async () => {
+      const includeMedia = state.includeMediaFiles && state.extractedData.media;
+      const btn = $('#btn-download-zip');
+      const origHTML = btn.innerHTML;
+
+      if (includeMedia) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="btn-spinner"></span> Medien werden heruntergeladen...';
+        await downloadZip(true, (done, total, current) => {
+          if (current === 'done') {
+            btn.innerHTML = origHTML;
+            btn.disabled = false;
+          } else {
+            btn.innerHTML = '<span class="btn-spinner"></span> ' + done + '/' + total + ' Dateien...';
+          }
+        });
+        btn.innerHTML = origHTML;
+        btn.disabled = false;
+      } else {
+        await downloadZip(false);
+      }
+    });
     $('#btn-download-json').addEventListener('click', () => {
       $('#individual-downloads').hidden = !$('#individual-downloads').hidden;
     });
@@ -703,6 +791,7 @@
     if (checked.length === 0) return;
 
     const useEmbed = $('#opt-embed').checked;
+    state.includeMediaFiles = $('#opt-media-download').checked;
 
     showPanel('progress');
     renderProgressItems(checked);

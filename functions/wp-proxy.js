@@ -40,6 +40,18 @@ function isWordPressApiUrl(url) {
   }
 }
 
+function isWordPressMediaUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return (
+      (parsed.protocol === 'https:' || parsed.protocol === 'http:') &&
+      parsed.pathname.includes('/wp-content/uploads/')
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function onRequest(context) {
   const { request } = context;
   const origin = request.headers.get('Origin') || ALLOWED_ORIGINS[0];
@@ -68,16 +80,21 @@ export async function onRequest(context) {
     });
   }
 
-  if (!isWordPressApiUrl(targetUrl)) {
+  const isApi = isWordPressApiUrl(targetUrl);
+  const isMedia = isWordPressMediaUrl(targetUrl);
+
+  if (!isApi && !isMedia) {
     return new Response(
-      JSON.stringify({ error: 'Only WordPress REST API URLs are allowed' }),
+      JSON.stringify({ error: 'Only WordPress REST API and media URLs are allowed' }),
       { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 
   // Build upstream request headers
   const upstreamHeaders = new Headers();
-  upstreamHeaders.set('Accept', 'application/json');
+  if (isApi) {
+    upstreamHeaders.set('Accept', 'application/json');
+  }
 
   // Forward Authorization header (for Application Passwords)
   const authHeader = request.headers.get('Authorization');
@@ -94,12 +111,21 @@ export async function onRequest(context) {
 
     // Build response with CORS headers + expose WP pagination headers
     const responseHeaders = new Headers(cors);
-    responseHeaders.set('Content-Type', upstream.headers.get('Content-Type') || 'application/json');
+    const contentType = upstream.headers.get('Content-Type') || (isMedia ? 'application/octet-stream' : 'application/json');
+    responseHeaders.set('Content-Type', contentType);
 
-    const wpTotal = upstream.headers.get('X-WP-Total');
-    const wpTotalPages = upstream.headers.get('X-WP-TotalPages');
-    if (wpTotal) responseHeaders.set('X-WP-Total', wpTotal);
-    if (wpTotalPages) responseHeaders.set('X-WP-TotalPages', wpTotalPages);
+    if (isApi) {
+      const wpTotal = upstream.headers.get('X-WP-Total');
+      const wpTotalPages = upstream.headers.get('X-WP-TotalPages');
+      if (wpTotal) responseHeaders.set('X-WP-Total', wpTotal);
+      if (wpTotalPages) responseHeaders.set('X-WP-TotalPages', wpTotalPages);
+    }
+
+    // For media downloads, expose content-length
+    const contentLength = upstream.headers.get('Content-Length');
+    if (contentLength) {
+      responseHeaders.set('Content-Length', contentLength);
+    }
 
     return new Response(upstream.body, {
       status: upstream.status,
