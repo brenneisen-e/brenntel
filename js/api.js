@@ -53,7 +53,15 @@
   }
 
   async function wpFetch(endpoint, auth) {
-    const url = endpoint.startsWith('http') ? endpoint : state.apiRoot + endpoint;
+    let url;
+    if (endpoint.startsWith('http')) {
+      url = endpoint;
+    } else {
+      // Avoid double slashes when joining apiRoot and endpoint
+      const root = state.apiRoot.replace(/\/+$/, '');
+      const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+      url = root + path;
+    }
     const opts = { headers: {} };
     if (auth && state.isAuthenticated) {
       opts.headers['Authorization'] = basicAuthHeader(state.username, state.password);
@@ -91,7 +99,7 @@
       } catch (_) { /* try next */ }
     }
 
-    if (!data) throw new Error('WordPress REST API nicht erreichbar. Pruefen Sie die URL und ob die REST API aktiviert ist.');
+    if (!data) throw new Error('WordPress REST API nicht erreichbar. Prüfen Sie die URL und ob die REST API aktiviert ist.');
 
     state.apiRoot = apiRoot;
     state.siteName = data.name || base;
@@ -232,14 +240,14 @@
   // Extraction
   // ==========================================
   const CONTENT_TYPES = {
-    posts:      { endpoint: '/wp/v2/posts', label: 'Beitraege', auth: false, perPage: 100 },
+    posts:      { endpoint: '/wp/v2/posts', label: 'Beiträge', auth: false, perPage: 100 },
     pages:      { endpoint: '/wp/v2/pages', label: 'Seiten', auth: false, perPage: 100 },
     media:      { endpoint: '/wp/v2/media', label: 'Medien', auth: false, perPage: 100 },
     categories: { endpoint: '/wp/v2/categories', label: 'Kategorien', auth: false, perPage: 100 },
     tags:       { endpoint: '/wp/v2/tags', label: 'Tags', auth: false, perPage: 100 },
     users:      { endpoint: '/wp/v2/users', label: 'Autoren', auth: false, perPage: 100 },
     comments:   { endpoint: '/wp/v2/comments', label: 'Kommentare', auth: false, perPage: 100 },
-    menus:      { endpoint: '/wp/v2/menus', label: 'Menues', auth: true, perPage: 100 },
+    menus:      { endpoint: '/wp/v2/menus', label: 'Menüs', auth: true, perPage: 100 },
     settings:   { endpoint: '/wp/v2/settings', label: 'Einstellungen', auth: true, single: true },
   };
 
@@ -300,7 +308,7 @@
 
       // Skip auth-required types if not authenticated
       if (cfg.auth && !state.isAuthenticated) {
-        onLog('warn', cfg.label + ': Uebersprungen (Auth erforderlich)');
+        onLog('warn', cfg.label + ': Übersprungen (Auth erforderlich)');
         onTypeError(type, 'Auth erforderlich');
         completed++;
         continue;
@@ -319,10 +327,10 @@
         state.extractedData[type] = data;
         state.counts[type] = count;
         onTypeDone(type, count);
-        onLog('ok', cfg.label + ': ' + count + ' Eintraege extrahiert');
+        onLog('ok', cfg.label + ': ' + count + ' Einträge extrahiert');
       } catch (err) {
         onTypeError(type, err.message);
-        onLog('err', cfg.label + ': Fehler — ' + err.message);
+        onLog('err', cfg.label + ': Fehler – ' + err.message);
       }
 
       completed++;
@@ -463,7 +471,7 @@
       if (cfg.auth && !state.isAuthenticated) { el.textContent = ''; return; }
       el.textContent = '...';
       const count = await fetchCount(type);
-      el.textContent = count !== null ? count + ' Eintraege' : '';
+      el.textContent = count !== null ? count + ' Einträge' : '';
     });
   }
 
@@ -515,13 +523,13 @@
     const totalItems = Object.values(state.counts).reduce((a, b) => a + b, 0);
     const totalTypes = Object.keys(state.extractedData).length;
 
-    $('#download-summary').textContent = totalItems + ' Eintraege aus ' + totalTypes + ' Inhaltstypen von ' + state.siteName + ' extrahiert.';
+    $('#download-summary').textContent = totalItems + ' Einträge aus ' + totalTypes + ' Inhaltstypen von ' + state.siteName + ' extrahiert.';
 
     // Stats
     const statsContainer = $('#download-stats');
     statsContainer.innerHTML = '';
     const statsData = [
-      { value: totalItems, label: 'Eintraege' },
+      { value: totalItems, label: 'Einträge' },
       { value: totalTypes, label: 'Typen' },
       { value: formatBytes(new Blob([JSON.stringify(state.extractedData)]).size), label: 'Daten' },
     ];
@@ -699,7 +707,7 @@
 
     let completedCount = 0;
 
-    addLog('info', 'Extraktion gestartet fuer ' + state.siteName);
+    addLog('info', 'Extraktion gestartet für ' + state.siteName);
 
     await runExtraction(
       checked,
@@ -718,7 +726,7 @@
       // onTypeDone
       (type, count) => {
         completedCount++;
-        setProgressItemStatus(type, 'done', count + ' Eintraege');
+        setProgressItemStatus(type, 'done', count + ' Einträge');
         const overallPct = Math.round((completedCount / checked.length) * 100);
         $('#progress-bar').style.width = overallPct + '%';
         $('#progress-pct').textContent = overallPct + '%';
