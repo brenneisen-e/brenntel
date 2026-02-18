@@ -36,8 +36,7 @@
   var today = new Date();
   if (dateEl) dateEl.textContent = formatDate(today);
 
-  var validDate = new Date(today);
-  validDate.setDate(validDate.getDate() + 30);
+  var validDate = new Date(2026, 1, 28); // 28.02.2026
   if (validEl) validEl.textContent = formatDate(validDate);
 
   /* ----------------------------------------
