@@ -1225,18 +1225,16 @@
   padding: 0 !important;
   margin: 0 !important;
   animation: none !important;
-  max-width: 774px !important;
-  overflow: hidden !important;
+  width: 100% !important;
 }
 
 .pdf-mode .kva-container {
-  max-width: 774px !important;
-  width: 774px !important;
+  max-width: 100% !important;
+  width: 100% !important;
   margin: 0 !important;
   padding: 0 10px !important;
   background: #fff !important;
   box-sizing: border-box !important;
-  overflow: hidden !important;
 }
 
 .pdf-mode *:not(.pdf-overlay):not(.pdf-spinner):not(.pdf-overlay-text) {
