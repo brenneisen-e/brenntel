@@ -1193,7 +1193,6 @@
     margin: 1.5rem auto 0.75rem;
     flex-wrap: nowrap;
     overflow-x: auto;
-    scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding: 0 calc(50% - 50px - 0.5rem);
@@ -1205,7 +1204,13 @@
 
   .hero-preview {
     flex: 0 0 auto;
-    scroll-snap-align: center;
+  }
+
+  /* Cloned items: skip all entrance animations, show immediately */
+  .carousel-clone,
+  .carousel-clone * {
+    animation: none !important;
+    opacity: 1 !important;
   }
 
   .preview-square {
