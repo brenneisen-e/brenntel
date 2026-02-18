@@ -72,53 +72,128 @@
   }, 3500);
 
   /* ========================================
-     Hero Previews Mobile Carousel
+     Hero Previews Mobile Carousel (Infinite)
      ======================================== */
   (function initCarousel() {
     var container = document.querySelector('.hero-previews');
     var dotsContainer = document.querySelector('.carousel-dots');
     if (!container || !dotsContainer) return;
 
-    var items = container.querySelectorAll('.hero-preview');
-    if (items.length === 0) return;
+    var origItems = Array.from(container.querySelectorAll('.hero-preview'));
+    var count = origItems.length;
+    if (count === 0) return;
 
-    // Create dots
-    items.forEach(function (_, i) {
+    // Only run carousel logic on mobile
+    var mql = window.matchMedia('(max-width: 600px)');
+    if (!mql.matches) {
+      // On desktop: just create dots (hidden via CSS) and bail
+      origItems.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dotsContainer.appendChild(dot);
+      });
+      return;
+    }
+
+    // --- Clone items for infinite loop ---
+    // Layout: [clone-set] [real items] [clone-set]
+    var fragBefore = document.createDocumentFragment();
+    var fragAfter = document.createDocumentFragment();
+
+    origItems.forEach(function (item) {
+      var cloneBefore = item.cloneNode(true);
+      cloneBefore.classList.add('carousel-clone');
+      cloneBefore.setAttribute('aria-hidden', 'true');
+      fragBefore.appendChild(cloneBefore);
+
+      var cloneAfter = item.cloneNode(true);
+      cloneAfter.classList.add('carousel-clone');
+      cloneAfter.setAttribute('aria-hidden', 'true');
+      fragAfter.appendChild(cloneAfter);
+    });
+
+    container.insertBefore(fragBefore, container.firstChild);
+    container.appendChild(fragAfter);
+
+    // All items now: [5 clones] [5 real] [5 clones]
+    var allItems = Array.from(container.querySelectorAll('.hero-preview'));
+
+    // --- Create dots (only for real items) ---
+    for (var i = 0; i < count; i++) {
       var dot = document.createElement('button');
       dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
       dot.setAttribute('aria-label', 'Slide ' + (i + 1));
-      dot.addEventListener('click', function () {
-        items[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      });
+      (function (idx) {
+        dot.addEventListener('click', function () {
+          allItems[count + idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        });
+      })(i);
       dotsContainer.appendChild(dot);
-    });
-
+    }
     var dots = dotsContainer.querySelectorAll('.carousel-dot');
 
-    // Update active dot on scroll
-    var scrollTimeout;
+    // --- Scroll to first real item instantly ---
+    function scrollToItem(item) {
+      var itemRect = item.getBoundingClientRect();
+      var containerRect = container.getBoundingClientRect();
+      var offset = itemRect.left - containerRect.left + container.scrollLeft;
+      container.scrollLeft = offset - (containerRect.width / 2) + (itemRect.width / 2);
+    }
+
+    // Initial position (no animation)
+    requestAnimationFrame(function () {
+      scrollToItem(allItems[count]); // first real item
+    });
+
+    // --- Scroll end handling: reposition if on clone ---
+    var isRepositioning = false;
+    var scrollTimer;
+
+    function getClosestIndex() {
+      var containerRect = container.getBoundingClientRect();
+      var center = containerRect.left + containerRect.width / 2;
+      var closest = 0;
+      var minDist = Infinity;
+      allItems.forEach(function (item, i) {
+        var rect = item.getBoundingClientRect();
+        var itemCenter = rect.left + rect.width / 2;
+        var dist = Math.abs(itemCenter - center);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = i;
+        }
+      });
+      return closest;
+    }
+
+    function onScrollEnd() {
+      if (isRepositioning) return;
+
+      var idx = getClosestIndex();
+      var realIdx = idx % count;
+
+      // Update dots
+      dots.forEach(function (d, i) {
+        d.classList.toggle('active', i === realIdx);
+      });
+
+      // If on a clone, silently jump to the real counterpart
+      if (idx < count || idx >= count * 2) {
+        isRepositioning = true;
+        scrollToItem(allItems[count + realIdx]);
+        // Let the browser settle before allowing scroll events again
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            isRepositioning = false;
+          });
+        });
+      }
+    }
+
     container.addEventListener('scroll', function () {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(function () {
-        var containerRect = container.getBoundingClientRect();
-        var containerCenter = containerRect.left + containerRect.width / 2;
-        var closestIndex = 0;
-        var closestDist = Infinity;
-
-        items.forEach(function (item, i) {
-          var rect = item.getBoundingClientRect();
-          var itemCenter = rect.left + rect.width / 2;
-          var dist = Math.abs(itemCenter - containerCenter);
-          if (dist < closestDist) {
-            closestDist = dist;
-            closestIndex = i;
-          }
-        });
-
-        dots.forEach(function (dot, i) {
-          dot.classList.toggle('active', i === closestIndex);
-        });
-      }, 50);
+      if (isRepositioning) return;
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(onScrollEnd, 120);
     }, { passive: true });
   })();
 
