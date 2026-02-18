@@ -43,13 +43,22 @@
     return 'Basic ' + btoa(user + ':' + pass);
   }
 
+  /**
+   * Route a request through our Cloudflare Pages Function proxy
+   * to avoid CORS issues with arbitrary WordPress sites.
+   */
+  function proxiedFetch(targetUrl, opts) {
+    const proxyUrl = '/wp-proxy?url=' + encodeURIComponent(targetUrl);
+    return fetch(proxyUrl, opts);
+  }
+
   async function wpFetch(endpoint, auth) {
     const url = endpoint.startsWith('http') ? endpoint : state.apiRoot + endpoint;
     const opts = { headers: {} };
     if (auth && state.isAuthenticated) {
       opts.headers['Authorization'] = basicAuthHeader(state.username, state.password);
     }
-    const res = await fetch(url, opts);
+    const res = await proxiedFetch(url, opts);
     if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
     return res;
   }
@@ -72,7 +81,7 @@
 
     for (const url of attempts) {
       try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+        const res = await proxiedFetch(url, { signal: AbortSignal.timeout(15000) });
         if (res.ok) {
           data = await res.json();
           apiRoot = url.replace(/\?rest_route=\/$/, '?rest_route=');
