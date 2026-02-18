@@ -96,27 +96,31 @@
     }
 
     // --- Clone items for infinite loop ---
-    // Layout: [clone-set] [real items] [clone-set]
+    // 3 full sets on each side = enough buffer for fast swipes
+    var CLONE_SETS = 3;
     var fragBefore = document.createDocumentFragment();
     var fragAfter = document.createDocumentFragment();
 
-    origItems.forEach(function (item) {
-      var cloneBefore = item.cloneNode(true);
-      cloneBefore.classList.add('carousel-clone');
-      cloneBefore.setAttribute('aria-hidden', 'true');
-      fragBefore.appendChild(cloneBefore);
+    for (var s = 0; s < CLONE_SETS; s++) {
+      origItems.forEach(function (item) {
+        var cb = item.cloneNode(true);
+        cb.classList.add('carousel-clone');
+        cb.setAttribute('aria-hidden', 'true');
+        fragBefore.appendChild(cb);
 
-      var cloneAfter = item.cloneNode(true);
-      cloneAfter.classList.add('carousel-clone');
-      cloneAfter.setAttribute('aria-hidden', 'true');
-      fragAfter.appendChild(cloneAfter);
-    });
+        var ca = item.cloneNode(true);
+        ca.classList.add('carousel-clone');
+        ca.setAttribute('aria-hidden', 'true');
+        fragAfter.appendChild(ca);
+      });
+    }
 
     container.insertBefore(fragBefore, container.firstChild);
     container.appendChild(fragAfter);
 
-    // All items now: [5 clones] [5 real] [5 clones]
+    // Layout: [15 clones] [5 real] [15 clones] = 35 items
     var allItems = Array.from(container.querySelectorAll('.hero-preview'));
+    var realStartIdx = CLONE_SETS * count;
 
     // --- Create dots (only for real items) ---
     for (var i = 0; i < count; i++) {
@@ -125,83 +129,84 @@
       dot.setAttribute('aria-label', 'Slide ' + (i + 1));
       (function (idx) {
         dot.addEventListener('click', function () {
-          allItems[count + idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          allItems[realStartIdx + idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         });
       })(i);
       dotsContainer.appendChild(dot);
     }
     var dots = dotsContainer.querySelectorAll('.carousel-dot');
 
-    // --- Scroll to first real item instantly ---
-    function scrollToItem(item) {
-      var itemRect = item.getBoundingClientRect();
-      var containerRect = container.getBoundingClientRect();
-      var offset = itemRect.left - containerRect.left + container.scrollLeft;
-      container.scrollLeft = offset - (containerRect.width / 2) + (itemRect.width / 2);
-    }
+    // --- Pre-calculate set width & initial scroll position ---
+    var oneSetWidth = 0;
 
-    // Initial position (no animation)
     requestAnimationFrame(function () {
-      scrollToItem(allItems[count]); // first real item
+      // Width of exactly one full set of items (incl. gaps)
+      oneSetWidth = allItems[count].offsetLeft - allItems[0].offsetLeft;
+
+      // Scroll to first real item instantly
+      var target = allItems[realStartIdx];
+      container.scrollLeft = target.offsetLeft
+        - (container.offsetWidth / 2)
+        + (target.offsetWidth / 2);
     });
 
-    // --- Live dot updates + infinite loop reposition ---
+    // --- Scroll handling ---
     var isRepositioning = false;
     var scrollTimer;
     var rafId;
 
-    function getClosestIndex() {
-      var containerRect = container.getBoundingClientRect();
-      var center = containerRect.left + containerRect.width / 2;
+    // Live dot update based on modulo distance to real items
+    function updateDotsLive() {
+      if (oneSetWidth === 0) return;
+      var viewCenter = container.scrollLeft + container.offsetWidth / 2;
       var closest = 0;
       var minDist = Infinity;
-      allItems.forEach(function (item, i) {
-        var rect = item.getBoundingClientRect();
-        var itemCenter = rect.left + rect.width / 2;
-        var dist = Math.abs(itemCenter - center);
+      for (var i = 0; i < count; i++) {
+        var item = allItems[realStartIdx + i];
+        var itemCenter = item.offsetLeft + item.offsetWidth / 2;
+        var rawDist = Math.abs(viewCenter - itemCenter) % oneSetWidth;
+        var dist = rawDist > oneSetWidth / 2 ? oneSetWidth - rawDist : rawDist;
         if (dist < minDist) {
           minDist = dist;
           closest = i;
         }
-      });
-      return closest;
-    }
-
-    // Live dot update (runs every frame during scroll)
-    function updateDotsLive() {
-      var idx = getClosestIndex();
-      var realIdx = idx % count;
-      dots.forEach(function (d, i) {
-        d.classList.toggle('active', i === realIdx);
-      });
-    }
-
-    // Reposition to real items when scroll settles on a clone
-    function onScrollEnd() {
-      if (isRepositioning) return;
-
-      var idx = getClosestIndex();
-      var realIdx = idx % count;
-
-      if (idx < count || idx >= count * 2) {
-        isRepositioning = true;
-        scrollToItem(allItems[count + realIdx]);
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            isRepositioning = false;
-          });
-        });
       }
+      dots.forEach(function (d, i) {
+        d.classList.toggle('active', i === closest);
+      });
+    }
+
+    // Silent reposition when scroll stops on a clone zone
+    // Shifts scrollLeft by exact multiples of oneSetWidth so
+    // the visual content stays identical — no visible jump.
+    function onScrollEnd() {
+      if (isRepositioning || oneSetWidth === 0) return;
+
+      var viewCenter = container.scrollLeft + container.offsetWidth / 2;
+      var realFirst = allItems[realStartIdx];
+      var realLast = allItems[realStartIdx + count - 1];
+      var realStart = realFirst.offsetLeft;
+      var realEnd = realLast.offsetLeft + realLast.offsetWidth;
+
+      if (viewCenter >= realStart && viewCenter <= realEnd) return;
+
+      isRepositioning = true;
+      if (viewCenter < realStart) {
+        var shifts = Math.ceil((realStart - viewCenter) / oneSetWidth);
+        container.scrollLeft += shifts * oneSetWidth;
+      } else {
+        var shifts = Math.ceil((viewCenter - realEnd) / oneSetWidth);
+        container.scrollLeft -= shifts * oneSetWidth;
+      }
+      requestAnimationFrame(function () {
+        isRepositioning = false;
+      });
     }
 
     container.addEventListener('scroll', function () {
       if (isRepositioning) return;
-
-      // Live dot update via rAF (smooth, not debounced)
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateDotsLive);
-
-      // Reposition check only after scroll stops
       clearTimeout(scrollTimer);
       scrollTimer = setTimeout(onScrollEnd, 150);
     }, { passive: true });
