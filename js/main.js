@@ -176,10 +176,9 @@
       });
     }
 
-    // Silent reposition: shift scrollLeft by the nearest whole
-    // number of set-widths so we land back in the real-items zone.
-    // Because the shift is always an exact multiple of oneSetWidth
-    // and every set is a pixel-perfect copy, the user sees nothing.
+    // Silent reposition: only when user has scrolled 2+ sets away,
+    // keeping 1 full clone set as a "free roaming" buffer on each
+    // side so slow swiping across the boundary never triggers a jump.
     function onScrollEnd() {
       if (isRepositioning || oneSetWidth === 0) return;
 
@@ -187,7 +186,7 @@
       var realCenter = allItems[realStartIdx].offsetLeft + oneSetWidth / 2;
       var setsAway = Math.round((viewCenter - realCenter) / oneSetWidth);
 
-      if (setsAway === 0) return; // already in the real zone
+      if (Math.abs(setsAway) < 2) return; // allow 1 set free roaming
 
       isRepositioning = true;
       container.scrollLeft -= setsAway * oneSetWidth;
@@ -196,12 +195,25 @@
       });
     }
 
+    // Track touch to avoid repositioning while user interacts
+    var isTouching = false;
+    container.addEventListener('touchstart', function () {
+      isTouching = true;
+      clearTimeout(scrollTimer);
+    }, { passive: true });
+    container.addEventListener('touchend', function () {
+      isTouching = false;
+    }, { passive: true });
+
     container.addEventListener('scroll', function () {
       if (isRepositioning) return;
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateDotsLive);
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(onScrollEnd, 150);
+      // Only schedule reposition when finger is off screen
+      if (!isTouching) {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(onScrollEnd, 800);
+      }
     }, { passive: true });
   })();
 

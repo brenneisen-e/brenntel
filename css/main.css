@@ -1188,6 +1188,15 @@
     padding: 5rem 1.25rem 3rem;
   }
 
+  .hero .subtitle {
+    font-size: 0.95rem;
+    padding: 0 0.25rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
   .hero-previews {
     gap: 1rem;
     margin: 1.5rem auto 0.75rem;
