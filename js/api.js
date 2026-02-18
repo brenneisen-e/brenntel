@@ -598,8 +598,11 @@
     $('#form-connect').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = $('#btn-discover');
-      const url = $('#wp-url').value;
-      if (!url) return;
+      const url = $('#wp-url').value.trim();
+      if (!url) {
+        $('#wp-url').focus();
+        return;
+      }
 
       setButtonLoading(btn, true);
       $('#discovery-result').hidden = true;
