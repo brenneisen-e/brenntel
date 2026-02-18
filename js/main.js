@@ -176,28 +176,21 @@
       });
     }
 
-    // Silent reposition when scroll stops on a clone zone
-    // Shifts scrollLeft by exact multiples of oneSetWidth so
-    // the visual content stays identical — no visible jump.
+    // Silent reposition: shift scrollLeft by the nearest whole
+    // number of set-widths so we land back in the real-items zone.
+    // Because the shift is always an exact multiple of oneSetWidth
+    // and every set is a pixel-perfect copy, the user sees nothing.
     function onScrollEnd() {
       if (isRepositioning || oneSetWidth === 0) return;
 
       var viewCenter = container.scrollLeft + container.offsetWidth / 2;
-      var realFirst = allItems[realStartIdx];
-      var realLast = allItems[realStartIdx + count - 1];
-      var realStart = realFirst.offsetLeft;
-      var realEnd = realLast.offsetLeft + realLast.offsetWidth;
+      var realCenter = allItems[realStartIdx].offsetLeft + oneSetWidth / 2;
+      var setsAway = Math.round((viewCenter - realCenter) / oneSetWidth);
 
-      if (viewCenter >= realStart && viewCenter <= realEnd) return;
+      if (setsAway === 0) return; // already in the real zone
 
       isRepositioning = true;
-      if (viewCenter < realStart) {
-        var shifts = Math.ceil((realStart - viewCenter) / oneSetWidth);
-        container.scrollLeft += shifts * oneSetWidth;
-      } else {
-        var shifts = Math.ceil((viewCenter - realEnd) / oneSetWidth);
-        container.scrollLeft -= shifts * oneSetWidth;
-      }
+      container.scrollLeft -= setsAway * oneSetWidth;
       requestAnimationFrame(function () {
         isRepositioning = false;
       });
