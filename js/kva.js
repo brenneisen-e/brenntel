@@ -378,6 +378,9 @@
       var lines = doc.querySelectorAll('.kva-divider-full, .kva-title-line, .kva-section-line');
       lines.forEach(function (el) { el.style.transform = 'scaleX(1)'; });
 
+      // Constrain element width to A4 content area (190mm ≈ 720px at 96 dpi)
+      doc.style.width = '720px';
+
       // Scroll to top so html2canvas captures from the start
       window.scrollTo(0, 0);
 
@@ -388,7 +391,7 @@
             margin:      [10, 10, 10, 10],
             filename:    'KVA-AF-2602_brenntel.pdf',
             image:       { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
+            html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
             jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
           })
@@ -400,6 +403,7 @@
 
       function cleanup() {
         document.body.classList.remove('pdf-mode');
+        doc.style.width = '';
         // Remove inline overrides
         reveals.forEach(function (el) {
           el.style.opacity = '';
