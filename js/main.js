@@ -72,6 +72,57 @@
   }, 3500);
 
   /* ========================================
+     Hero Previews Mobile Carousel
+     ======================================== */
+  (function initCarousel() {
+    var container = document.querySelector('.hero-previews');
+    var dotsContainer = document.querySelector('.carousel-dots');
+    if (!container || !dotsContainer) return;
+
+    var items = container.querySelectorAll('.hero-preview');
+    if (items.length === 0) return;
+
+    // Create dots
+    items.forEach(function (_, i) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+      dot.addEventListener('click', function () {
+        items[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+      dotsContainer.appendChild(dot);
+    });
+
+    var dots = dotsContainer.querySelectorAll('.carousel-dot');
+
+    // Update active dot on scroll
+    var scrollTimeout;
+    container.addEventListener('scroll', function () {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function () {
+        var containerRect = container.getBoundingClientRect();
+        var containerCenter = containerRect.left + containerRect.width / 2;
+        var closestIndex = 0;
+        var closestDist = Infinity;
+
+        items.forEach(function (item, i) {
+          var rect = item.getBoundingClientRect();
+          var itemCenter = rect.left + rect.width / 2;
+          var dist = Math.abs(itemCenter - containerCenter);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestIndex = i;
+          }
+        });
+
+        dots.forEach(function (dot, i) {
+          dot.classList.toggle('active', i === closestIndex);
+        });
+      }, 50);
+    }, { passive: true });
+  })();
+
+  /* ========================================
      Custom Cursor
      ======================================== */
   var cursorDot = document.querySelector('.cursor-dot');
