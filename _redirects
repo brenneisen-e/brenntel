@@ -6,3 +6,8 @@ https://www.brenntelmediadesign.com/* https://brenntelmediadesign.com/:splat 301
 /KVA.html   /kva   301
 /Kva        /kva   301
 /Kva.html   /kva   301
+
+# Case-insensitive redirects for /API
+/api        /API   301
+/Api        /API   301
+/api.html   /API   301
