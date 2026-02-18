@@ -1193,10 +1193,10 @@
     margin: 1.5rem auto 0.75rem;
     flex-wrap: nowrap;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 0 calc(50% - 100px - 0.5rem);
+    padding: 0 calc(50% - 50px - 0.5rem);
   }
 
   .hero-previews::-webkit-scrollbar {
