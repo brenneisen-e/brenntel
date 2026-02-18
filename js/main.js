@@ -176,17 +176,17 @@
       });
     }
 
-    // Silent reposition: only when user has scrolled 2+ sets away,
-    // keeping 1 full clone set as a "free roaming" buffer on each
-    // side so slow swiping across the boundary never triggers a jump.
+    // Silent reposition: snap back to the real-items zone whenever
+    // the view is outside it.  Only fires when the user's finger is
+    // off-screen AND momentum scrolling has fully stopped (300 ms).
     function onScrollEnd() {
-      if (isRepositioning || oneSetWidth === 0) return;
+      if (isRepositioning || isTouching || oneSetWidth === 0) return;
 
       var viewCenter = container.scrollLeft + container.offsetWidth / 2;
       var realCenter = allItems[realStartIdx].offsetLeft + oneSetWidth / 2;
       var setsAway = Math.round((viewCenter - realCenter) / oneSetWidth);
 
-      if (Math.abs(setsAway) < 2) return; // allow 1 set free roaming
+      if (setsAway === 0) return;
 
       isRepositioning = true;
       container.scrollLeft -= setsAway * oneSetWidth;
@@ -195,7 +195,7 @@
       });
     }
 
-    // Track touch to avoid repositioning while user interacts
+    // Track touch to never reposition while finger is on screen
     var isTouching = false;
     container.addEventListener('touchstart', function () {
       isTouching = true;
@@ -203,16 +203,19 @@
     }, { passive: true });
     container.addEventListener('touchend', function () {
       isTouching = false;
+      // Kick off the timer — momentum scroll events will keep
+      // resetting it until the scroll truly stops.
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(onScrollEnd, 300);
     }, { passive: true });
 
     container.addEventListener('scroll', function () {
       if (isRepositioning) return;
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateDotsLive);
-      // Only schedule reposition when finger is off screen
       if (!isTouching) {
         clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(onScrollEnd, 800);
+        scrollTimer = setTimeout(onScrollEnd, 300);
       }
     }, { passive: true });
   })();
