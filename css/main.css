@@ -1212,10 +1212,12 @@
     flex: 0 0 auto;
   }
 
-  /* Cloned items: skip all entrance animations, show immediately */
+  /* Cloned items: skip entrance animations; opacity controlled by JS */
   .carousel-clone,
   .carousel-clone * {
     animation: none !important;
+  }
+  .carousel-clone * {
     opacity: 1 !important;
   }
 

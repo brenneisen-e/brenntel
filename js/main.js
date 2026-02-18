@@ -136,18 +136,24 @@
     }
     var dots = dotsContainer.querySelectorAll('.carousel-dot');
 
-    // --- Pre-calculate set width & initial scroll position ---
+    // --- Pre-calculate set width & item step ---
     var oneSetWidth = 0;
+    var itemStep = 0; // single item width + gap
 
     requestAnimationFrame(function () {
       // Width of exactly one full set of items (incl. gaps)
       oneSetWidth = allItems[count].offsetLeft - allItems[0].offsetLeft;
+      // Distance between two consecutive item centres
+      itemStep = allItems[1].offsetLeft - allItems[0].offsetLeft;
 
       // Scroll to first real item instantly
       var target = allItems[realStartIdx];
       container.scrollLeft = target.offsetLeft
         - (container.offsetWidth / 2)
         + (target.offsetWidth / 2);
+
+      // Apply initial spotlight styling
+      updateVisuals();
     });
 
     // --- Scroll handling ---
@@ -174,6 +180,21 @@
       dots.forEach(function (d, i) {
         d.classList.toggle('active', i === closest);
       });
+      updateVisuals();
+    }
+
+    // Spotlight effect: center item = full color, others fade to gray
+    function updateVisuals() {
+      if (itemStep === 0) return;
+      var viewCenter = container.scrollLeft + container.offsetWidth / 2;
+      for (var j = 0; j < allItems.length; j++) {
+        var itemCenter = allItems[j].offsetLeft + allItems[j].offsetWidth / 2;
+        var norm = Math.abs(viewCenter - itemCenter) / itemStep; // 0 = centered, 1 = one slot away
+        var gray = Math.min(norm, 1);
+        var alpha = Math.max(1 - norm * 0.45, 0.35);
+        allItems[j].style.filter = 'grayscale(' + gray + ')';
+        allItems[j].style.opacity = alpha;
+      }
     }
 
     // Silent reposition: snap back to the real-items zone whenever
@@ -190,6 +211,7 @@
 
       isRepositioning = true;
       container.scrollLeft -= setsAway * oneSetWidth;
+      updateVisuals();
       requestAnimationFrame(function () {
         isRepositioning = false;
       });
