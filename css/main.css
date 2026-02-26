@@ -92,7 +92,6 @@
 .stagger-children .fade-in:nth-child(4) { transition-delay: 0.3s; }
 .stagger-children .fade-in:nth-child(5) { transition-delay: 0.4s; }
 .stagger-children .fade-in:nth-child(6) { transition-delay: 0.5s; }
-.stagger-children .fade-in:nth-child(7) { transition-delay: 0.6s; }
 
 @media (prefers-reduced-motion: reduce) {
   .fade-in, .fade-in-left, .fade-in-right, .scale-in {
@@ -1060,43 +1059,17 @@
   line-height: 1.65;
 }
 
-/* --- Toggle indicator --- */
-.service-toggle {
-  display: block;
-  width: 24px;
-  height: 24px;
+/* --- Chevron indicator --- */
+.service-chevron {
+  width: 20px;
+  height: 20px;
   margin-top: 1rem;
-  position: relative;
+  color: var(--color-text-light);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.service-toggle::before,
-.service-toggle::after {
-  content: '';
-  position: absolute;
-  background: var(--color-text-light);
-  border-radius: 2px;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-}
-
-.service-toggle::before {
-  width: 14px;
-  height: 2px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.service-toggle::after {
-  width: 2px;
-  height: 14px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.service-card.expanded .service-toggle::after {
-  transform: translate(-50%, -50%) rotate(90deg);
-  opacity: 0;
+.service-card.expanded .service-chevron {
+  transform: rotate(180deg);
 }
 
 /* --- Expandable details --- */
