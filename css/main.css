@@ -1012,6 +1012,7 @@
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color var(--transition);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .service-card::before {
@@ -1057,6 +1058,108 @@
   color: var(--color-text-light);
   font-size: 0.95rem;
   line-height: 1.65;
+}
+
+/* --- Toggle indicator --- */
+.service-toggle {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.service-toggle::before,
+.service-toggle::after {
+  content: '';
+  position: absolute;
+  background: var(--color-text-light);
+  border-radius: 2px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.service-toggle::before {
+  width: 14px;
+  height: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.service-toggle::after {
+  width: 2px;
+  height: 14px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.service-card.expanded .service-toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  opacity: 0;
+}
+
+/* --- Expandable details --- */
+.service-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0;
+}
+
+.service-details > * {
+  overflow: hidden;
+}
+
+.service-card.expanded .service-details {
+  grid-template-rows: 1fr;
+  margin-top: 1.25rem;
+}
+
+.service-details-desc {
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.service-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.service-details-list li {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  padding-left: 1.4rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.service-details-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* --- Expanded card state --- */
+.service-card.expanded {
+  border-color: var(--color-accent);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+}
+
+.service-card.expanded::before {
+  transform: scaleX(1);
 }
 
 .service-card[id] {

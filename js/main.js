@@ -243,13 +243,35 @@
   })();
 
   /* ========================================
-     Hero Preview Click → Scroll to Service
+     Service Cards — Expand / Collapse
      ======================================== */
-  (function initPreviewClick() {
+  (function initServiceCards() {
+    // --- Toggle a card open/closed ---
+    function toggleCard(card, forceOpen) {
+      var isExpanded = card.classList.contains('expanded');
+      var shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isExpanded;
+
+      if (shouldOpen === isExpanded) return;
+
+      // Close all other cards first
+      document.querySelectorAll('.service-card.expanded').forEach(function (other) {
+        if (other !== card) other.classList.remove('expanded');
+      });
+
+      card.classList.toggle('expanded', shouldOpen);
+    }
+
+    // --- Direct click on service cards ---
+    document.querySelectorAll('.service-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        toggleCard(card);
+      });
+    });
+
+    // --- Hero preview click → scroll + expand ---
     var container = document.querySelector('.hero-previews');
     if (!container) return;
 
-    // Track touch movement to distinguish scroll from tap
     var touchStartX = 0;
     var touchStartY = 0;
     var touchMoved = false;
@@ -269,7 +291,6 @@
       }
     }, { passive: true });
 
-    // Event delegation on the container — works for clones too
     container.addEventListener('click', function (e) {
       if (touchMoved) return;
 
@@ -282,11 +303,15 @@
       var targetCard = document.getElementById(targetId);
       if (!targetCard) return;
 
+      // Open the card (close others)
+      toggleCard(targetCard, true);
+
+      // Scroll to the card
       targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       // Add highlight animation
       targetCard.classList.remove('service-card-highlight');
-      void targetCard.offsetWidth; // force reflow to restart animation
+      void targetCard.offsetWidth;
       targetCard.classList.add('service-card-highlight');
 
       targetCard.addEventListener('animationend', function handler() {
