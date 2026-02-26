@@ -99,7 +99,7 @@ Von der Idee bis zum Launch.</p>
         <div class="hero-previews" aria-hidden="true">
 
           <!-- 1. Website -->
-          <div class="hero-preview">
+          <div class="hero-preview" data-scroll-target="service-webdesign">
             <div class="preview-square preview-web">
               <div class="pw-bar">
                 <span class="pw-dot"></span><span class="pw-dot"></span><span class="pw-dot"></span>
@@ -120,7 +120,7 @@ Von der Idee bis zum Launch.</p>
           </div>
 
           <!-- 2. Branding -->
-          <div class="hero-preview">
+          <div class="hero-preview" data-scroll-target="service-branding">
             <div class="preview-square preview-brand">
               <div class="pb-mark">
                 <div class="pb-shape pb-shape1"></div>
@@ -141,7 +141,7 @@ Von der Idee bis zum Launch.</p>
           </div>
 
           <!-- 3. Backend & Hosting -->
-          <div class="hero-preview">
+          <div class="hero-preview" data-scroll-target="service-hosting">
             <div class="preview-square preview-server">
               <div class="ps-terminal">
                 <div class="ps-term-bar">
@@ -164,7 +164,7 @@ Von der Idee bis zum Launch.</p>
           </div>
 
           <!-- 4. Content -->
-          <div class="hero-preview">
+          <div class="hero-preview" data-scroll-target="service-content">
             <div class="preview-square preview-content">
               <div class="pc-title"></div>
               <div class="pc-lines-top">
@@ -190,7 +190,7 @@ Von der Idee bis zum Launch.</p>
           </div>
 
           <!-- 5. Social Media -->
-          <div class="hero-preview">
+          <div class="hero-preview" data-scroll-target="service-social">
             <div class="preview-square preview-social">
               <div class="psm-header">
                 <span class="psm-avatar"></span>
@@ -233,7 +233,7 @@ Von der Idee bis zum Launch.</p>
 
         <div class="services-grid stagger-children">
           <!-- Webdesign -->
-          <div class="service-card fade-in">
+          <div class="service-card fade-in" id="service-webdesign">
             <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <rect x="4" y="8" width="40" height="28" rx="3" stroke="currentColor" stroke-width="2.5"/>
               <line x1="4" y1="16" x2="44" y2="16" stroke="currentColor" stroke-width="2.5"/>
@@ -258,8 +258,24 @@ Von der Idee bis zum Launch.</p>
             <p data-de="Performante, saubere Webentwicklung mit modernen Technologien. Schnell, sicher und suchmaschinenoptimiert." data-en="Performant, clean web development using modern technologies. Fast, secure, and SEO-optimized.">Performante, saubere Webentwicklung mit modernen Technologien. Schnell, sicher und suchmaschinenoptimiert.</p>
           </div>
 
+          <!-- Hosting -->
+          <div class="service-card fade-in" id="service-hosting">
+            <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="8" y="6" width="32" height="12" rx="3" stroke="currentColor" stroke-width="2.5" fill="none"/>
+              <rect x="8" y="22" width="32" height="12" rx="3" stroke="currentColor" stroke-width="2.5" fill="none"/>
+              <circle cx="14" cy="12" r="2" fill="currentColor"/>
+              <circle cx="14" cy="28" r="2" fill="currentColor"/>
+              <line x1="20" y1="12" x2="34" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="20" y1="28" x2="34" y2="28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="24" y1="38" x2="24" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="16" y1="42" x2="32" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <h3 data-de="Hosting &amp; Technik" data-en="Hosting &amp; Infrastructure">Hosting &amp; Technik</h3>
+            <p data-de="Zuverlässiges Hosting, Domain-Verwaltung und technische Betreuung. Ihre Website ist bei uns in sicheren Händen." data-en="Reliable hosting, domain management, and technical support. Your website is in safe hands with us.">Zuverlässiges Hosting, Domain-Verwaltung und technische Betreuung. Ihre Website ist bei uns in sicheren Händen.</p>
+          </div>
+
           <!-- Branding -->
-          <div class="service-card fade-in">
+          <div class="service-card fade-in" id="service-branding">
             <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2.5" fill="none"/>
               <path d="M24 6C24 6 30 16 30 24C30 32 24 42 24 42" stroke="currentColor" stroke-width="2.5" fill="none"/>
@@ -272,7 +288,7 @@ Von der Idee bis zum Launch.</p>
           </div>
 
           <!-- Content-Erstellung -->
-          <div class="service-card fade-in">
+          <div class="service-card fade-in" id="service-content">
             <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <rect x="6" y="4" width="36" height="40" rx="3" stroke="currentColor" stroke-width="2.5" fill="none"/>
               <rect x="12" y="10" width="24" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
@@ -285,7 +301,7 @@ Von der Idee bis zum Launch.</p>
           </div>
 
           <!-- Social Media -->
-          <div class="service-card fade-in">
+          <div class="service-card fade-in" id="service-social">
             <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <circle cx="24" cy="14" r="8" stroke="currentColor" stroke-width="2.5" fill="none"/>
               <circle cx="38" cy="24" r="6" stroke="currentColor" stroke-width="2.5" fill="none"/>

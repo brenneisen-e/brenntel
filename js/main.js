@@ -243,6 +243,60 @@
   })();
 
   /* ========================================
+     Hero Preview Click → Scroll to Service
+     ======================================== */
+  (function initPreviewClick() {
+    var container = document.querySelector('.hero-previews');
+    if (!container) return;
+
+    // Track touch movement to distinguish scroll from tap
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchMoved = false;
+    var MOVE_THRESHOLD = 10;
+
+    container.addEventListener('touchstart', function (e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchMoved = false;
+    }, { passive: true });
+
+    container.addEventListener('touchmove', function (e) {
+      var dx = Math.abs(e.touches[0].clientX - touchStartX);
+      var dy = Math.abs(e.touches[0].clientY - touchStartY);
+      if (dx > MOVE_THRESHOLD || dy > MOVE_THRESHOLD) {
+        touchMoved = true;
+      }
+    }, { passive: true });
+
+    // Event delegation on the container — works for clones too
+    container.addEventListener('click', function (e) {
+      if (touchMoved) return;
+
+      var preview = e.target.closest('.hero-preview');
+      if (!preview) return;
+
+      var targetId = preview.getAttribute('data-scroll-target');
+      if (!targetId) return;
+
+      var targetCard = document.getElementById(targetId);
+      if (!targetCard) return;
+
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Add highlight animation
+      targetCard.classList.remove('service-card-highlight');
+      void targetCard.offsetWidth; // force reflow to restart animation
+      targetCard.classList.add('service-card-highlight');
+
+      targetCard.addEventListener('animationend', function handler() {
+        targetCard.classList.remove('service-card-highlight');
+        targetCard.removeEventListener('animationend', handler);
+      });
+    });
+  })();
+
+  /* ========================================
      Custom Cursor
      ======================================== */
   var cursorDot = document.querySelector('.cursor-dot');
@@ -266,7 +320,7 @@
     }
     animateRing();
 
-    var hoverTargets = document.querySelectorAll('a, button, input, textarea, .service-card');
+    var hoverTargets = document.querySelectorAll('a, button, input, textarea, .service-card, .hero-preview');
     hoverTargets.forEach(function (el) {
       el.addEventListener('mouseenter', function () { cursorRing.classList.add('hover'); });
       el.addEventListener('mouseleave', function () { cursorRing.classList.remove('hover'); });
