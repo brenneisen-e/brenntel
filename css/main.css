@@ -389,11 +389,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.hero-preview:active .preview-square {
-  transform: translateY(-2px) scale(0.97);
-  transition-duration: 0.15s;
-}
-
 .preview-label {
   font-size: 0.75rem;
   font-weight: 600;
@@ -413,10 +408,10 @@
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color var(--transition);
 }
 
-.preview-square:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-  border-color: var(--color-accent);
+@media (hover: hover) {
+  .preview-square:hover {
+    border-color: var(--color-accent);
+  }
 }
 
 /* --- Website Preview --- */
