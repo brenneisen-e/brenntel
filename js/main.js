@@ -5,6 +5,32 @@
   'use strict';
 
   /* ========================================
+     Preloader — dismiss after bar fill
+     ======================================== */
+  (function initPreloader() {
+    var preloader = document.getElementById('preloader');
+    if (!preloader) return;
+
+    var fill = preloader.querySelector('.preloader-bar-fill');
+    if (!fill) return;
+
+    // Wait for the bar fill animation to end, then fade out
+    fill.addEventListener('animationend', function () {
+      // Small pause so the full bar is visible for a moment
+      setTimeout(function () {
+        preloader.classList.add('done');
+      }, 300);
+    });
+
+    // Safety fallback: hide after 3.5s no matter what
+    setTimeout(function () {
+      if (!preloader.classList.contains('done')) {
+        preloader.classList.add('done');
+      }
+    }, 3500);
+  })();
+
+  /* ========================================
      Page-specific language updates
      ======================================== */
   document.addEventListener('langchange', function (e) {
