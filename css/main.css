@@ -1,4 +1,96 @@
 /* ========================================
+   Preloader
+   ======================================== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+}
+
+.preloader.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.preloader-logo {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--color-text);
+  opacity: 0;
+  transform: scale(0.85);
+  animation: preloaderLogoIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+}
+
+.preloader-logo .accent {
+  color: var(--color-accent);
+}
+
+@keyframes preloaderLogoIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.preloader-bar {
+  width: 160px;
+  height: 2px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0;
+  animation: preloaderFadeIn 0.3s ease 0.4s forwards;
+}
+
+.preloader-bar-fill {
+  width: 0;
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  animation: preloaderFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+}
+
+@keyframes preloaderFill {
+  to { width: 100%; }
+}
+
+@keyframes preloaderFadeIn {
+  to { opacity: 1; }
+}
+
+.preloader-sub {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: preloaderSubIn 0.5s ease 0.6s forwards;
+}
+
+@keyframes preloaderSubIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
    Custom Cursor (desktop only)
    ======================================== */
 .cursor-dot,
@@ -94,6 +186,7 @@
 .stagger-children .fade-in:nth-child(6) { transition-delay: 0.5s; }
 
 @media (prefers-reduced-motion: reduce) {
+  .preloader { display: none !important; }
   .fade-in, .fade-in-left, .fade-in-right, .scale-in {
     opacity: 1;
     transform: none;
