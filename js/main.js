@@ -405,18 +405,41 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      var name = document.getElementById('name');
-      var email = document.getElementById('email');
-      var message = document.getElementById('message');
+      var nameEl = document.getElementById('name');
+      var emailEl = document.getElementById('email');
+      var subjectEl = document.getElementById('subject');
+      var messageEl = document.getElementById('message');
       var privacy = document.getElementById('privacy');
+      var submitBtn = form.querySelector('button[type="submit"]');
 
-      if (!name.value.trim() || !email.value.trim() || !message.value.trim() || !privacy.checked) {
+      if (!nameEl.value.trim() || !emailEl.value.trim() || !messageEl.value.trim() || !privacy.checked) {
         form.reportValidity();
         return;
       }
 
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
+      submitBtn.disabled = true;
+
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: nameEl.value.trim(),
+          email: emailEl.value.trim(),
+          subject: subjectEl.value.trim(),
+          message: messageEl.value.trim(),
+        }),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('send failed');
+          form.style.display = 'none';
+          formSuccess.classList.add('show');
+        })
+        .catch(function () {
+          submitBtn.disabled = false;
+          alert(document.documentElement.lang === 'en'
+            ? 'Your message could not be sent. Please try again later.'
+            : 'Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.');
+        });
     });
   }
 })();
