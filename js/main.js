@@ -405,18 +405,49 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      var name = document.getElementById('name');
-      var email = document.getElementById('email');
-      var message = document.getElementById('message');
+      var nameEl = document.getElementById('name');
+      var emailEl = document.getElementById('email');
+      var subjectEl = document.getElementById('subject');
+      var messageEl = document.getElementById('message');
       var privacy = document.getElementById('privacy');
+      var submitBtn = form.querySelector('button[type="submit"]');
 
-      if (!name.value.trim() || !email.value.trim() || !message.value.trim() || !privacy.checked) {
+      if (!nameEl.value.trim() || !emailEl.value.trim() || !messageEl.value.trim() || !privacy.checked) {
         form.reportValidity();
         return;
       }
 
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
+      // Disable button while sending
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet…';
+
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: nameEl.value.trim(),
+          email: emailEl.value.trim(),
+          subject: subjectEl.value.trim(),
+          message: messageEl.value.trim()
+        })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            form.style.display = 'none';
+            formSuccess.classList.add('show');
+          } else {
+            throw new Error(data.error || 'Unbekannter Fehler');
+          }
+        })
+        .catch(function (err) {
+          alert('Fehler beim Senden: ' + err.message + '\nBitte versuchen Sie es erneut oder schreiben Sie an kontakt@brenntelmediadesign.com');
+          submitBtn.disabled = false;
+          var lang = localStorage.getItem('lang') || 'de';
+          submitBtn.innerHTML = lang === 'en'
+            ? 'Send Message <span class="btn-arrow">→</span>'
+            : 'Nachricht senden <span class="btn-arrow">→</span>';
+        });
     });
   }
 })();
