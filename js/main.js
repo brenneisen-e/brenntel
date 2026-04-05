@@ -424,28 +424,6 @@
           || 'Wird gesendet…';
       }
 
-      // Debug-/Log-Ausgabe unter dem Formular
-      var debugBox = document.getElementById('contact-debug');
-      if (!debugBox) {
-        debugBox = document.createElement('pre');
-        debugBox.id = 'contact-debug';
-        debugBox.style.cssText =
-          'margin-top:1rem;padding:1rem;border-radius:6px;background:#111;color:#0f0;' +
-          'font-family:ui-monospace,Menlo,monospace;font-size:.8rem;line-height:1.4;' +
-          'white-space:pre-wrap;word-break:break-word;max-height:400px;overflow:auto;' +
-          'border:1px solid #333;';
-        form.parentNode.insertBefore(debugBox, form.nextSibling);
-      }
-      var logLines = [];
-      function log(line) {
-        var ts = new Date().toISOString().split('T')[1].replace('Z', '');
-        logLines.push('[' + ts + '] ' + line);
-        debugBox.textContent = logLines.join('\n');
-      }
-
-      var started = Date.now();
-      log('POST /contact …');
-
       fetch('/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -458,26 +436,14 @@
         })
       })
         .then(function (res) {
-          log('HTTP ' + res.status + ' ' + res.statusText + ' (' + (Date.now() - started) + 'ms)');
-          return res.text().then(function (raw) {
-            var parsed;
-            try { parsed = JSON.parse(raw); } catch (_) { parsed = null; }
-            return { ok: res.ok, status: res.status, raw: raw, data: parsed };
+          return res.json().then(function (data) {
+            return { ok: res.ok, data: data };
           });
         })
         .then(function (result) {
-          if (result.data) {
-            log('Response JSON:\n' + JSON.stringify(result.data, null, 2));
-          } else {
-            log('Response body:\n' + result.raw);
-          }
           if (!result.ok) {
-            throw new Error(
-              (result.data && (result.data.error || result.data.detail)) ||
-              ('Request failed (HTTP ' + result.status + ')')
-            );
+            throw new Error((result.data && result.data.error) || 'Request failed');
           }
-          log('OK — Mail an eike@brenneisen.info ausgelöst.');
           form.style.display = 'none';
           formSuccess.classList.add('show');
         })
@@ -486,7 +452,7 @@
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnHtml;
           }
-          log('ERROR: ' + (err && err.message ? err.message : String(err)));
+          alert('Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut oder schreiben Sie direkt an eike@brenneisen.info.');
           // eslint-disable-next-line no-console
           console.error('Contact form error:', err);
         });
