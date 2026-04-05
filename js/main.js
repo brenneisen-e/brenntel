@@ -407,6 +407,7 @@
 
       var name = document.getElementById('name');
       var email = document.getElementById('email');
+      var subject = document.getElementById('subject');
       var message = document.getElementById('message');
       var privacy = document.getElementById('privacy');
 
@@ -415,8 +416,46 @@
         return;
       }
 
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
+      var submitBtn = form.querySelector('button[type="submit"]');
+      var originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = submitBtn.getAttribute('data-sending')
+          || 'Wird gesendet…';
+      }
+
+      fetch('/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.value.trim(),
+          email: email.value.trim(),
+          subject: subject ? subject.value.trim() : '',
+          message: message.value.trim(),
+          privacy: privacy.checked ? 'on' : 'off'
+        })
+      })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { ok: res.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (!result.ok) {
+            throw new Error((result.data && result.data.error) || 'Request failed');
+          }
+          form.style.display = 'none';
+          formSuccess.classList.add('show');
+        })
+        .catch(function (err) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+          }
+          alert('Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut oder schreiben Sie direkt an eike@brenneisen.info.');
+          // eslint-disable-next-line no-console
+          console.error('Contact form error:', err);
+        });
     });
   }
 })();
