@@ -142,16 +142,29 @@ export async function onRequest(context) {
       }),
     });
 
+    const resendBodyText = await resendRes.text();
+    let resendBody;
+    try { resendBody = JSON.parse(resendBodyText); } catch (_) { resendBody = resendBodyText; }
+
     if (!resendRes.ok) {
-      const detail = await resendRes.text();
       return jsonResponse(
-        { error: 'Mail delivery failed', detail },
+        {
+          error: 'Mail delivery failed',
+          status: resendRes.status,
+          detail: resendBody,
+          from,
+          to: RECIPIENT,
+        },
         502,
         cors
       );
     }
 
-    return jsonResponse({ ok: true }, 200, cors);
+    return jsonResponse(
+      { ok: true, resend: resendBody, from, to: RECIPIENT },
+      200,
+      cors
+    );
   } catch (err) {
     return jsonResponse({ error: 'Upstream request failed', detail: err.message }, 502, cors);
   }
