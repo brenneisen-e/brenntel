@@ -353,6 +353,26 @@
       });
     }
 
+    // 6. Discovered CPTs — probe each so X-WP-Total shows up in the log
+    // (this only returns non-empty data when Schritt 1 ran discoverSite()
+    //  and the types endpoint reported additional post types).
+    if (state.discoveredCptKeys && state.discoveredCptKeys.length > 0) {
+      append('--- Entdeckte Custom Post Types (probe je per_page=1) ---');
+      append('');
+      for (let i = 0; i < state.discoveredCptKeys.length; i++) {
+        const key = state.discoveredCptKeys[i];
+        const cfg = CONTENT_TYPES[key];
+        if (!cfg) continue;
+        const label = 'CPT:' + key.toUpperCase();
+        await probe(label, base + '/wp-json' + cfg.endpoint + '?per_page=1', function (body) {
+          if (Array.isArray(body)) {
+            return 'Array length: ' + body.length + '   (rest_base=' + cfg.restBase + ', auth-required=' + (cfg.auth ? 'ja' : 'nein') + ')';
+          }
+          return null;
+        });
+      }
+    }
+
     append('=== Diagnose abgeschlossen ===');
   }
 
