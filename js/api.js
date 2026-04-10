@@ -174,6 +174,13 @@
     // Rest bases already owned by the hardcoded list.
     const reservedRestBases = { posts: 1, pages: 1, media: 1 };
 
+    // Post types whose rest_base is NOT a listable collection in core
+    // WordPress and therefore cannot be extracted with the generic
+    // `/wp/v2/<rest_base>?per_page=N` loop. `wp_global_styles` is the
+    // classic example: it only exposes per-id / per-theme singletons
+    // at /wp/v2/global-styles/<id> and returns 404 for a list request.
+    const nonListableSlugs = { wp_global_styles: 1 };
+
     const added = [];
 
     Object.keys(typesData).forEach(function (slug) {
@@ -185,6 +192,8 @@
       if (reservedRestBases[restBase]) return;
       // Skip sub-resource templated routes
       if (restBase.indexOf('(?P<') !== -1) return;
+      // Skip types we know aren't listable via the generic endpoint
+      if (nonListableSlugs[slug]) return;
 
       // Heuristic for auth requirement:
       //  - Core-internal types (prefix "wp_") and nav_menu_item tend to
