@@ -130,6 +130,141 @@
   }
 
   // ==========================================
+  // Diagnostics — probe every endpoint and log results
+  // ==========================================
+  async function runDiagnostics(userUrl, append) {
+    const base = normalizeUrl(userUrl);
+    const now = new Date().toISOString();
+    append('=== WordPress REST API Diagnose ===');
+    append('Zeit:   ' + now);
+    append('Ziel:   ' + base);
+    append('Proxy:  /wp-proxy (Cloudflare Pages Function)');
+    append('Hinweis: alle Requests laufen durch unseren CORS-Proxy.');
+    append('');
+
+    async function probe(label, targetUrl, summarise) {
+      const started = Date.now();
+      let res, rawBody = '', parsed = null, errMsg = null;
+      try {
+        res = await proxiedFetch(targetUrl);
+        try { rawBody = await res.text(); } catch (_) { rawBody = ''; }
+        try { parsed = JSON.parse(rawBody); } catch (_) { parsed = null; }
+      } catch (err) {
+        errMsg = err && err.message ? err.message : String(err);
+      }
+      const elapsed = Date.now() - started;
+
+      append('[' + label + '] ' + targetUrl);
+      if (errMsg) {
+        append('  -> NETWORK ERROR: ' + errMsg + '  (' + elapsed + 'ms)');
+        append('');
+        return { ok: false, error: errMsg };
+      }
+
+      const ct = res.headers.get('Content-Type') || '(none)';
+      append('  -> HTTP ' + res.status + ' ' + res.statusText + '  (' + elapsed + 'ms)');
+      append('  -> Content-Type: ' + ct);
+
+      const xwpTotal = res.headers.get('X-WP-Total');
+      const xwpPages = res.headers.get('X-WP-TotalPages');
+      if (xwpTotal) append('  -> X-WP-Total: ' + xwpTotal + (xwpPages ? ' (Pages: ' + xwpPages + ')' : ''));
+
+      if (parsed && parsed.code && parsed.message) {
+        // WordPress REST error object
+        append('  -> WP-Error code:    ' + parsed.code);
+        append('  -> WP-Error message: ' + String(parsed.message).replace(/<[^>]+>/g, '').slice(0, 240));
+        if (parsed.data && parsed.data.status) append('  -> WP-Error status:  ' + parsed.data.status);
+      } else if (parsed && typeof summarise === 'function') {
+        try {
+          const summary = summarise(parsed);
+          if (summary) {
+            String(summary).split('\n').forEach(function (ln) { append('  -> ' + ln); });
+          }
+        } catch (_) { /* ignore summariser errors */ }
+      } else if (!parsed) {
+        // Non-JSON body — likely an HTML error page (WAF, Cloudflare, login wall, ...)
+        const snippet = rawBody.slice(0, 240).replace(/\s+/g, ' ').trim();
+        if (snippet) append('  -> Body (non-JSON, 240 chars): ' + snippet);
+        append('  -> (Antwort ist kein JSON — möglicherweise WAF / Security-Plugin / Login-Wall)');
+      }
+      append('');
+      return { ok: res.ok, status: res.status, body: parsed, raw: rawBody };
+    }
+
+    // 1. REST API root
+    const rootResult = await probe('ROOT', base + '/wp-json/', function (body) {
+      const parts = [];
+      parts.push('name: "' + (body.name || '') + '"');
+      if (body.description) parts.push('description: "' + String(body.description).slice(0, 80) + '"');
+      if (body.url) parts.push('url: ' + body.url);
+      if (body.home) parts.push('home: ' + body.home);
+      if (body.gmt_offset !== undefined) parts.push('gmt_offset: ' + body.gmt_offset);
+      if (body.authentication && body.authentication['application-passwords']) {
+        const auth = body.authentication['application-passwords'];
+        parts.push('app-passwords: YES');
+        if (auth.endpoints && auth.endpoints.authorization) {
+          parts.push('  authorize-url: ' + auth.endpoints.authorization);
+        }
+      } else {
+        parts.push('app-passwords: NO (oder nicht in authentication-Key gemeldet)');
+      }
+      if (Array.isArray(body.namespaces)) {
+        parts.push('namespaces: ' + body.namespaces.join(', '));
+      }
+      return parts.join('\n');
+    });
+
+    // 2. Alt root if primary failed
+    if (!rootResult.ok) {
+      append('(ROOT fehlgeschlagen — versuche Alt-Pfad ?rest_route=/)');
+      append('');
+      await probe('ALT-ROOT', base + '/?rest_route=/');
+    }
+
+    // 3. Post type discovery (CPTs!)
+    await probe('TYPES', base + '/wp-json/wp/v2/types', function (body) {
+      if (!body || typeof body !== 'object') return null;
+      const keys = Object.keys(body);
+      const lines = ['Post types (' + keys.length + '): ' + keys.join(', ')];
+      keys.forEach(function (k) {
+        const t = body[k];
+        if (t && t.rest_base) {
+          lines.push('  - ' + k + '  rest_base=' + t.rest_base + (t.hierarchical ? '  hierarchical' : '') + (t.name ? '  name="' + t.name + '"' : ''));
+        }
+      });
+      return lines.join('\n');
+    });
+
+    // 4. Taxonomies
+    await probe('TAXONOMIES', base + '/wp-json/wp/v2/taxonomies', function (body) {
+      if (!body || typeof body !== 'object') return null;
+      const keys = Object.keys(body);
+      return 'Taxonomies (' + keys.length + '): ' + keys.join(', ');
+    });
+
+    // 5. Content endpoints — one item each, so we get status + X-WP-Total cheaply
+    const endpoints = [
+      ['POSTS',      '/wp-json/wp/v2/posts?per_page=1'],
+      ['PAGES',      '/wp-json/wp/v2/pages?per_page=1'],
+      ['MEDIA',      '/wp-json/wp/v2/media?per_page=1'],
+      ['CATEGORIES', '/wp-json/wp/v2/categories?per_page=1'],
+      ['TAGS',       '/wp-json/wp/v2/tags?per_page=1'],
+      ['USERS',      '/wp-json/wp/v2/users?per_page=1'],
+      ['COMMENTS',   '/wp-json/wp/v2/comments?per_page=1'],
+      ['MENUS',      '/wp-json/wp/v2/menus?per_page=1'],
+    ];
+
+    for (let i = 0; i < endpoints.length; i++) {
+      await probe(endpoints[i][0], base + endpoints[i][1], function (body) {
+        if (Array.isArray(body)) return 'Array length: ' + body.length;
+        return null;
+      });
+    }
+
+    append('=== Diagnose abgeschlossen ===');
+  }
+
+  // ==========================================
   // Auth flow
   // ==========================================
   function startAuthRedirect() {
@@ -683,6 +818,72 @@
       } finally {
         setButtonLoading(btn, false);
       }
+    });
+
+    // Diagnostic test button — probe every endpoint and dump to copyable log
+    $('#btn-diagnostic').addEventListener('click', async () => {
+      const url = $('#wp-url').value.trim();
+      if (!url) {
+        $('#wp-url').focus();
+        return;
+      }
+
+      const panel = $('#diagnostic-result');
+      const pre = $('#diagnostic-log');
+      panel.hidden = false;
+      pre.textContent = '';
+
+      const lines = [];
+      function append(line) {
+        lines.push(line == null ? '' : String(line));
+        pre.textContent = lines.join('\n');
+        pre.scrollTop = pre.scrollHeight;
+      }
+
+      const btn = $('#btn-diagnostic');
+      const origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-text">Läuft …</span>';
+
+      try {
+        await runDiagnostics(url, append);
+      } catch (err) {
+        append('');
+        append('UNCAUGHT ERROR: ' + (err && err.message ? err.message : String(err)));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+      }
+    });
+
+    // Copy diagnostic log to clipboard
+    $('#btn-diagnostic-copy').addEventListener('click', async () => {
+      const pre = $('#diagnostic-log');
+      const text = pre.textContent || '';
+      const copyBtn = $('#btn-diagnostic-copy');
+      const orig = copyBtn.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Kopiert!';
+      } catch (_) {
+        // Fallback: select the text so the user can Ctrl+C manually
+        try {
+          const range = document.createRange();
+          range.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          copyBtn.textContent = 'Markiert — Strg+C';
+        } catch (__) {
+          copyBtn.textContent = 'Fehler';
+        }
+      }
+      setTimeout(() => { copyBtn.textContent = orig; }, 1800);
+    });
+
+    // Close diagnostic panel
+    $('#btn-diagnostic-close').addEventListener('click', () => {
+      $('#diagnostic-result').hidden = true;
     });
 
     // Auth choice: public only
