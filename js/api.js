@@ -22,6 +22,9 @@
     wpVersion: '',
     extractedData: {},
     counts: {},
+    // Keys of CPTs that were added dynamically after discovery.
+    // Tracked so we can clean them up on disconnect/re-discover.
+    discoveredCptKeys: [],
   };
 
   // ==========================================
@@ -120,13 +123,102 @@
       if (data.namespaces.includes('wp/v2')) state.wpVersion = '4.7+';
     }
 
+    // Discover custom post types via /wp/v2/types so CPTs like
+    // "portfolio" or FSE artefacts (wp_block, wp_template, ...) can
+    // be extracted even though they aren't hardcoded in CONTENT_TYPES.
+    // Uses wpFetch so both /wp-json/ and ?rest_route=/ roots work.
+    let discoveredCpts = [];
+    try {
+      const typesRes = await wpFetch('/wp/v2/types', false);
+      if (typesRes.ok) {
+        const typesData = await typesRes.json();
+        discoveredCpts = augmentContentTypesFromDiscovery(typesData);
+      }
+    } catch (_) { /* CPT discovery is best-effort */ }
+
     return {
       name: state.siteName,
       description: state.siteDescription,
       hasAppPasswords: state.hasAppPasswords,
       version: state.wpVersion,
       namespaces: data.namespaces || [],
+      discoveredCpts: discoveredCpts,
     };
+  }
+
+  // ==========================================
+  // CPT auto-discovery — merge /wp/v2/types result into CONTENT_TYPES
+  // ==========================================
+  /**
+   * Given the JSON response from /wp/v2/types, add any post type that
+   * isn't already known to the hardcoded CONTENT_TYPES list. Returns
+   * the list of newly added CPT descriptors for UI rendering.
+   *
+   * Skipped:
+   *  - Post types whose rest_base collides with an already-registered
+   *    entry (post, page, attachment) to avoid duplicates.
+   *  - Types whose rest_base contains a regex placeholder (e.g. the
+   *    nested wp_font_face → "font-families/(?P<font_family_id>[\\d]+)/font-faces"),
+   *    because they are sub-resources and not directly listable.
+   */
+  function augmentContentTypesFromDiscovery(typesData) {
+    if (!typesData || typeof typesData !== 'object') return [];
+
+    // First, clear any previously discovered CPTs so repeated discovery
+    // (after disconnect / different site) doesn't leak stale entries.
+    state.discoveredCptKeys.forEach(function (k) {
+      delete CONTENT_TYPES[k];
+    });
+    state.discoveredCptKeys = [];
+
+    // Rest bases already owned by the hardcoded list.
+    const reservedRestBases = { posts: 1, pages: 1, media: 1 };
+
+    const added = [];
+
+    Object.keys(typesData).forEach(function (slug) {
+      const t = typesData[slug];
+      if (!t || !t.rest_base) return;
+
+      const restBase = String(t.rest_base);
+      // Skip collisions with hardcoded list
+      if (reservedRestBases[restBase]) return;
+      // Skip sub-resource templated routes
+      if (restBase.indexOf('(?P<') !== -1) return;
+
+      // Heuristic for auth requirement:
+      //  - Core-internal types (prefix "wp_") and nav_menu_item tend to
+      //    require edit capabilities even for read access.
+      //  - User-defined CPTs (e.g. portfolio) are normally public.
+      const needsAuth = /^wp_/.test(slug) || slug === 'nav_menu_item';
+
+      // Key we use internally — use slug as-is (portfolio, wp_block, ...)
+      // so counts and checkboxes are keyed consistently.
+      const key = slug;
+      if (CONTENT_TYPES[key]) return; // already present (safety)
+
+      CONTENT_TYPES[key] = {
+        endpoint: '/wp/v2/' + restBase,
+        label: (t.name || slug),
+        auth: needsAuth,
+        perPage: 100,
+        discovered: true,
+        restBase: restBase,
+      };
+      state.discoveredCptKeys.push(key);
+
+      added.push({
+        key: key,
+        slug: slug,
+        label: (t.name || slug),
+        restBase: restBase,
+        needsAuth: needsAuth,
+        // Non-wp_ types are real user content → check by default.
+        defaultChecked: !needsAuth,
+      });
+    });
+
+    return added;
   }
 
   // ==========================================
@@ -367,6 +459,18 @@
     state.siteName = '';
     state.extractedData = {};
     state.counts = {};
+    // Clean up any CPTs added via discovery so a subsequent connect
+    // to a different site starts from a clean slate.
+    state.discoveredCptKeys.forEach(function (k) {
+      delete CONTENT_TYPES[k];
+    });
+    state.discoveredCptKeys = [];
+    const ctContainer = document.querySelector('#content-types');
+    if (ctContainer) {
+      ctContainer.querySelectorAll('.ct-discovered').forEach(function (el) {
+        el.remove();
+      });
+    }
     sessionStorage.removeItem('wp_credentials');
     sessionStorage.removeItem('wp_auth_pending');
   }
@@ -637,7 +741,61 @@
     $('#badge-auth').classList.toggle('badge-ok', info.hasAppPasswords);
     $('#badge-auth').classList.toggle('badge-warn', !info.hasAppPasswords);
 
+    // Render checkboxes for any newly discovered custom post types.
+    renderDiscoveredCptCards(info.discoveredCpts || []);
+
     $('#auth-options').hidden = false;
+  }
+
+  /**
+   * Render a content-type-card in the extract panel for each discovered
+   * CPT. Cards are marked with `.ct-discovered` so we can wipe them on
+   * re-discovery or disconnect without touching the hardcoded cards.
+   */
+  function renderDiscoveredCptCards(cpts) {
+    const container = $('#content-types');
+    if (!container) return;
+
+    // Wipe previously injected cards (from a prior discovery)
+    container.querySelectorAll('.ct-discovered').forEach(function (el) {
+      el.remove();
+    });
+
+    if (!cpts || cpts.length === 0) return;
+
+    // Generic "layers" icon used for all discovered CPTs.
+    const iconSvg =
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<polygon points="12 2 2 7 12 12 22 7 12 2"/>' +
+      '<polyline points="2 17 12 22 22 17"/>' +
+      '<polyline points="2 12 12 17 22 12"/>' +
+      '</svg>';
+
+    cpts.forEach(function (cpt) {
+      const label = document.createElement('label');
+      label.className = 'content-type-card ct-discovered';
+      if (cpt.needsAuth) label.classList.add('ct-auth-required');
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = 'extract';
+      input.value = cpt.key;
+      if (cpt.defaultChecked) input.checked = true;
+      label.appendChild(input);
+
+      const inner = document.createElement('div');
+      inner.className = 'ct-inner';
+      inner.innerHTML =
+        iconSvg +
+        '<strong></strong>' +
+        (cpt.needsAuth ? '<span class="ct-badge-auth">Auth</span>' : '') +
+        '<span class="ct-count" data-type="' + cpt.key + '"></span>';
+      // Safely set label text (avoid HTML injection from the CPT name)
+      inner.querySelector('strong').textContent = cpt.label + ' (CPT)';
+
+      label.appendChild(inner);
+      container.appendChild(label);
+    });
   }
 
   function showDiscoveryError(message) {
@@ -779,6 +937,7 @@
     if (handleAuthCallback()) {
       showPanel('extract');
       $('#connected-name').textContent = state.siteName;
+      rediscoverCptsInBackground();
       updateContentCounts();
       updateAuthRequiredCards();
       return;
@@ -788,6 +947,7 @@
     if (restoreSession()) {
       showPanel('extract');
       $('#connected-name').textContent = state.siteName;
+      rediscoverCptsInBackground();
       updateContentCounts();
       updateAuthRequiredCards();
       return;
@@ -820,7 +980,9 @@
       }
     });
 
-    // Diagnostic test button — probe every endpoint and dump to copyable log
+    // Diagnostic test button — runs the full site discovery (so the
+    // Site-Karte + CPT-Checkboxen are set up) AND writes a verbose
+    // probe log to a copyable panel. One click, fully prepared.
     $('#btn-diagnostic').addEventListener('click', async () => {
       const url = $('#wp-url').value.trim();
       if (!url) {
@@ -845,7 +1007,45 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="btn-text">Läuft …</span>';
 
+      // Also hide the (possibly stale) old discovery card during the run
+      $('#discovery-result').hidden = true;
+      $('#auth-options').hidden = true;
+
       try {
+        // Step A: real discoverSite() call — same as "Seite prüfen".
+        // This sets state.apiRoot, state.hasAppPasswords, mutates
+        // CONTENT_TYPES with discovered CPTs, and prepares everything
+        // the extract panel needs.
+        append('### Schritt 1: discoverSite() (wie "Seite prüfen")');
+        try {
+          const info = await discoverSite(url);
+          append('-> Site erkannt: ' + info.name);
+          append('-> App Passwords: ' + (info.hasAppPasswords ? 'ja' : 'nein'));
+          if (info.discoveredCpts && info.discoveredCpts.length) {
+            append('-> Entdeckte Custom Post Types (' + info.discoveredCpts.length + '):');
+            info.discoveredCpts.forEach(function (c) {
+              append('     - ' + c.key + '  (rest_base=' + c.restBase + ', auth=' + (c.needsAuth ? 'ja' : 'nein') + ', default checked=' + c.defaultChecked + ')');
+            });
+            append('-> Diese CPTs wurden der Extract-UI als Checkboxen hinzugefügt.');
+          } else {
+            append('-> Keine zusätzlichen CPTs entdeckt.');
+          }
+          // Show the site card + auth options so the user can continue
+          // directly from here without clicking "Seite prüfen" again.
+          showDiscoverySuccess(info);
+          append('');
+        } catch (err) {
+          append('-> discoverSite() FEHLGESCHLAGEN: ' + (err && err.message ? err.message : err));
+          append('-> Das heisst: entweder unterbricht ein WAF die /wp-json/-Anfrage,');
+          append('   die REST API ist deaktiviert, oder die URL ist falsch.');
+          append('-> Die verbosen Endpoint-Probes laufen trotzdem weiter,');
+          append('   damit der Grund im Log sichtbar ist.');
+          append('');
+        }
+
+        // Step B: verbose per-endpoint probes (read-only diagnostic)
+        append('### Schritt 2: Endpoint-Probes');
+        append('');
         await runDiagnostics(url, append);
       } catch (err) {
         append('');
@@ -985,6 +1185,26 @@
       const input = el.querySelector('input');
       if (input && !state.isAuthenticated) input.checked = false;
     });
+  }
+
+  /**
+   * Fire-and-forget CPT re-discovery for restored sessions and
+   * post-auth-callback loads. The extract panel is already visible at
+   * this point, so new CPT checkboxes just pop in as soon as the call
+   * completes. Silently ignores any network failure.
+   */
+  function rediscoverCptsInBackground() {
+    (async () => {
+      try {
+        const res = await wpFetch('/wp/v2/types', false);
+        if (!res.ok) return;
+        const data = await res.json();
+        const added = augmentContentTypesFromDiscovery(data);
+        renderDiscoveredCptCards(added);
+        // Refresh counts now that new types are registered
+        updateContentCounts();
+      } catch (_) { /* best-effort */ }
+    })();
   }
 
   async function startExtraction() {
