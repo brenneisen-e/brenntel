@@ -70,7 +70,26 @@
       opts.headers['Authorization'] = basicAuthHeader(state.username, state.password);
     }
     const res = await proxiedFetch(url, opts);
-    if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+    if (!res.ok) {
+      // Try to surface the WordPress error body so logs aren't just "401"
+      let detail = '';
+      try {
+        const body = await res.clone().text();
+        if (body) {
+          try {
+            const parsed = JSON.parse(body);
+            if (parsed && parsed.code) {
+              detail = ' — WP:' + parsed.code + (parsed.message ? ' "' + String(parsed.message).replace(/<[^>]+>/g, '').slice(0, 160) + '"' : '');
+            } else {
+              detail = ' — ' + body.slice(0, 160).replace(/\s+/g, ' ');
+            }
+          } catch (_) {
+            detail = ' — ' + body.slice(0, 160).replace(/\s+/g, ' ');
+          }
+        }
+      } catch (_) { /* ignore body read errors */ }
+      throw new Error('HTTP ' + res.status + ' ' + res.statusText + ' [' + url + ']' + detail);
+    }
     return res;
   }
 
@@ -529,30 +548,50 @@
     } catch (_) { return null; }
   }
 
-  async function fetchAllPages(type, onProgress, useEmbed) {
+  async function fetchAllPages(type, onProgress, useEmbed, onLog) {
     const cfg = CONTENT_TYPES[type];
+    const log = typeof onLog === 'function' ? onLog : function () {};
+
     if (cfg.single) {
+      log('info', '  GET ' + cfg.endpoint + (cfg.auth ? '  (auth)' : ''));
       const res = await wpFetch(cfg.endpoint, cfg.auth);
-      return await res.json();
+      const json = await res.json();
+      log('info', '  -> HTTP ' + res.status + '  (single resource)');
+      return json;
     }
 
     let allItems = [];
     let page = 1;
     let totalPages = 1;
+    let totalItemsHeader = null;
     const embedParam = useEmbed ? '&_embed=1' : '';
     const fields = '';
 
     while (page <= totalPages) {
       const sep = cfg.endpoint.includes('?') ? '&' : '?';
       const url = cfg.endpoint + sep + 'per_page=' + cfg.perPage + '&page=' + page + '&orderby=id&order=asc' + embedParam + fields;
+      log('info', '  GET ' + url + (cfg.auth ? '  (auth)' : ''));
+      const started = Date.now();
       const res = await wpFetch(url, cfg.auth);
+      const elapsed = Date.now() - started;
 
       if (page === 1) {
         totalPages = parseInt(res.headers.get('X-WP-TotalPages'), 10) || 1;
+        totalItemsHeader = res.headers.get('X-WP-Total');
+        log('info', '  -> HTTP ' + res.status + '  (' + elapsed + 'ms)' +
+          (totalItemsHeader ? '  X-WP-Total=' + totalItemsHeader : '') +
+          '  Seiten gesamt: ' + totalPages);
+      } else {
+        log('info', '  -> HTTP ' + res.status + '  (' + elapsed + 'ms)');
       }
 
       const items = await res.json();
+      if (!Array.isArray(items)) {
+        log('warn', '  -> Antwort ist kein Array (' + (typeof items) + ') — breche bei dieser Seite ab.');
+        break;
+      }
       allItems = allItems.concat(items);
+      log('info', '  -> Seite ' + page + '/' + totalPages + ' geladen (' + items.length + ' Items, Summe ' + allItems.length + ')');
 
       if (onProgress) onProgress(allItems.length, totalPages * cfg.perPage, page, totalPages);
 
@@ -570,13 +609,24 @@
     const total = selectedTypes.length;
     let completed = 0;
 
+    onLog('info', 'runExtraction(): ' + total + ' Typen werden verarbeitet.');
+
     for (const type of selectedTypes) {
       const cfg = CONTENT_TYPES[type];
-      if (!cfg) continue;
+      if (!cfg) {
+        onLog('warn', '[' + type + '] Kein CONTENT_TYPES-Eintrag — übersprungen.');
+        onTypeError(type, 'Unbekannter Typ');
+        completed++;
+        continue;
+      }
+
+      onLog('info', '--- [' + (completed + 1) + '/' + total + '] ' + cfg.label + ' (' + type + ') ---');
+      onLog('info', 'Endpoint: ' + cfg.endpoint + '  auth=' + (cfg.auth ? 'erforderlich' : 'nein') +
+        (cfg.single ? '  single=true' : '  perPage=' + cfg.perPage));
 
       // Skip auth-required types if not authenticated
       if (cfg.auth && !state.isAuthenticated) {
-        onLog('warn', cfg.label + ': Übersprungen (Auth erforderlich)');
+        onLog('warn', cfg.label + ': Übersprungen (Auth erforderlich, aber nicht angemeldet)');
         onTypeError(type, 'Auth erforderlich');
         completed++;
         continue;
@@ -586,19 +636,25 @@
       onLog('info', cfg.label + ' wird extrahiert...');
 
       try {
+        const started = Date.now();
         const data = await fetchAllPages(type, (fetched, est, page, totalP) => {
           onTypeProgress(type, fetched, est, page, totalP);
-        }, useEmbed && !cfg.single);
+        }, useEmbed && !cfg.single, onLog);
+        const elapsed = Date.now() - started;
 
         const count = Array.isArray(data) ? data.length : 1;
         results[type] = data;
         state.extractedData[type] = data;
         state.counts[type] = count;
         onTypeDone(type, count);
-        onLog('ok', cfg.label + ': ' + count + ' Einträge extrahiert');
+        onLog('ok', cfg.label + ': ' + count + ' Einträge extrahiert (' + elapsed + 'ms)');
       } catch (err) {
-        onTypeError(type, err.message);
-        onLog('err', cfg.label + ': Fehler – ' + err.message);
+        const msg = err && err.message ? err.message : String(err);
+        onTypeError(type, msg);
+        onLog('err', cfg.label + ': Fehler – ' + msg);
+        if (err && err.stack) {
+          onLog('err', '  Stack: ' + String(err.stack).split('\n').slice(0, 3).join(' | '));
+        }
       }
 
       completed++;
@@ -893,12 +949,25 @@
 
   function addLog(level, message) {
     const log = $('#progress-log');
-    const line = document.createElement('div');
-    line.className = 'log-' + level;
     const time = new Date().toLocaleTimeString('de-DE');
-    line.textContent = '[' + time + '] ' + message;
-    log.appendChild(line);
-    log.scrollTop = log.scrollHeight;
+    const prefix = '[' + time + '] ';
+    const text = prefix + message;
+
+    if (log) {
+      const line = document.createElement('div');
+      line.className = 'log-' + level;
+      line.textContent = text;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // Mirror to console so DevTools always shows activity, even if
+    // the progress panel hasn't been rendered yet.
+    const consoleMethod = level === 'err' ? 'error'
+      : level === 'warn' ? 'warn'
+      : level === 'ok' ? 'log'
+      : 'log';
+    try { console[consoleMethod]('[api]', text); } catch (_) { /* no-op */ }
   }
 
   function showDownloadPanel() {
@@ -1169,6 +1238,37 @@
     // Start extraction
     $('#btn-extract').addEventListener('click', startExtraction);
 
+    // Copy progress log to clipboard
+    const btnProgressLogCopy = $('#btn-progress-log-copy');
+    if (btnProgressLogCopy) {
+      btnProgressLogCopy.addEventListener('click', async () => {
+        const logEl = $('#progress-log');
+        if (!logEl) return;
+        const text = Array.from(logEl.querySelectorAll('div'))
+          .map(d => d.textContent)
+          .join('\n');
+        const orig = btnProgressLogCopy.querySelector('.btn-text').textContent;
+        try {
+          await navigator.clipboard.writeText(text);
+          btnProgressLogCopy.querySelector('.btn-text').textContent = 'Kopiert!';
+        } catch (_) {
+          try {
+            const range = document.createRange();
+            range.selectNodeContents(logEl);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btnProgressLogCopy.querySelector('.btn-text').textContent = 'Markiert — Strg+C';
+          } catch (__) {
+            btnProgressLogCopy.querySelector('.btn-text').textContent = 'Fehler';
+          }
+        }
+        setTimeout(() => {
+          btnProgressLogCopy.querySelector('.btn-text').textContent = orig;
+        }, 1800);
+      });
+    }
+
     // Download buttons
     $('#btn-download-zip').addEventListener('click', async () => {
       const includeMedia = state.includeMediaFiles && state.extractedData.media;
@@ -1237,56 +1337,118 @@
   }
 
   async function startExtraction() {
-    const checked = Array.from($$('input[name="extract"]:checked')).map(i => i.value);
-    if (checked.length === 0) return;
+    // Always switch to the progress panel first so the log is visible
+    // for every subsequent message (including validation errors). This
+    // prevents the "click button, nothing happens" experience.
+    showPanel('progress');
+    const logEl = $('#progress-log');
+    if (logEl) logEl.innerHTML = '';
+    $('#progress-bar').style.width = '0%';
+    $('#progress-pct').textContent = '0%';
+    $('#progress-status').textContent = 'Extraktion läuft...';
+
+    // Scroll the progress card into view — on short viewports the panel
+    // swap otherwise happens above the fold and the user sees "nothing".
+    const progressPanel = $('#panel-progress');
+    if (progressPanel && typeof progressPanel.scrollIntoView === 'function') {
+      try { progressPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+    }
+
+    addLog('info', '=== startExtraction() ausgelöst ===');
+    addLog('info', 'Site:          ' + (state.siteName || '(unbekannt)'));
+    addLog('info', 'Site URL:      ' + (state.siteUrl || '(leer)'));
+    addLog('info', 'API root:      ' + (state.apiRoot || '(leer)'));
+    addLog('info', 'Authentifiziert: ' + (state.isAuthenticated ? 'ja (' + state.username + ')' : 'nein'));
+    addLog('info', 'Entdeckte CPTs: ' + (state.discoveredCptKeys.length
+      ? state.discoveredCptKeys.join(', ')
+      : '(keine)'));
+
+    // Read all checked input[name="extract"] values — includes both the
+    // hardcoded cards and any dynamically-injected .ct-discovered cards.
+    const allBoxes = Array.from($$('input[name="extract"]'));
+    const checkedBoxes = allBoxes.filter(i => i.checked);
+    const checked = checkedBoxes.map(i => i.value);
+
+    addLog('info', 'Checkboxen gesamt: ' + allBoxes.length +
+      '  (davon angehakt: ' + checked.length + ')');
+    if (allBoxes.length > 0) {
+      addLog('info', 'Alle Typen:     ' + allBoxes.map(i => i.value + (i.checked ? '[x]' : '[ ]')).join(', '));
+    }
+
+    if (checked.length === 0) {
+      addLog('err', 'Keine Inhaltstypen ausgewählt! Bitte zurück zu Schritt 3 und mindestens einen Typ anhaken.');
+      $('#progress-status').textContent = 'Keine Inhaltstypen ausgewählt.';
+      addLog('info', 'Tipp: In 5 Sekunden wechsle ich automatisch zurück zum Auswahl-Schritt.');
+      setTimeout(() => showPanel('extract'), 5000);
+      return;
+    }
 
     const useEmbed = $('#opt-embed').checked;
     state.includeMediaFiles = $('#opt-media-download').checked;
+    addLog('info', 'Optionen:       _embed=' + useEmbed + '  include-media-files=' + state.includeMediaFiles);
 
-    showPanel('progress');
     renderProgressItems(checked);
-    $('#progress-log').innerHTML = '';
 
     let completedCount = 0;
 
-    addLog('info', 'Extraktion gestartet für ' + state.siteName);
+    addLog('info', 'Starte Extraktion für ' + state.siteName + '...');
 
-    await runExtraction(
-      checked,
-      useEmbed,
-      // onTypeStart
-      (type) => {
-        setProgressItemStatus(type, 'running', '');
-      },
-      // onTypeProgress
-      (type, fetched, est, page, totalPages) => {
-        setProgressItemStatus(type, 'running', fetched + ' geladen (Seite ' + page + '/' + totalPages + ')');
-        const overallPct = Math.round(((completedCount + (page / totalPages)) / checked.length) * 100);
-        $('#progress-bar').style.width = overallPct + '%';
-        $('#progress-pct').textContent = overallPct + '%';
-      },
-      // onTypeDone
-      (type, count) => {
-        completedCount++;
-        setProgressItemStatus(type, 'done', count + ' Einträge');
-        const overallPct = Math.round((completedCount / checked.length) * 100);
-        $('#progress-bar').style.width = overallPct + '%';
-        $('#progress-pct').textContent = overallPct + '%';
-      },
-      // onTypeError
-      (type, msg) => {
-        completedCount++;
-        setProgressItemStatus(type, 'error', msg);
-      },
-      // onLog
-      addLog,
-    );
+    try {
+      await runExtraction(
+        checked,
+        useEmbed,
+        // onTypeStart
+        (type) => {
+          setProgressItemStatus(type, 'running', '');
+        },
+        // onTypeProgress
+        (type, fetched, est, page, totalPages) => {
+          setProgressItemStatus(type, 'running', fetched + ' geladen (Seite ' + page + '/' + totalPages + ')');
+          const overallPct = Math.round(((completedCount + (page / totalPages)) / checked.length) * 100);
+          $('#progress-bar').style.width = overallPct + '%';
+          $('#progress-pct').textContent = overallPct + '%';
+        },
+        // onTypeDone
+        (type, count) => {
+          completedCount++;
+          setProgressItemStatus(type, 'done', count + ' Einträge');
+          const overallPct = Math.round((completedCount / checked.length) * 100);
+          $('#progress-bar').style.width = overallPct + '%';
+          $('#progress-pct').textContent = overallPct + '%';
+        },
+        // onTypeError
+        (type, msg) => {
+          completedCount++;
+          setProgressItemStatus(type, 'error', msg);
+        },
+        // onLog
+        addLog,
+      );
 
-    addLog('ok', 'Extraktion abgeschlossen!');
-    $('#progress-status').textContent = 'Extraktion abgeschlossen!';
+      addLog('ok', '=== Extraktion abgeschlossen ===');
+      addLog('info', 'Ergebnis: ' + Object.keys(state.extractedData).length + ' Typen mit Daten, ' +
+        Object.values(state.counts).reduce((a, b) => a + b, 0) + ' Einträgen gesamt.');
+      $('#progress-status').textContent = 'Extraktion abgeschlossen!';
 
-    // Short delay then show download
-    setTimeout(() => showDownloadPanel(), 1000);
+      // Only advance to the download panel if at least one type produced data.
+      const extractedTypes = Object.keys(state.extractedData).length;
+      if (extractedTypes > 0) {
+        addLog('info', 'Wechsle in 1.5s zum Download-Schritt...');
+        setTimeout(() => showDownloadPanel(), 1500);
+      } else {
+        addLog('err', 'Keine Daten extrahiert — Download-Schritt wird nicht angezeigt.');
+        $('#progress-status').textContent = 'Keine Daten extrahiert. Bitte Log prüfen.';
+      }
+    } catch (err) {
+      const msg = err && err.message ? err.message : String(err);
+      addLog('err', 'UNCAUGHT ERROR in runExtraction(): ' + msg);
+      if (err && err.stack) {
+        String(err.stack).split('\n').slice(0, 5).forEach(function (ln) {
+          addLog('err', '  ' + ln);
+        });
+      }
+      $('#progress-status').textContent = 'Fehler bei der Extraktion — Log prüfen.';
+    }
   }
 
   function initMobileNav() {
