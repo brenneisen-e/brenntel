@@ -1031,28 +1031,26 @@
     const yearEl = $('#year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Check for auth callback
-    if (handleAuthCallback()) {
+    // Decide which panel to show, but register event listeners
+    // unconditionally below. Previously this used early returns,
+    // which meant the #btn-extract (and every other step-3/4/5
+    // button) never got a click handler when the user arrived
+    // from the WP auth callback or from a restored session —
+    // resulting in "click does nothing, log stays empty".
+    const cameFromAuthCallback = handleAuthCallback();
+    const hasRestoredSession = !cameFromAuthCallback && restoreSession();
+    const startOnExtractPanel = cameFromAuthCallback || hasRestoredSession;
+
+    if (startOnExtractPanel) {
       showPanel('extract');
       $('#connected-name').textContent = state.siteName;
       rediscoverCptsInBackground();
       updateContentCounts();
       updateAuthRequiredCards();
-      return;
+    } else {
+      // Default: show connect panel
+      showPanel('connect');
     }
-
-    // Check for existing session
-    if (restoreSession()) {
-      showPanel('extract');
-      $('#connected-name').textContent = state.siteName;
-      rediscoverCptsInBackground();
-      updateContentCounts();
-      updateAuthRequiredCards();
-      return;
-    }
-
-    // Default: show connect panel
-    showPanel('connect');
 
     // Discover form
     $('#form-connect').addEventListener('submit', async (e) => {
@@ -1235,8 +1233,29 @@
       $('#wp-url').value = '';
     });
 
-    // Start extraction
-    $('#btn-extract').addEventListener('click', startExtraction);
+    // Start extraction — wrap in a handler that *always* surfaces
+    // something in the console, even if startExtraction throws
+    // synchronously before it can paint the first log line.
+    const btnExtract = $('#btn-extract');
+    if (btnExtract) {
+      btnExtract.addEventListener('click', function () {
+        try { console.log('[api] #btn-extract clicked — starting extraction'); } catch (_) {}
+        try {
+          const p = startExtraction();
+          if (p && typeof p.catch === 'function') {
+            p.catch(function (err) {
+              try { console.error('[api] startExtraction rejected:', err); } catch (_) {}
+              try { addLog('err', 'startExtraction rejected: ' + (err && err.message ? err.message : String(err))); } catch (_) {}
+            });
+          }
+        } catch (err) {
+          try { console.error('[api] startExtraction threw synchronously:', err); } catch (_) {}
+          try { addLog('err', 'startExtraction sync-threw: ' + (err && err.message ? err.message : String(err))); } catch (_) {}
+        }
+      });
+    } else {
+      try { console.error('[api] #btn-extract not found at init time'); } catch (_) {}
+    }
 
     // Copy progress log to clipboard
     const btnProgressLogCopy = $('#btn-progress-log-copy');
