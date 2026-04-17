@@ -348,6 +348,93 @@
   })();
 
   /* ========================================
+     Work Section — iframe responsive scaling
+     ======================================== */
+  (function initWorkFrames() {
+    var viewports = document.querySelectorAll('.work-viewport');
+    if (viewports.length === 0) return;
+
+    var IFRAME_WIDTH = 1280;
+
+    function fitAll() {
+      viewports.forEach(function (vp) {
+        var iframe = vp.querySelector('iframe');
+        if (!iframe) return;
+        var w = vp.clientWidth;
+        var h = vp.clientHeight;
+        if (w === 0 || h === 0) return;
+        var scale = w / IFRAME_WIDTH;
+        iframe.style.transform = 'scale(' + scale + ')';
+        iframe.style.height = Math.round(h / scale) + 'px';
+      });
+    }
+
+    // Mark iframes as loaded to fade them in
+    viewports.forEach(function (vp) {
+      var iframe = vp.querySelector('iframe');
+      if (!iframe) return;
+      function markLoaded() {
+        iframe.classList.add('loaded');
+        vp.classList.add('is-loaded');
+      }
+      iframe.addEventListener('load', markLoaded);
+      // Safety: if load doesn't fire within 6s, reveal anyway
+      setTimeout(function () {
+        if (!iframe.classList.contains('loaded')) markLoaded();
+      }, 6000);
+    });
+
+    fitAll();
+    window.addEventListener('load', fitAll);
+    window.addEventListener('resize', fitAll, { passive: true });
+
+    // Re-fit when the section becomes visible (fonts/layout may have shifted)
+    if ('IntersectionObserver' in window) {
+      var workObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            fitAll();
+          }
+        });
+      }, { threshold: 0.1 });
+      viewports.forEach(function (vp) { workObs.observe(vp); });
+    }
+  })();
+
+  /* ========================================
+     Work Cards — subtle 3D tilt on desktop
+     ======================================== */
+  (function initWorkTilt() {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var cards = document.querySelectorAll('.work-card');
+    cards.forEach(function (card) {
+      var frame;
+      card.addEventListener('mouseenter', function () {
+        card.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+      });
+      card.addEventListener('mousemove', function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        var rx = (0.5 - y) * 6;
+        var ry = (x - 0.5) * 6;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(function () {
+          card.style.transform =
+            'translateY(-10px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+        });
+      });
+      card.addEventListener('mouseleave', function () {
+        cancelAnimationFrame(frame);
+        card.style.transition = '';
+        card.style.transform = '';
+      });
+    });
+  })();
+
+  /* ========================================
      Custom Cursor
      ======================================== */
   var cursorDot = document.querySelector('.cursor-dot');
