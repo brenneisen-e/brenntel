@@ -3731,14 +3731,11 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
                 0 0 0 1px var(--color-accent);
   }
 
-  .service-card.expanded > p {
-    display: block;
-    grid-column: 1 / -1;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    margin-top: 0.85rem;
-    position: relative;
-    z-index: 1;
+  /* Expanded state: skip both marketing paragraphs, go straight to
+     bullets for fast scanning */
+  .service-card.expanded > p,
+  .service-card.expanded .service-details-desc {
+    display: none;
   }
 
   .service-card.expanded h3 {
