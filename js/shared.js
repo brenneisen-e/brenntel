@@ -110,6 +110,40 @@
   }
 
   /* ========================================
+     Theme (light/dark) toggle
+     ======================================== */
+  var THEME_KEY = 'brenntel-theme';
+
+  function getStoredTheme() {
+    try { return localStorage.getItem(THEME_KEY); } catch (_) { return null; }
+  }
+
+  function systemPrefersDark() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function applyTheme(theme) {
+    var root = document.documentElement;
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+  }
+
+  var initialTheme = getStoredTheme() || (systemPrefersDark() ? 'dark' : 'light');
+  applyTheme(initialTheme);
+
+  document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      var next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      try { localStorage.setItem(THEME_KEY, next); } catch (_) {}
+    });
+  });
+
+  /* ========================================
      Footer Year
      ======================================== */
   var yearEl = document.getElementById('year');
