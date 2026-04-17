@@ -348,6 +348,46 @@
   })();
 
   /* ========================================
+     About stats — count-up animation
+     ======================================== */
+  (function initStatCounters() {
+    var stats = document.querySelectorAll('.stat-number[data-count]');
+    if (!stats.length || !('IntersectionObserver' in window)) return;
+
+    function animate(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+      var suffix = el.textContent.replace(/[0-9]/g, '').trim();
+      var duration = 1400;
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        var value = Math.round(target * eased);
+        el.textContent = value + suffix;
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animate(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    stats.forEach(function (s) {
+      // Preserve suffix marker (+) while resetting digits
+      var original = s.textContent;
+      var suffix = original.replace(/[0-9]/g, '');
+      s.textContent = '0' + suffix;
+      obs.observe(s);
+    });
+  })();
+
+  /* ========================================
      Work Section — iframe responsive scaling
      ======================================== */
   (function initWorkFrames() {

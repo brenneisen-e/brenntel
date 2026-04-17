@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20260417g">
-  <link rel="stylesheet" href="css/main.css?v=20260417g">
+  <link rel="stylesheet" href="css/shared.css?v=20260417h">
+  <link rel="stylesheet" href="css/main.css?v=20260417h">
 </head>
 <body>
 
@@ -29,6 +29,9 @@
       <p class="preloader-sub" data-de="mediadesign" data-en="mediadesign">mediadesign</p>
     </div>
   </div>
+
+  <!-- Grain overlay (premium film texture) -->
+  <div class="noise-overlay" aria-hidden="true"></div>
 
   <!-- Custom Cursor -->
   <div class="cursor-dot" aria-hidden="true"></div>
@@ -43,6 +46,7 @@
       <nav class="nav-desktop" aria-label="Hauptnavigation">
         <a href="#services" data-de="Leistungen" data-en="Services">Leistungen</a>
         <a href="#work" data-de="Referenzen" data-en="Work">Referenzen</a>
+        <a href="#about" data-de="Über uns" data-en="About">Über uns</a>
         <a href="#contact" data-de="Kontakt" data-en="Contact">Kontakt</a>
         <button class="theme-toggle" type="button" aria-label="Theme umschalten">
           <svg class="theme-toggle-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -80,6 +84,13 @@
             <svg class="nav-mobile-icon-spin" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.49.49 0 0 0 13.84 2h-3.68a.49.49 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.81 8.47a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94 0 .31.02.64.07.94L2.91 14.12a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
           </span>
           <span data-de="Leistungen" data-en="Services">Leistungen</span>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="#about">
+          <span class="nav-mobile-icon">
+            <svg class="nav-mobile-icon-spin" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="10" r="3"/><circle cx="15.5" cy="10" r="3"/><path d="M3 21c1-4 4-6 7-6s3 0 0 0"/><path d="M12 15c3 0 6 2 7 6"/></svg>
+          </span>
+          <span data-de="Über uns" data-en="About">Über uns</span>
           <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </a>
         <a href="#work">
@@ -429,6 +440,51 @@ Von der Idee bis zum Launch.</p>
       </div>
     </section>
 
+    <!-- ======== Marquee ======== -->
+    <section class="marquee-section" aria-hidden="true">
+      <div class="marquee">
+        <div class="marquee-track">
+          <span class="marquee-item">Webdesign</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Frontend</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Backend</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Mobile Apps</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">KI-Integration</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Branding</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Hosting</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Content</span>
+          <span class="marquee-dot">◆</span>
+          <span class="marquee-item">Social Media</span>
+          <span class="marquee-dot">◆</span>
+
+          <span class="marquee-item" aria-hidden="true">Webdesign</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Frontend</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Backend</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Mobile Apps</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">KI-Integration</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Branding</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Hosting</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Content</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+          <span class="marquee-item" aria-hidden="true">Social Media</span>
+          <span class="marquee-dot" aria-hidden="true">◆</span>
+        </div>
+      </div>
+    </section>
+
     <!-- ======== Work / References ======== -->
     <section class="work" id="work">
       <div class="container">
@@ -529,6 +585,67 @@ Von der Idee bis zum Launch.</p>
             </div>
           </a>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== About ======== -->
+    <section class="about" id="about">
+      <div class="container">
+        <span class="section-kicker fade-in" data-de="Hinter brenntel" data-en="Behind brenntel">Hinter brenntel</span>
+        <h2 class="section-title fade-in" data-de="Zwei Köpfe, ein Anspruch." data-en="Two minds, one standard.">Zwei Köpfe, ein Anspruch.</h2>
+        <div class="section-divider fade-in"></div>
+        <p class="section-subtitle fade-in" data-de="Wir sind ein unabhängiges Duo aus Köln. Jedes Projekt bauen wir persönlich — von der ersten Skizze bis zum Go-Live." data-en="We're an independent duo from Cologne. Every project is built by us personally — from first sketch to go-live.">Wir sind ein unabhängiges Duo aus Köln. Jedes Projekt bauen wir persönlich — von der ersten Skizze bis zum Go-Live.</p>
+
+        <div class="founders-grid stagger-children">
+          <article class="founder-card fade-in">
+            <div class="founder-avatar" aria-hidden="true">
+              <span class="founder-initials">IM</span>
+              <span class="founder-accent"></span>
+            </div>
+            <div class="founder-meta">
+              <span class="founder-role" data-de="Design &amp; Branding" data-en="Design &amp; Branding">Design &amp; Branding</span>
+              <h3 class="founder-name">Irena-Marie Rentel</h3>
+              <p class="founder-bio" data-de="Konzipiert Markenwelten, UX und visuelle Systeme, die bleiben. Detailverliebt, strukturiert, mit Blick für das große Ganze." data-en="Designs brand worlds, UX and visual systems that stick. Obsessed with details, structured, with an eye for the big picture.">Konzipiert Markenwelten, UX und visuelle Systeme, die bleiben. Detailverliebt, strukturiert, mit Blick für das große Ganze.</p>
+              <ul class="founder-skills">
+                <li>UX / UI</li>
+                <li>Branding</li>
+                <li>Art Direction</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="founder-card fade-in">
+            <div class="founder-avatar" aria-hidden="true">
+              <span class="founder-initials">EB</span>
+              <span class="founder-accent"></span>
+            </div>
+            <div class="founder-meta">
+              <span class="founder-role" data-de="Entwicklung &amp; Technik" data-en="Engineering &amp; Tech">Entwicklung &amp; Technik</span>
+              <h3 class="founder-name">Eike Brenneisen</h3>
+              <p class="founder-bio" data-de="Baut performante Websites, Backends und KI-Integrationen. Pragmatisch, schnell, mit Fokus auf saubere, skalierbare Lösungen." data-en="Builds performant websites, backends and AI integrations. Pragmatic, fast, focused on clean, scalable solutions.">Baut performante Websites, Backends und KI-Integrationen. Pragmatisch, schnell, mit Fokus auf saubere, skalierbare Lösungen.</p>
+              <ul class="founder-skills">
+                <li>Frontend</li>
+                <li>Backend</li>
+                <li>KI &amp; APIs</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <div class="about-stats fade-in">
+          <div class="stat">
+            <span class="stat-number" data-count="8">8</span>
+            <span class="stat-label" data-de="Jahre Erfahrung" data-en="Years of experience">Jahre Erfahrung</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="40">40+</span>
+            <span class="stat-label" data-de="Projekte live" data-en="Projects live">Projekte live</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="2">2</span>
+            <span class="stat-label" data-de="Menschen, 100 % Fokus" data-en="People, 100% focus">Menschen, 100 % Fokus</span>
+          </div>
         </div>
       </div>
     </section>
@@ -696,7 +813,7 @@ Von der Idee bis zum Launch.</p>
     </div>
   </footer>
 
-  <script src="js/shared.js?v=20260417g"></script>
-  <script src="js/main.js?v=20260417g"></script>
+  <script src="js/shared.js?v=20260417h"></script>
+  <script src="js/main.js?v=20260417h"></script>
 </body>
 </html>
