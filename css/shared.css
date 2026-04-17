@@ -147,28 +147,10 @@ select:focus-visible {
   font-weight: 800;
   color: var(--color-text);
   letter-spacing: -0.03em;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.logo:hover {
-  transform: scale(1.04);
 }
 
 .logo span {
   color: var(--color-accent);
-  display: inline-block;
-  animation: logoDotPulse 3s ease-in-out infinite;
-  transform-origin: center;
-}
-
-@keyframes logoDotPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.35); opacity: 0.8; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo span { animation: none; }
 }
 
 /* Desktop Nav */
@@ -440,12 +422,53 @@ select:focus-visible {
   flex-shrink: 0;
   box-shadow: 0 8px 20px rgba(232, 114, 12, 0.35),
               inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s ease,
+              border-radius 0.45s ease;
+  position: relative;
+  overflow: hidden;
+  animation: navIconFloat 4s ease-in-out infinite;
+}
+
+/* Stagger the idle float per link */
+.nav-mobile a:nth-child(1) .nav-mobile-icon { animation-delay: 0s; }
+.nav-mobile a:nth-child(2) .nav-mobile-icon { animation-delay: 0.6s; }
+.nav-mobile a:nth-child(3) .nav-mobile-icon { animation-delay: 1.2s; }
+
+@keyframes navIconFloat {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-2px) rotate(2deg); }
+}
+
+/* Ambient shine sweeping across the icon chip */
+.nav-mobile-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%);
+  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 .nav-mobile a:hover .nav-mobile-icon,
 .nav-mobile a:active .nav-mobile-icon {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.12) rotate(-12deg);
+  border-radius: 50%;
+  box-shadow: 0 14px 30px rgba(232, 114, 12, 0.55),
+              0 0 0 6px rgba(232, 114, 12, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  animation-play-state: paused;
+}
+
+.nav-mobile a:hover .nav-mobile-icon::before,
+.nav-mobile a:active .nav-mobile-icon::before {
+  left: 120%;
 }
 
 .nav-mobile-icon svg {
@@ -454,6 +477,18 @@ select:focus-visible {
   stroke: #ffffff !important;
   fill: none;
   stroke-width: 2.2;
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-mobile a:hover .nav-mobile-icon svg,
+.nav-mobile a:active .nav-mobile-icon svg {
+  transform: rotate(360deg) scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-mobile-icon { animation: none; }
+  .nav-mobile a:hover .nav-mobile-icon svg,
+  .nav-mobile a:active .nav-mobile-icon svg { transform: none; }
 }
 
 .nav-mobile a > span:not(.nav-mobile-icon) {

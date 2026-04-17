@@ -483,10 +483,83 @@
   }
 
   /* ========================================
-     Contact Form
+     Contact Form — Budget slider + counter + submit anim
      ======================================== */
   var form = document.getElementById('contact-form');
   var formSuccess = document.getElementById('form-success');
+
+  // Budget slider: map 0-5 to ranges with DE/EN labels
+  var BUDGET_STEPS = [
+    { de: '< 1.000 €',            en: '< €1,000' },
+    { de: '1.000 – 2.500 €',      en: '€1,000 – €2,500' },
+    { de: '2.500 – 5.000 €',      en: '€2,500 – €5,000' },
+    { de: '5.000 – 10.000 €',     en: '€5,000 – €10,000' },
+    { de: '10.000 – 25.000 €',    en: '€10,000 – €25,000' },
+    { de: '25.000 €+',            en: '€25,000+' }
+  ];
+
+  (function initBudgetSlider() {
+    var slider = document.getElementById('budget');
+    var display = document.querySelector('.budget-value');
+    if (!slider || !display) return;
+
+    function currentLang() {
+      return (window.brenntelLang && window.brenntelLang.get()) || 'de';
+    }
+
+    function update() {
+      var v = parseInt(slider.value, 10) || 0;
+      var step = BUDGET_STEPS[v] || BUDGET_STEPS[0];
+      var pct = (v / (slider.max - slider.min)) * 100;
+      slider.style.setProperty('--budget-percent', pct + '%');
+
+      display.setAttribute('data-de', step.de);
+      display.setAttribute('data-en', step.en);
+      display.textContent = step[currentLang()];
+    }
+
+    slider.addEventListener('input', update);
+    document.addEventListener('langchange', update);
+    update();
+  })();
+
+  (function initMessageCounter() {
+    var ta = document.getElementById('message');
+    var counter = document.querySelector('.form-counter');
+    if (!ta || !counter) return;
+
+    function update() {
+      var len = ta.value.length;
+      counter.textContent = len;
+      counter.dataset.counter = String(len);
+    }
+    ta.addEventListener('input', update);
+    update();
+  })();
+
+  function spawnConfetti(container) {
+    if (!container) return;
+    var colors = ['#e8720c', '#ffb347', '#1b9c3f', '#1a1a1a', '#f5c088', '#d06000'];
+    for (var i = 0; i < 32; i++) {
+      var piece = document.createElement('span');
+      piece.className = 'confetti-piece';
+      var angle = Math.random() * Math.PI * 2;
+      var distance = 80 + Math.random() * 160;
+      var cx = Math.cos(angle) * distance;
+      var cy = Math.sin(angle) * distance - 40; // bias upward
+      piece.style.setProperty('--cx', cx.toFixed(1) + 'px');
+      piece.style.setProperty('--cy', cy.toFixed(1) + 'px');
+      piece.style.setProperty('--r', (Math.random() * 720 - 360).toFixed(0) + 'deg');
+      piece.style.background = colors[i % colors.length];
+      piece.style.animationDelay = (Math.random() * 0.15).toFixed(2) + 's';
+      piece.style.animationDuration = (1.6 + Math.random() * 0.8).toFixed(2) + 's';
+      if (Math.random() > 0.5) {
+        piece.style.width = '6px';
+        piece.style.height = '10px';
+      }
+      container.appendChild(piece);
+    }
+  }
 
   if (form && formSuccess) {
     form.addEventListener('submit', function (e) {
@@ -497,6 +570,10 @@
       var subject = document.getElementById('subject');
       var message = document.getElementById('message');
       var privacy = document.getElementById('privacy');
+      var budget = document.getElementById('budget');
+      var projectTypes = Array.prototype.slice
+        .call(form.querySelectorAll('input[name="projectType"]:checked'))
+        .map(function (el) { return el.value; });
 
       if (!name.value.trim() || !email.value.trim() || !message.value.trim() || !privacy.checked) {
         form.reportValidity();
@@ -504,12 +581,15 @@
       }
 
       var submitBtn = form.querySelector('button[type="submit"]');
-      var originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = submitBtn.getAttribute('data-sending')
-          || 'Wird gesendet…';
+        submitBtn.classList.add('is-sending');
       }
+
+      var budgetIdx = budget ? parseInt(budget.value, 10) : null;
+      var budgetLabel = budgetIdx !== null && BUDGET_STEPS[budgetIdx]
+        ? BUDGET_STEPS[budgetIdx].de
+        : null;
 
       fetch('/contact', {
         method: 'POST',
@@ -519,7 +599,9 @@
           email: email.value.trim(),
           subject: subject ? subject.value.trim() : '',
           message: message.value.trim(),
-          privacy: privacy.checked ? 'on' : 'off'
+          privacy: privacy.checked ? 'on' : 'off',
+          projectTypes: projectTypes,
+          budget: budgetLabel
         })
       })
         .then(function (res) {
@@ -536,13 +618,21 @@
               ('Request failed (HTTP ' + result.status + ')')
             );
           }
-          form.style.display = 'none';
-          formSuccess.classList.add('show');
+          if (submitBtn) {
+            submitBtn.classList.remove('is-sending');
+            submitBtn.classList.add('is-sent');
+          }
+          // Show success after a brief pause so the checkmark anim is visible
+          setTimeout(function () {
+            form.style.display = 'none';
+            formSuccess.classList.add('show');
+            spawnConfetti(formSuccess.querySelector('.confetti'));
+          }, 650);
         })
         .catch(function (err) {
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnHtml;
+            submitBtn.classList.remove('is-sending');
           }
           // eslint-disable-next-line no-console
           console.error('Contact form error:', err);

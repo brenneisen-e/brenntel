@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20260417d">
-  <link rel="stylesheet" href="css/main.css?v=20260417d">
+  <link rel="stylesheet" href="css/shared.css?v=20260417e">
+  <link rel="stylesheet" href="css/main.css?v=20260417e">
 </head>
 <body>
 
@@ -508,42 +508,145 @@ Von der Idee bis zum Launch.</p>
         <p class="section-subtitle fade-in" data-de="Haben Sie ein Projekt im Sinn? Lassen Sie uns darüber sprechen." data-en="Have a project in mind? Let's talk about it.">Haben Sie ein Projekt im Sinn? Lassen Sie uns darüber sprechen.</p>
 
         <form class="contact-form scale-in" id="contact-form" novalidate>
-          <!--
-            Backend integration:
-            For production, integrate with Cloudflare Workers, Formspree (https://formspree.io),
-            or set action="https://formspree.io/f/YOUR_FORM_ID" method="POST".
-            Mailto fallback: action="mailto:kontakt@brenntelmediadesign.com" method="POST" enctype="text/plain"
-          -->
-          <div class="form-group">
-            <label for="name" data-de="Name" data-en="Name">Name</label>
-            <input type="text" id="name" name="name" required autocomplete="name" data-de-placeholder="Ihr Name" data-en-placeholder="Your name" placeholder="Ihr Name">
+
+          <!-- Project type chips -->
+          <fieldset class="form-chips">
+            <legend class="form-chips-label" data-de="Dein Projekt ist…" data-en="Your project is…">Dein Projekt ist…</legend>
+            <div class="form-chips-grid">
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="website">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6.5" cy="6.5" r="0.6" fill="currentColor"/><circle cx="8.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
+                </span>
+                <span class="chip-label" data-de="Website" data-en="Website">Website</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="frontend">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9,8 5,12 9,16"/><polyline points="15,8 19,12 15,16"/><line x1="14" y1="6" x2="10" y2="18"/></svg>
+                </span>
+                <span class="chip-label" data-de="Frontend" data-en="Frontend">Frontend</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="backend">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+                </span>
+                <span class="chip-label" data-de="Backend" data-en="Backend">Backend</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="mobile-app">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10" y1="18.5" x2="14" y2="18.5"/></svg>
+                </span>
+                <span class="chip-label" data-de="App" data-en="Mobile App">App</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="guest-app">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l9-16 9 16z"/><path d="M8 20v-5h8v5"/><circle cx="12" cy="11" r="1.5"/></svg>
+                </span>
+                <span class="chip-label" data-de="Gäste-App" data-en="Guest App">Gäste-App</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="branding">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3c2 3 3 6 3 9s-1 6-3 9"/><path d="M12 3c-2 3-3 6-3 9s1 6 3 9"/></svg>
+                </span>
+                <span class="chip-label" data-de="Branding" data-en="Branding">Branding</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="social">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="12" r="3"/><circle cx="17" cy="6" r="3"/><circle cx="17" cy="18" r="3"/><line x1="9.7" y1="10.8" x2="14.3" y2="7.2"/><line x1="9.7" y1="13.2" x2="14.3" y2="16.8"/></svg>
+                </span>
+                <span class="chip-label" data-de="Social Media" data-en="Social Media">Social Media</span>
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="projectType" value="other">
+                <span class="chip-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4"/><circle cx="12" cy="17" r="0.7" fill="currentColor"/></svg>
+                </span>
+                <span class="chip-label" data-de="Anderes" data-en="Other">Anderes</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Budget slider -->
+          <div class="form-group form-budget">
+            <label for="budget" data-de="Ungefähres Budget" data-en="Approximate budget">Ungefähres Budget</label>
+            <div class="budget-wrapper">
+              <input type="range" id="budget" name="budget" min="0" max="5" step="1" value="2" list="budget-marks">
+              <datalist id="budget-marks">
+                <option value="0"></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+              </datalist>
+              <div class="budget-display">
+                <span class="budget-value" data-de="2.500 – 5.000 €" data-en="€2,500 – €5,000">2.500 – 5.000 €</span>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="email" data-de="E-Mail" data-en="Email">E-Mail</label>
-            <input type="email" id="email" name="email" required autocomplete="email" data-de-placeholder="ihre@email.de" data-en-placeholder="your@email.com" placeholder="ihre@email.de">
+
+          <div class="form-row">
+            <div class="form-group form-group-icon">
+              <label for="name" data-de="Name" data-en="Name">Name</label>
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
+              </span>
+              <input type="text" id="name" name="name" required autocomplete="name" data-de-placeholder="Ihr Name" data-en-placeholder="Your name" placeholder="Ihr Name">
+            </div>
+            <div class="form-group form-group-icon">
+              <label for="email" data-de="E-Mail" data-en="Email">E-Mail</label>
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              </span>
+              <input type="email" id="email" name="email" required autocomplete="email" data-de-placeholder="ihre@email.de" data-en-placeholder="your@email.com" placeholder="ihre@email.de">
+            </div>
           </div>
-          <div class="form-group">
+
+          <div class="form-group form-group-icon">
             <label for="subject" data-de="Betreff" data-en="Subject">Betreff</label>
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20l-8-6V6l8-3 8 3v8z"/><path d="M12 3v17"/></svg>
+            </span>
             <input type="text" id="subject" name="subject" data-de-placeholder="Worum geht es?" data-en-placeholder="What is it about?" placeholder="Worum geht es?">
           </div>
-          <div class="form-group">
+
+          <div class="form-group form-group-icon form-group-textarea">
             <label for="message" data-de="Nachricht" data-en="Message">Nachricht</label>
-            <textarea id="message" name="message" required data-de-placeholder="Erzählen Sie uns von Ihrem Projekt…" data-en-placeholder="Tell us about your project…" placeholder="Erzählen Sie uns von Ihrem Projekt…"></textarea>
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <textarea id="message" name="message" required data-de-placeholder="Erzähle uns von deinem Projekt…" data-en-placeholder="Tell us about your project…" placeholder="Erzähle uns von deinem Projekt…"></textarea>
+            <span class="form-counter" data-counter="0">0</span>
           </div>
+
           <div class="form-checkbox">
             <input type="checkbox" id="privacy" name="privacy" required>
             <label for="privacy" data-de="Ich stimme der <a href='datenschutz.html'>Datenschutzerklärung</a> zu." data-en="I agree to the <a href='datenschutz.html'>Privacy Policy</a>.">Ich stimme der <a href="datenschutz.html">Datenschutzerklärung</a> zu.</label>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;" data-de="Nachricht senden <span class='btn-arrow'>→</span>" data-en="Send Message <span class='btn-arrow'>→</span>">Nachricht senden <span class="btn-arrow">→</span></button>
+
+          <button type="submit" class="btn btn-primary btn-submit" data-de="Nachricht senden" data-en="Send Message" data-sending-de="Wird gesendet…" data-sending-en="Sending…">
+            <span class="btn-submit-text">Nachricht senden</span>
+            <span class="btn-submit-spinner" aria-hidden="true"></span>
+            <span class="btn-submit-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg>
+            </span>
+          </button>
         </form>
 
-        <div class="form-success" id="form-success">
-          <svg class="form-success-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="2.5"/>
-            <polyline points="20,32 28,40 44,24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <div class="form-success" id="form-success" aria-live="polite">
+          <div class="confetti" aria-hidden="true"></div>
+          <svg class="form-success-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="3" class="success-ring"/>
+            <polyline points="24,42 35,52 56,30" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" class="success-check"/>
           </svg>
-          <h3 data-de="Vielen Dank!" data-en="Thank you!">Vielen Dank!</h3>
-          <p data-de="Ihre Nachricht wurde gesendet. Wir melden uns zeitnah bei Ihnen." data-en="Your message has been sent. We'll get back to you shortly.">Ihre Nachricht wurde gesendet. Wir melden uns zeitnah bei Ihnen.</p>
+          <h3 data-de="Nachricht unterwegs!" data-en="Message sent!">Nachricht unterwegs!</h3>
+          <p data-de="Danke für deine Anfrage — wir melden uns innerhalb eines Werktags bei dir." data-en="Thanks for reaching out — we'll get back to you within one business day.">Danke für deine Anfrage — wir melden uns innerhalb eines Werktags bei dir.</p>
         </div>
       </div>
     </section>
@@ -560,7 +663,7 @@ Von der Idee bis zum Launch.</p>
     </div>
   </footer>
 
-  <script src="js/shared.js?v=20260417d"></script>
-  <script src="js/main.js?v=20260417d"></script>
+  <script src="js/shared.js?v=20260417e"></script>
+  <script src="js/main.js?v=20260417e"></script>
 </body>
 </html>
