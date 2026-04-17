@@ -2640,6 +2640,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   .stagger-children .fade-in:nth-child(4) { transition-delay: 0.15s; }
   .stagger-children .fade-in:nth-child(5) { transition-delay: 0.2s; }
   .stagger-children .fade-in:nth-child(6) { transition-delay: 0.25s; }
+  .stagger-children .fade-in:nth-child(7) { transition-delay: 0.3s; }
 }
 
 @keyframes iconGlow {
