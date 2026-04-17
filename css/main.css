@@ -475,7 +475,29 @@
   background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
   border-radius: 4px;
   opacity: 0;
-  animation: pwFadeScale 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.3s forwards;
+  position: relative;
+  overflow: hidden;
+  animation: pwFadeScale 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.3s forwards,
+             pwHeroPulse 3.5s ease-in-out 3s infinite;
+}
+
+.pw-hero-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: pwHeroShine 4.5s ease-in-out 3.5s infinite;
+}
+
+@keyframes pwHeroPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 114, 12, 0); }
+  50% { box-shadow: 0 0 12px 2px rgba(232, 114, 12, 0.35); }
+}
+
+@keyframes pwHeroShine {
+  0% { transform: translateX(-120%); }
+  40%, 100% { transform: translateX(120%); }
 }
 
 .pw-grid {
@@ -1423,6 +1445,68 @@
 }
 
 /* ========================================
+   Floating "Projekt anfragen" CTA
+   ======================================== */
+.floating-cta {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  z-index: 895;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1.15rem;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: -0.005em;
+  border-radius: 999px;
+  box-shadow: 0 14px 34px rgba(232, 114, 12, 0.36),
+              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease;
+}
+
+.floating-cta.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.floating-cta:hover {
+  color: #fff;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 20px 44px rgba(232, 114, 12, 0.5);
+}
+
+.floating-cta:active { transform: scale(0.97); }
+
+.floating-cta-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.floating-cta:hover .floating-cta-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 520px) {
+  .floating-cta {
+    bottom: 1rem;
+    left: 1rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ========================================
    AI Chat Widget
    ======================================== */
 .chat-fab {
@@ -1654,6 +1738,98 @@
   background: var(--color-bg-alt);
   color: var(--color-text);
   border-bottom-left-radius: 4px;
+}
+
+/* Rich / HTML demo bubble */
+.chat-msg-rich {
+  padding: 0.75rem 0.85rem;
+  background: linear-gradient(160deg, var(--color-surface), var(--color-bg-alt));
+  border: 1px solid var(--color-border);
+  max-width: 100%;
+}
+
+.chat-demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 220px;
+}
+
+.chat-demo-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.chat-demo-bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.chat-demo-bars li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+}
+
+.cd-label {
+  flex: 0 0 40%;
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.cd-bar {
+  flex: 1;
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.cd-bar i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+  animation: chatDemoFill 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.chat-demo-bars li:nth-child(1) .cd-bar i { animation-delay: 0.1s; }
+.chat-demo-bars li:nth-child(2) .cd-bar i { animation-delay: 0.25s; }
+.chat-demo-bars li:nth-child(3) .cd-bar i { animation-delay: 0.4s; }
+.chat-demo-bars li:nth-child(4) .cd-bar i { animation-delay: 0.55s; }
+
+@keyframes chatDemoFill {
+  to { width: var(--w, 80%); }
+}
+
+.chat-demo-foot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--color-text-light);
+  padding-top: 0.25rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.chat-demo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #28c840;
+  box-shadow: 0 0 6px rgba(40, 200, 64, 0.5);
+  animation: chatStatus 2s ease-in-out infinite;
 }
 
 .chat-msg-user .chat-msg-bubble {
@@ -3145,6 +3321,10 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     border-radius: 0;
     box-shadow: 0 10px 24px rgba(232, 114, 12, 0.22);
   }
+
+  /* Hide the "Projekt anfragen" CTA on the landing — let visitors
+     first meet us and the work before we push a contact ask. */
+  .hero-cta { display: none; }
 
   .hero-previews {
     justify-content: flex-start;
