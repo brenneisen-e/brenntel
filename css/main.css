@@ -345,45 +345,22 @@
 
 .hero h1 .accent {
   color: var(--color-accent);
-  display: inline-block;
-  position: relative;
-  animation: heroDotPulse 2.8s ease-in-out 1.2s infinite;
-  transform-origin: center bottom;
-}
-
-.hero h1 .accent::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 114, 12, 0.4) 0%, transparent 70%);
-  opacity: 0;
-  z-index: -1;
-  animation: heroDotGlow 2.8s ease-in-out 1.2s infinite;
-}
-
-@keyframes heroDotPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
-
-@keyframes heroDotGlow {
-  0%, 100% { opacity: 0; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.4); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero h1 .accent { animation: none; }
-  .hero h1 .accent::after { animation: none; display: none; }
 }
 
 .hero .subtitle {
-  font-size: clamp(1rem, 2.2vw, 1.3rem);
-  font-weight: 300;
-  color: var(--color-text-light);
+  display: inline-block;
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  font-weight: 500;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
   max-width: 720px;
-  margin: 1.25rem auto 2.5rem;
-  line-height: 1.6;
+  margin: 1.5rem auto 2.5rem;
+  padding: 0.9rem 1.5rem;
+  border-radius: 14px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  box-shadow: 0 14px 36px rgba(232, 114, 12, 0.28),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18);
   opacity: 0;
   animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
 }
@@ -1338,7 +1315,7 @@
 .work {
   padding: var(--section-padding);
   position: relative;
-  background: linear-gradient(180deg, #fafafa 0%, var(--color-bg-alt) 100%);
+  background: linear-gradient(180deg, var(--color-bg-warm, var(--color-bg)) 0%, var(--color-bg-alt) 100%);
   overflow: hidden;
 }
 
@@ -1437,7 +1414,7 @@
 .work-frame {
   position: relative;
   aspect-ratio: 16 / 10;
-  background: #fff;
+  background: var(--color-surface);
   overflow: hidden;
   border-bottom: 1px solid var(--color-border);
 }
@@ -1449,7 +1426,7 @@
   gap: 6px;
   padding: 0 14px;
   height: 36px;
-  background: linear-gradient(to bottom, #f4f4f4, #eaeaea);
+  background: linear-gradient(to bottom, var(--color-bg-alt), var(--color-bg));
   border-bottom: 1px solid var(--color-border);
   z-index: 2;
 }
@@ -2042,7 +2019,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 .input-icon {
   position: absolute;
   left: 0.9rem;
-  top: calc(0.72rem + 0.45rem + 0.15rem);
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2054,8 +2031,9 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 }
 
 .form-group-textarea .input-icon {
-  top: calc(0.72rem + 0.45rem + 0.15rem);
-  height: auto;
+  bottom: auto;
+  top: 2rem;
+  height: 22px;
 }
 
 .input-icon svg {
@@ -2517,7 +2495,15 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     justify-self: end;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 background 0.3s ease,
-                color 0.3s ease;
+                color 0.3s ease,
+                opacity 0.3s ease;
+  }
+
+  /* Hide chevron once the card is expanded so it doesn't collide with
+     the big counter number in the corner */
+  .service-card.expanded .service-chevron {
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* Background number stays subtle on the right */
