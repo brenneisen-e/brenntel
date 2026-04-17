@@ -16,9 +16,14 @@
 
   var history = []; // { role: 'user' | 'assistant', content: string }
   var sending = false;
+  var demoPlayed = false;
 
   function currentLang() {
     return (window.brenntelLang && window.brenntelLang.get()) || 'de';
+  }
+
+  function sleep(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
   }
 
   function openPanel() {
@@ -26,7 +31,12 @@
     panel.setAttribute('aria-hidden', 'false');
     fab.classList.add('open');
     fab.setAttribute('aria-expanded', 'true');
-    setTimeout(function () { input.focus(); }, 280);
+    if (!demoPlayed) {
+      demoPlayed = true;
+      playDemo();
+    } else {
+      setTimeout(function () { input.focus(); }, 280);
+    }
   }
 
   function closePanel() {
@@ -95,6 +105,80 @@
 
   function hideSuggestions() {
     if (suggestions) suggestions.classList.add('hide');
+  }
+
+  function showSuggestions() {
+    if (suggestions) suggestions.classList.remove('hide');
+  }
+
+  function appendTyping() {
+    return appendMessage('ai', '', { typing: true, extra: 'chat-msg-typing' });
+  }
+
+  function appendHtmlMessage(html) {
+    var wrap = document.createElement('div');
+    wrap.className = 'chat-msg chat-msg-ai';
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-msg-bubble chat-msg-rich';
+    bubble.innerHTML = html;
+    wrap.appendChild(bubble);
+    messagesEl.appendChild(wrap);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return wrap;
+  }
+
+  async function playDemo() {
+    hideSuggestions();
+    var lang = currentLang();
+
+    // Step 1: typing → greeting
+    var t1 = appendTyping();
+    await sleep(1100);
+    t1.remove();
+    appendMessage('ai', lang === 'en'
+      ? "Hey! Something like this could live on your site too ✨"
+      : "Hey! Sowas kannst du auch auf deiner Website haben ✨"
+    );
+
+    // Step 2: typing → animated capabilities card
+    await sleep(400);
+    var t2 = appendTyping();
+    await sleep(1300);
+    t2.remove();
+
+    var cardHtml =
+      '<div class="chat-demo-card">' +
+        '<div class="chat-demo-title">' +
+          (lang === 'en' ? 'What we can build for you' : 'Was wir für dich bauen') +
+        '</div>' +
+        '<ul class="chat-demo-bars">' +
+          '<li><span class="cd-label">' + (lang === 'en' ? 'Websites' : 'Websites') + '</span>' +
+            '<span class="cd-bar"><i style="--w:92%"></i></span></li>' +
+          '<li><span class="cd-label">' + (lang === 'en' ? 'Mobile & Guest Apps' : 'Mobile & Gäste-Apps') + '</span>' +
+            '<span class="cd-bar"><i style="--w:84%"></i></span></li>' +
+          '<li><span class="cd-label">' + (lang === 'en' ? 'AI integrations' : 'KI-Integrationen') + '</span>' +
+            '<span class="cd-bar"><i style="--w:96%"></i></span></li>' +
+          '<li><span class="cd-label">' + (lang === 'en' ? 'Branding & UX' : 'Branding & UX') + '</span>' +
+            '<span class="cd-bar"><i style="--w:88%"></i></span></li>' +
+        '</ul>' +
+        '<div class="chat-demo-foot"><span class="chat-demo-dot"></span>' +
+          (lang === 'en' ? 'Live on your site in weeks' : 'In wenigen Wochen live') +
+        '</div>' +
+      '</div>';
+    appendHtmlMessage(cardHtml);
+
+    // Step 3: invitation
+    await sleep(900);
+    var t3 = appendTyping();
+    await sleep(900);
+    t3.remove();
+    appendMessage('ai', lang === 'en'
+      ? "Tell me what you're planning — I'll point you in the right direction."
+      : "Erzähl mir, was du vorhast — ich helfe dir weiter."
+    );
+
+    showSuggestions();
+    setTimeout(function () { input.focus(); }, 200);
   }
 
   async function sendMessage(text) {

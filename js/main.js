@@ -348,6 +348,26 @@
   })();
 
   /* ========================================
+     Floating CTA visibility (appears past hero)
+     ======================================== */
+  (function initFloatingCta() {
+    var cta = document.getElementById('floating-cta');
+    var hero = document.getElementById('hero');
+    if (!cta || !hero) return;
+    if (!('IntersectionObserver' in window)) {
+      cta.classList.add('visible');
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        // When the hero leaves the top of the viewport, reveal the CTA
+        cta.classList.toggle('visible', !entry.isIntersecting);
+      });
+    }, { threshold: 0, rootMargin: '-40% 0px 0px 0px' });
+    obs.observe(hero);
+  })();
+
+  /* ========================================
      About stats — count-up animation
      ======================================== */
   (function initStatCounters() {
