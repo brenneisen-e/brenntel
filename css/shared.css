@@ -147,28 +147,10 @@ select:focus-visible {
   font-weight: 800;
   color: var(--color-text);
   letter-spacing: -0.03em;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.logo:hover {
-  transform: scale(1.04);
 }
 
 .logo span {
   color: var(--color-accent);
-  display: inline-block;
-  animation: logoDotPulse 3s ease-in-out infinite;
-  transform-origin: center;
-}
-
-@keyframes logoDotPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.35); opacity: 0.8; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo span { animation: none; }
 }
 
 /* Desktop Nav */
@@ -431,29 +413,83 @@ select:focus-visible {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px;
   border-radius: 14px;
   background: linear-gradient(135deg, #e8720c 0%, #d06000 100%) !important;
   color: #ffffff !important;
   flex-shrink: 0;
   box-shadow: 0 8px 20px rgba(232, 114, 12, 0.35),
               inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s ease,
+              border-radius 0.45s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient shine sweeping across the icon chip */
+.nav-mobile-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%);
+  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .nav-mobile a:hover .nav-mobile-icon,
 .nav-mobile a:active .nav-mobile-icon {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.1);
+  border-radius: 50%;
+  box-shadow: 0 14px 30px rgba(232, 114, 12, 0.55),
+              0 0 0 6px rgba(232, 114, 12, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-.nav-mobile-icon svg {
-  width: 20px;
-  height: 20px;
-  stroke: #ffffff !important;
-  fill: none;
-  stroke-width: 2.2;
+.nav-mobile a:hover .nav-mobile-icon::before,
+.nav-mobile a:active .nav-mobile-icon::before {
+  left: 120%;
+}
+
+/* Inner icon always rotates */
+.nav-mobile-icon-spin {
+  display: block;
+  fill: #ffffff;
+  stroke: #ffffff;
+  color: #ffffff;
+  animation: navIconSpin 10s linear infinite;
+  will-change: transform;
+}
+
+.nav-mobile a:nth-child(2) .nav-mobile-icon-spin {
+  animation-duration: 14s;
+  animation-direction: reverse;
+}
+
+.nav-mobile a:nth-child(3) .nav-mobile-icon-spin {
+  animation-duration: 16s;
+}
+
+.nav-mobile a:hover .nav-mobile-icon-spin,
+.nav-mobile a:active .nav-mobile-icon-spin {
+  animation-duration: 2.5s;
+}
+
+@keyframes navIconSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-mobile-icon-spin { animation: none; }
 }
 
 .nav-mobile a > span:not(.nav-mobile-icon) {
