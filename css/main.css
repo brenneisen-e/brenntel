@@ -2065,6 +2065,152 @@
   background: linear-gradient(90deg, transparent, var(--color-border), transparent);
 }
 
+/* Team card — single shared photo for both founders */
+.team-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  max-width: 960px;
+  margin: 0 auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color var(--transition);
+}
+
+.team-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+  z-index: 2;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.team-card.visible::before,
+.team-card:hover::before { transform: scaleX(1); }
+
+.team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 60px rgba(var(--color-shadow), 0.14);
+  border-color: var(--color-accent);
+}
+
+.team-photo {
+  margin: 0;
+  position: relative;
+  background: var(--color-bg-alt);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.team-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.team-card:hover .team-photo img {
+  transform: scale(1.04);
+}
+
+/* Subtle warm tint overlay for a cohesive look */
+.team-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    transparent 55%,
+    rgba(232, 114, 12, 0.12) 100%);
+  pointer-events: none;
+}
+
+.team-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.75rem;
+}
+
+.team-role {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  padding: 0.3rem 0.75rem;
+  background: rgba(232, 114, 12, 0.1);
+  border-radius: 999px;
+}
+
+.team-name {
+  font-size: clamp(1.25rem, 3vw, 1.55rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.team-name-amp {
+  color: var(--color-accent);
+  font-style: italic;
+  font-weight: 500;
+  margin: 0 0.1em;
+}
+
+.team-bio {
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.team-skills {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.team-skills li {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  padding: 0.3rem 0.7rem;
+  background: var(--color-bg-alt);
+  border-radius: 6px;
+}
+
+@media (min-width: 768px) {
+  .team-card {
+    grid-template-columns: 1fr 1fr;
+  }
+  .team-photo {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+  .team-meta {
+    padding: 2.25rem 2rem;
+    justify-content: center;
+  }
+}
+
 .founders-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -3585,14 +3731,11 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
                 0 0 0 1px var(--color-accent);
   }
 
-  .service-card.expanded > p {
-    display: block;
-    grid-column: 1 / -1;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    margin-top: 0.85rem;
-    position: relative;
-    z-index: 1;
+  /* Expanded state: skip both marketing paragraphs, go straight to
+     bullets for fast scanning */
+  .service-card.expanded > p,
+  .service-card.expanded .service-details-desc {
+    display: none;
   }
 
   .service-card.expanded h3 {
