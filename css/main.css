@@ -1942,35 +1942,49 @@
 }
 
 /* ========================================
-   Mobile Service Cards — Wow Effect
+   Mobile Service Cards — 2-column Bento Grid
    ======================================== */
 @media (max-width: 767px) {
   .services-grid {
-    gap: 1.1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    grid-auto-flow: dense;
   }
 
   .service-card {
     counter-increment: service-counter;
-    padding: 1.75rem 1.5rem 1.5rem;
-    border-radius: 22px;
+    padding: 1.1rem 1rem 1rem;
+    border-radius: 18px;
     background:
-      linear-gradient(160deg, var(--color-bg) 0%, var(--color-bg) 55%, rgba(232, 114, 12, 0.035) 100%);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      linear-gradient(155deg, var(--color-bg) 0%, var(--color-bg) 60%, rgba(232, 114, 12, 0.05) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     overflow: hidden;
     isolation: isolate;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Big faded counter number in background */
+  /* Collapsed state: hide description + chevron to keep tiles compact */
+  .service-card > p {
+    display: none;
+  }
+
+  .service-chevron {
+    display: none;
+  }
+
+  /* Big corner number */
   .service-card::after {
     content: "0" counter(service-counter);
     position: absolute;
-    top: 0.75rem;
-    right: 1.1rem;
-    font-size: 3.5rem;
+    top: -0.4rem;
+    right: 0.5rem;
+    font-size: 3rem;
     font-weight: 900;
     line-height: 1;
     letter-spacing: -0.06em;
-    background: linear-gradient(135deg, rgba(232, 114, 12, 0.22), rgba(232, 114, 12, 0.04));
+    background: linear-gradient(135deg, rgba(232, 114, 12, 0.24), rgba(232, 114, 12, 0.04));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -1981,16 +1995,22 @@
     z-index: 0;
   }
 
-  /* Alternate gradient direction slightly for variety */
-  .service-card:nth-child(even)::after {
-    background: linear-gradient(215deg, rgba(232, 114, 12, 0.26), rgba(232, 114, 12, 0.05));
+  /* Variety: flip number to other corner on alternating tiles */
+  .service-card:nth-child(3n+2)::after {
+    background: linear-gradient(215deg, rgba(232, 114, 12, 0.28), rgba(232, 114, 12, 0.05));
     -webkit-background-clip: text;
     background-clip: text;
   }
 
-  /* Accent top-stripe alternates direction */
+  .service-card:nth-child(3n)::after {
+    background: linear-gradient(45deg, rgba(232, 114, 12, 0.22), rgba(232, 114, 12, 0.05));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  /* Accent top stripe alternates direction */
   .service-card::before {
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
   }
 
@@ -1998,122 +2018,132 @@
     transform-origin: right;
   }
 
-  /* Icon becomes a gradient-filled chip */
+  /* Icon chip */
   .service-icon {
-    width: 56px;
-    height: 56px;
-    padding: 12px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(232, 114, 12, 0.12), rgba(232, 114, 12, 0.03));
-    box-shadow: 0 6px 18px rgba(232, 114, 12, 0.12),
+    width: 42px;
+    height: 42px;
+    padding: 9px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(232, 114, 12, 0.14), rgba(232, 114, 12, 0.03));
+    box-shadow: 0 4px 12px rgba(232, 114, 12, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    margin-bottom: 1.1rem;
+    margin: 0 0 0.7rem;
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
                 background 0.4s ease,
                 color 0.4s ease,
-                box-shadow 0.4s ease;
+                box-shadow 0.4s ease,
+                width 0.4s ease,
+                height 0.4s ease;
     position: relative;
     z-index: 1;
+    flex-shrink: 0;
   }
 
-  /* Alternate icon shape (odd=rounded, even=squircle) for variety */
   .service-card:nth-child(even) .service-icon {
     border-radius: 50%;
   }
 
   .service-card h3,
   .service-card p,
-  .service-chevron,
   .service-details {
     position: relative;
     z-index: 1;
   }
 
   .service-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .service-card p {
     font-size: 0.95rem;
+    line-height: 1.25;
+    margin-bottom: 0;
+    letter-spacing: -0.01em;
+    margin-top: auto;
   }
 
-  /* Chevron becomes a pill toggle */
-  .service-chevron {
-    width: 32px;
-    height: 32px;
-    padding: 6px;
-    border-radius: 999px;
-    background: rgba(232, 114, 12, 0.08);
-    color: var(--color-accent);
-    margin-top: 1rem;
-    margin-left: auto;
+  /* Subtle "tap" hint — small dot indicator */
+  .service-card h3::after {
+    content: '';
     display: block;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                background 0.3s ease,
-                color 0.3s ease;
+    margin-top: 0.45rem;
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--color-accent), rgba(232, 114, 12, 0.2));
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Hover-like press feedback on tap */
   .service-card:active {
-    transform: scale(0.985);
+    transform: scale(0.97);
     transition-duration: 0.15s;
   }
 
-  /* Expanded state — glow + colored icon + bigger number */
+  /* Expanded: spans full row, becomes a rich detail panel */
   .service-card.expanded {
+    grid-column: 1 / -1;
+    padding: 1.75rem 1.5rem 1.5rem;
+    min-height: 0;
     background:
-      linear-gradient(160deg, #ffffff 0%, #ffffff 40%, rgba(232, 114, 12, 0.06) 100%);
-    box-shadow: 0 18px 50px rgba(232, 114, 12, 0.18),
+      linear-gradient(160deg, #ffffff 0%, #ffffff 45%, rgba(232, 114, 12, 0.07) 100%);
+    box-shadow: 0 20px 50px rgba(232, 114, 12, 0.2),
                 0 0 0 1px var(--color-accent);
     transform: translateY(-2px);
   }
 
-  .service-card.expanded .service-icon {
-    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
-    color: #ffffff;
-    box-shadow: 0 12px 28px rgba(232, 114, 12, 0.4);
-    transform: scale(1.06) rotate(-4deg);
+  .service-card.expanded > p {
+    display: block;
+    font-size: 0.95rem;
+    margin-top: 0.6rem;
+  }
+
+  .service-card.expanded h3 {
+    font-size: 1.2rem;
+    margin-top: 0;
+  }
+
+  .service-card.expanded h3::after {
+    width: 40px;
   }
 
   .service-card.expanded::after {
-    transform: translate(-0.25rem, 0.25rem) scale(1.25);
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 3.75rem;
     opacity: 0.7;
     background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
     -webkit-background-clip: text;
     background-clip: text;
   }
 
-  .service-card.expanded .service-chevron {
-    background: var(--color-accent);
+  .service-card.expanded .service-icon {
+    width: 56px;
+    height: 56px;
+    padding: 12px;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
     color: #ffffff;
+    box-shadow: 0 12px 28px rgba(232, 114, 12, 0.4);
+    transform: scale(1.02) rotate(-3deg);
+    animation: iconGlow 2.4s ease-in-out 0.4s infinite;
   }
 
-  /* Zig-zag entry: odd slides in from left, even from right */
+  .service-card:nth-child(even).expanded .service-icon {
+    border-radius: 16px;
+  }
+
+  /* Zig-zag entry */
   .services-grid .service-card.fade-in {
-    transform: translateX(-36px) translateY(20px);
-  }
-
-  .services-grid .service-card.fade-in:nth-child(even) {
-    transform: translateX(36px) translateY(20px);
+    transform: translateY(28px) scale(0.94);
   }
 
   .services-grid .service-card.fade-in.visible {
-    transform: translateX(0) translateY(0);
+    transform: translateY(0) scale(1);
   }
 
-  /* Stagger the reveal a bit more punchy */
   .stagger-children .fade-in:nth-child(1) { transition-delay: 0s; }
-  .stagger-children .fade-in:nth-child(2) { transition-delay: 0.08s; }
-  .stagger-children .fade-in:nth-child(3) { transition-delay: 0.16s; }
-  .stagger-children .fade-in:nth-child(4) { transition-delay: 0.24s; }
-  .stagger-children .fade-in:nth-child(5) { transition-delay: 0.32s; }
-  .stagger-children .fade-in:nth-child(6) { transition-delay: 0.40s; }
-
-  /* Subtle glow pulse on expanded icon */
-  .service-card.expanded .service-icon {
-    animation: iconGlow 2.4s ease-in-out 0.4s infinite;
-  }
+  .stagger-children .fade-in:nth-child(2) { transition-delay: 0.06s; }
+  .stagger-children .fade-in:nth-child(3) { transition-delay: 0.12s; }
+  .stagger-children .fade-in:nth-child(4) { transition-delay: 0.18s; }
+  .stagger-children .fade-in:nth-child(5) { transition-delay: 0.24s; }
+  .stagger-children .fade-in:nth-child(6) { transition-delay: 0.3s; }
 }
 
 @keyframes iconGlow {
