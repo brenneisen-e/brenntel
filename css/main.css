@@ -2734,8 +2734,16 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   }
 
   .hero .subtitle {
+    display: block;
     font-size: 0.95rem;
     white-space: pre-line;
+    max-width: none;
+    width: calc(100% + 2.5rem);
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0;
+    box-shadow: 0 10px 24px rgba(232, 114, 12, 0.22);
   }
 
   .hero-previews {
