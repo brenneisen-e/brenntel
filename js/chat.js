@@ -34,8 +34,6 @@
     if (!demoPlayed) {
       demoPlayed = true;
       playDemo();
-    } else {
-      setTimeout(function () { input.focus(); }, 280);
     }
   }
 
@@ -178,7 +176,6 @@
     );
 
     showSuggestions();
-    setTimeout(function () { input.focus(); }, 200);
   }
 
   async function sendMessage(text) {
