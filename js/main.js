@@ -105,6 +105,11 @@
     var dotsContainer = document.querySelector('.carousel-dots');
     if (!container || !dotsContainer) return;
 
+    // On mobile the carousel is replaced by the unified portrait scene
+    // (.hero-scene). CSS hides .hero-previews there via display:none, so
+    // bail before we try to measure widths on a hidden element.
+    if (getComputedStyle(container).display === 'none') return;
+
     var origItems = Array.from(container.querySelectorAll('.hero-preview'));
     var count = origItems.length;
     if (count === 0) return;
