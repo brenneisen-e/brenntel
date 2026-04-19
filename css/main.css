@@ -3864,25 +3864,23 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     animation: hs-live-pulse 1.8s ease-in-out infinite;
   }
 
-  /* Caption below — cycles through messages synced with scene */
+  /* Caption below — cycles through one-sentence descriptions in sync with the scene */
   .hs-caption {
     position: relative;
-    height: 1.2em;
-    min-height: 1.2em;
+    width: min(280px, 90vw);
+    min-height: 2.8em;
     text-align: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-light);
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-text);
+    margin-top: 0.25rem;
   }
   .hs-caption-text {
     position: absolute;
     inset: 0;
     opacity: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    transition: opacity 0.4s ease;
   }
   .hs-cap-1 { animation: hs-cap-cycle-1 22s ease-in-out infinite; }
   .hs-cap-2 { animation: hs-cap-cycle-2 22s ease-in-out infinite; }
