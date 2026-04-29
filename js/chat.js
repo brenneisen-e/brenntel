@@ -55,6 +55,34 @@
     if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
   });
 
+  // Auto-open: on desktop right after load, on mobile on first scroll.
+  // Only fires once — if the user closes the panel, we don't reopen it.
+  var autoOpened = false;
+  function autoOpen() {
+    if (autoOpened) return;
+    autoOpened = true;
+    if (!panel.classList.contains('open')) openPanel();
+  }
+
+  var isDesktop = window.matchMedia('(min-width: 601px)').matches;
+
+  if (isDesktop) {
+    // Wait for the preloader to finish (it auto-dismisses by ~3.5s).
+    var openOnLoad = function () {
+      setTimeout(autoOpen, 1200);
+    };
+    if (document.readyState === 'complete') openOnLoad();
+    else window.addEventListener('load', openOnLoad, { once: true });
+  } else {
+    var onFirstScroll = function () {
+      if (window.scrollY > 40) {
+        autoOpen();
+        window.removeEventListener('scroll', onFirstScroll);
+      }
+    };
+    window.addEventListener('scroll', onFirstScroll, { passive: true });
+  }
+
   // Append a message element to the DOM. Returns the bubble el for streaming updates.
   function appendMessage(role, text, opts) {
     opts = opts || {};
