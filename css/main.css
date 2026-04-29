@@ -1608,13 +1608,13 @@
 
 @media (max-width: 520px) {
   .chat-panel {
-    bottom: 5rem;
+    bottom: 4.75rem;
     right: 0.75rem;
-    left: 0.75rem;
-    width: auto;
-    height: min(72vh, 540px);
-    max-height: min(72vh, 540px);
-    border-radius: 20px;
+    left: auto;
+    width: min(320px, calc(100vw - 1.5rem));
+    height: min(60vh, 460px);
+    max-height: min(60vh, 460px);
+    border-radius: 18px;
   }
   .chat-fab { bottom: 1rem; right: 1rem; }
 }
