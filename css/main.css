@@ -387,10 +387,8 @@
   display: none;
 }
 
-/* Unified portrait scene — mobile only (see mobile media query) */
-.hero-scene {
-  display: none;
-}
+/* Unified portrait scene — shown on all viewports.
+   Display + sizing rules live further down (originally mobile-only). */
 
 .hero-preview {
   display: flex;
@@ -3588,15 +3586,16 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   .psm-actions { gap: 4px; }
   .psm-heart, .psm-comment, .psm-share { width: 8px; height: 8px; }
   .psm-stats { height: 2px; }
+}
 
-  /* ====== Hide the old horizontal carousel on mobile ====== */
-  .hero-previews,
-  .carousel-dots {
-    display: none !important;
-  }
+/* ====== Hide the old horizontal carousel (replaced by .hero-scene) ====== */
+.hero-previews,
+.carousel-dots {
+  display: none !important;
+}
 
-  /* ====== Unified portrait scene ====== */
-  .hero-scene {
+/* ====== Unified portrait scene ====== */
+.hero-scene {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3886,7 +3885,18 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   .hs-cap-2 { animation: hs-cap-cycle-2 22s ease-in-out infinite; }
   .hs-cap-3 { animation: hs-cap-cycle-3 22s ease-in-out infinite; }
   .hs-cap-4 { animation: hs-cap-cycle-4 22s ease-in-out infinite; }
-  .hs-cap-5 { animation: hs-cap-cycle-5 22s ease-in-out infinite; }
+.hs-cap-5 { animation: hs-cap-cycle-5 22s ease-in-out infinite; }
+
+/* Desktop: scale the unified scene up so it fills the hero better */
+@media (min-width: 601px) {
+  .hero-scene {
+    margin: 2rem auto 1.5rem;
+    transform: scale(1.2);
+    transform-origin: top center;
+  }
+  .hs-caption {
+    font-size: 1rem !important;
+  }
 }
 
 /* ====== Scene keyframes: all share 22s duration so they sync ====== */
