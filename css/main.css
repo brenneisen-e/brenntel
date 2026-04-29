@@ -2982,9 +2982,10 @@
   font-weight: 600;
   color: var(--color-text);
   transition: color 0.3s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  word-break: break-word;
+  hyphens: auto;
+  min-width: 0;
 }
 
 .chip:hover {
