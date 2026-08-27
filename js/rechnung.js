@@ -13,6 +13,10 @@
   var UNLOCK_KEY = 'brenntel-re-unlocked';
   var DRAFT_KEY = 'brenntel-re-draft';
   var SENDER_KEY = 'brenntel-re-sender';
+  // Freigabe-Wort für den Mailversand: nur in der Sitzung, nie in
+  // localStorage und nie im Quelltext — der Server prüft es gegen
+  // INVOICE_TOKEN, damit der Endpunkt kein offenes Relay ist.
+  var TOKEN_KEY = 'brenntel-re-token';
 
   /* ----------------------------------------
      Startentwurf — die aktuell offene Rechnung.
@@ -29,8 +33,16 @@
     rstreet: 'Ohlendorffs Tannen 12',
     rcity: '22359 Hamburg',
     closing: 'Vielen Dank für die gute Zusammenarbeit!',
+    remail: '',
+    mailsubject: '',
+    mailtext: 'Hallo,\n\nanbei unsere Rechnung als PDF. Bei Fragen melde dich gern jederzeit.\n\nViele Grüße\nEike und Irena',
     items: [{
-      desc: 'Dienstleistungen Website-Aufbau — Konzeption, Entwicklung und technische Umsetzung',
+      title: 'Konzeption, Gestaltung und technische Umsetzung einer Website',
+      details: 'Screendesign und responsives Layout für Desktop, Tablet und Mobile\n' +
+               'Frontend-Entwicklung inklusive Integration sämtlicher Texte und Medien\n' +
+               'Technische Grundeinrichtung: Seitenstruktur, Meta- und Open-Graph-Daten, SSL sowie datenschutzkonforme Einbindung eingesetzter Dienste\n' +
+               'Qualitätssicherung: Cross-Browser- und Gerätetests, Performance-Optimierung\n' +
+               'Launch-Begleitung und Übergabe',
       qty: '1',
       unit: 'Pauschal',
       price: '5000'
@@ -40,7 +52,8 @@
   var SENDER_FIELDS = ['company', 'owners', 'street', 'city', 'email', 'phone',
                        'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays'];
   var DRAFT_FIELDS = ['number', 'date', 'service', 'paystatus', 'paiddate',
-                      'rname', 'rextra', 'rstreet', 'rcity', 'closing'];
+                      'rname', 'rextra', 'rstreet', 'rcity', 'closing',
+                      'remail', 'mailsubject', 'mailtext'];
 
   /* ----------------------------------------
      Helfer
@@ -182,6 +195,11 @@
 
     if (!$('f-date').value) $('f-date').value = todayISO();
 
+    try {
+      var token = sessionStorage.getItem(TOKEN_KEY);
+      if (token) $('f-mailtoken').value = token;
+    } catch (_) {}
+
     var items = Array.isArray(draft.items) && draft.items.length
       ? draft.items
       : [{ desc: '', qty: '1', unit: 'Pauschal', price: '' }];
@@ -217,8 +235,11 @@
         '<span class="re-item-num"></span>' +
         '<button type="button" class="re-item-del" aria-label="Position entfernen">&times;</button>' +
       '</div>' +
-      '<label class="re-field"><span>Beschreibung</span>' +
-        '<textarea class="re-i-desc" rows="2" placeholder="Was wurde geleistet?"></textarea>' +
+      '<label class="re-field"><span>Leistung</span>' +
+        '<input type="text" class="re-i-title" placeholder="z. B. Konzeption und Umsetzung einer Website">' +
+      '</label>' +
+      '<label class="re-field"><span>Details — eine Zeile pro Punkt</span>' +
+        '<textarea class="re-i-details" rows="4" placeholder="Screendesign und responsives Layout&#10;Frontend-Entwicklung"></textarea>' +
       '</label>' +
       '<div class="re-item-grid">' +
         '<label class="re-field"><span>Menge</span>' +
@@ -230,7 +251,20 @@
       '</div>' +
       '<div class="re-item-sum">Betrag: <strong>0,00 €</strong></div>';
 
-    row.querySelector('.re-i-desc').value = data.desc || '';
+    // Ältere Entwürfe hatten nur ein desc-Feld: erste Zeile wird zum Titel
+    var title = data.title;
+    var details = data.details;
+    if (title === undefined && typeof data.desc === 'string') {
+      var lines = data.desc.split('\n');
+      title = (lines.shift() || '').trim();
+      details = lines
+        .map(function (l) { return l.replace(/^[\s·•-]+/, '').trim(); })
+        .filter(Boolean)
+        .join('\n');
+    }
+
+    row.querySelector('.re-i-title').value = title || '';
+    row.querySelector('.re-i-details').value = details || '';
     row.querySelector('.re-i-qty').value = data.qty || '1';
     row.querySelector('.re-i-unit').value = data.unit || 'Pauschal';
     row.querySelector('.re-i-price').value = data.price || '';
@@ -264,7 +298,8 @@
       itemsWrap.querySelectorAll('.re-item'),
       function (row) {
         return {
-          desc: row.querySelector('.re-i-desc').value,
+          title: row.querySelector('.re-i-title').value,
+          details: row.querySelector('.re-i-details').value,
           qty: row.querySelector('.re-i-qty').value,
           unit: row.querySelector('.re-i-unit').value,
           price: row.querySelector('.re-i-price').value
@@ -303,14 +338,18 @@
       $('f-number').value = nextNumber($('f-number').value);
       $('f-date').value = todayISO();
       $('f-paystatus').value = 'open';
-      ['service', 'paiddate', 'rname', 'rextra', 'rstreet', 'rcity'].forEach(function (key) {
+      ['service', 'paiddate', 'rname', 'rextra', 'rstreet', 'rcity',
+       'remail', 'mailsubject'].forEach(function (key) {
         $('f-' + key).value = '';
       });
       itemsWrap.innerHTML = '';
       addItem();
+      setSendStatus('', '');
       onChange();
       $('f-rname').focus();
     });
+
+    $('re-send-btn').addEventListener('click', sendMail);
 
     $('re-print-btn').addEventListener('click', function () {
       var original = document.title;
@@ -321,6 +360,115 @@
       });
       window.print();
     });
+  }
+
+  /* ----------------------------------------
+     Versand per E-Mail (Resend über /invoice-mail)
+     ---------------------------------------- */
+  function setSendStatus(text, cls) {
+    var el = $('re-send-status');
+    el.textContent = text;
+    el.className = 're-send-status' + (cls ? ' ' + cls : '');
+  }
+
+  function safeFilename(number) {
+    return 'Rechnung_' + (number || 'brenntel').replace(/[^\w.-]+/g, '_') + '.pdf';
+  }
+
+  // Erzeugt die PDF aus der Vorschau — im Aufnahme-Zustand, damit sie
+  // exakt der gedruckten Fassung entspricht.
+  function buildPdfBase64() {
+    var sheet = $('re-sheet');
+    sheet.classList.add('pdf-capture');
+
+    function done(value, isError) {
+      sheet.classList.remove('pdf-capture');
+      if (isError) throw value;
+      return value;
+    }
+
+    return html2pdf()
+      .set({
+        margin: [12, 12, 12, 12],
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      })
+      .from(sheet)
+      .outputPdf('datauristring')
+      .then(function (uri) {
+        return done(uri.substring(uri.indexOf(',') + 1), false);
+      })
+      .catch(function (err) {
+        return done(err, true);
+      });
+  }
+
+  function sendMail() {
+    var btn = $('re-send-btn');
+    var to = $('f-remail').value.trim();
+    var token = $('f-mailtoken').value.trim();
+    var number = $('f-number').value.trim();
+    var subject = $('f-mailsubject').value.trim() ||
+                  ('Rechnung ' + (number || '') + ' — brenntel mediadesign').replace(/\s+/g, ' ').trim();
+    var message = $('f-mailtext').value;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+      setSendStatus('Bitte eine gültige E-Mail-Adresse des Empfängers eingeben.', 'err');
+      $('f-remail').focus();
+      return;
+    }
+    if (!token) {
+      setSendStatus('Bitte das Freigabe-Wort eingeben (entspricht INVOICE_TOKEN in Cloudflare).', 'err');
+      $('f-mailtoken').focus();
+      return;
+    }
+    if (typeof html2pdf === 'undefined') {
+      setSendStatus('PDF-Bibliothek konnte nicht geladen werden — bitte Seite neu laden.', 'err');
+      return;
+    }
+
+    btn.disabled = true;
+    setSendStatus('PDF wird erzeugt…', 'busy');
+
+    buildPdfBase64()
+      .then(function (pdfBase64) {
+        setSendStatus('E-Mail wird gesendet…', 'busy');
+        return fetch('/invoice-mail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: token,
+            to: to,
+            subject: subject,
+            message: message,
+            filename: safeFilename(number),
+            pdfBase64: pdfBase64,
+            replyTo: $('f-email').value.trim()
+          })
+        });
+      })
+      .then(function (res) {
+        return res.text().then(function (raw) {
+          var data;
+          try { data = JSON.parse(raw); } catch (_) { data = null; }
+          if (!res.ok) {
+            throw new Error((data && (data.error || data.detail)) || ('HTTP ' + res.status));
+          }
+          return data;
+        });
+      })
+      .then(function () {
+        try { sessionStorage.setItem(TOKEN_KEY, token); } catch (_) {}
+        setSendStatus('Rechnung wurde an ' + to + ' gesendet.', 'ok');
+      })
+      .catch(function (err) {
+        setSendStatus('Versand fehlgeschlagen: ' + (err && err.message ? err.message : err), 'err');
+      })
+      .then(function () {
+        btn.disabled = false;
+      });
   }
 
   /* ----------------------------------------
@@ -369,59 +517,53 @@
     $('p-service').textContent = v.service || '—';
     $('p-taxid').textContent = v.taxid || '—';
 
-    /* --- Positionen --- */
-    var tbody = $('p-items');
-    tbody.innerHTML = '';
+    /* --- Positionen als gesetzte Blöcke --- */
+    var list = $('p-items');
+    list.innerHTML = '';
     var net = 0;
     var filled = 0;
 
+    function el(tag, cls, text) {
+      var node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
     items.forEach(function (item) {
-      var hasContent = item.desc.trim() || num(item.price) > 0;
-      if (!hasContent) return;
+      if (!item.title.trim() && !item.details.trim() && !(num(item.price) > 0)) return;
       filled++;
 
       var amount = num(item.qty) * num(item.price);
       net += amount;
 
-      var tr = document.createElement('tr');
+      var row = el('div', 're-item-row');
+      row.appendChild(el('span', 're-item-index', filled < 10 ? '0' + filled : String(filled)));
 
-      var tdPos = document.createElement('td');
-      tdPos.textContent = filled;
+      var main = el('div', 're-item-main');
+      main.appendChild(el('h3', 're-item-title', item.title.trim() || '—'));
 
-      var tdDesc = document.createElement('td');
-      tdDesc.className = 'desc';
-      tdDesc.textContent = item.desc.trim();
+      var detailLines = item.details.split('\n')
+        .map(function (line) { return line.replace(/^[\s·•-]+/, '').trim(); })
+        .filter(Boolean);
+      if (detailLines.length) {
+        var ul = el('ul', 're-item-details');
+        detailLines.forEach(function (line) { ul.appendChild(el('li', null, line)); });
+        main.appendChild(ul);
+      }
+      row.appendChild(main);
 
-      var tdQty = document.createElement('td');
-      tdQty.className = 'num';
-      tdQty.textContent = qty(num(item.qty));
+      var price = el('div', 're-item-price');
+      price.appendChild(el('span', 're-item-qty',
+        qty(num(item.qty)) + ' × ' + (item.unit.trim() || 'Pauschal')));
+      price.appendChild(el('strong', 're-item-amount', euro(amount)));
+      row.appendChild(price);
 
-      var tdUnit = document.createElement('td');
-      tdUnit.className = 'unit';
-      tdUnit.textContent = item.unit.trim();
-
-      var tdPrice = document.createElement('td');
-      tdPrice.className = 'num';
-      tdPrice.textContent = euro(num(item.price));
-
-      var tdTotal = document.createElement('td');
-      tdTotal.className = 'num';
-      tdTotal.textContent = euro(amount);
-
-      [tdPos, tdDesc, tdQty, tdUnit, tdPrice, tdTotal].forEach(function (td) {
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
+      list.appendChild(row);
     });
 
     if (!filled) {
-      var emptyRow = document.createElement('tr');
-      var emptyCell = document.createElement('td');
-      emptyCell.className = 're-doc-empty';
-      emptyCell.colSpan = 6;
-      emptyCell.textContent = 'Noch keine Positionen erfasst.';
-      emptyRow.appendChild(emptyCell);
-      tbody.appendChild(emptyRow);
+      list.appendChild(el('div', 're-doc-empty', 'Noch keine Positionen erfasst.'));
     }
 
     /* --- Summen --- */
@@ -433,6 +575,7 @@
     $('p-net').textContent = euro(net);
     $('p-vat').textContent = euro(vat);
     $('p-total').textContent = euro(total);
+    $('p-total-badge').textContent = euro(total);
 
     var hint = $('p-kleinhinweis');
     hint.hidden = !isKlein;
@@ -441,8 +584,22 @@
     /* --- Zahlung --- */
     var isPaid = v.paystatus === 'paid';
 
+    var paymentEl = $('p-payment');
+    paymentEl.textContent = '';
+
+    // Die Rechnungsnummer darf nicht umbrechen — html2canvas rendert
+    // umbrochene Tokens im PDF sonst überlagert.
+    function appendNumber(prefix, suffix) {
+      paymentEl.appendChild(document.createTextNode(prefix));
+      var nr = document.createElement('span');
+      nr.style.whiteSpace = 'nowrap';
+      nr.textContent = v.number || '';
+      paymentEl.appendChild(nr);
+      paymentEl.appendChild(document.createTextNode(suffix));
+    }
+
     if (isPaid) {
-      $('p-payment').textContent = v.paiddate
+      paymentEl.textContent = v.paiddate
         ? 'Der Rechnungsbetrag wurde am ' + formatDateDE(v.paiddate) +
           ' vollständig erhalten. Diese Rechnung dient der Dokumentation, eine weitere Zahlung ist nicht erforderlich.'
         : 'Der Rechnungsbetrag wurde bereits vollständig erhalten. Eine weitere Zahlung ist nicht erforderlich.';
@@ -454,8 +611,7 @@
         : 'Bitte überweise den Betrag ohne Abzug bis zum ' +
           formatDateDE(addDays(v.date || todayISO(), days)) +
           ' (' + days + ' Tage).';
-      $('p-payment').textContent = dueText + ' Bitte gib dabei die Rechnungsnummer ' +
-        (v.number || '') + ' an.';
+      appendNumber(dueText + ' Bitte gib dabei die Rechnungsnummer ', ' an.');
     }
 
     // Bei bereits erhaltener Zahlung wäre eine IBAN nur verwirrend
@@ -475,10 +631,12 @@
     $('p-foot-tax').textContent = v.taxid ? 'Steuernummer: ' + v.taxid : '';
     $('p-foot-contact').textContent = [v.email, v.phone].filter(Boolean).join(' · ');
 
+    $('p-badge-label').textContent = isPaid ? 'Betrag (bezahlt)' : 'Gesamtbetrag';
+
     var described = items.filter(function (item) {
-      return item.desc.trim() || num(item.price) > 0;
+      return item.title.trim() || item.details.trim() || num(item.price) > 0;
     }).every(function (item) {
-      return !!item.desc.trim();
+      return !!item.title.trim();
     });
 
     updateChecklist(v, filled, described, isPaid);
