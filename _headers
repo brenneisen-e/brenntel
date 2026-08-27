@@ -15,13 +15,15 @@
   Pragma: no-cache
   Expires: 0
 
-# CSS/JS are referenced with versioned query strings (?v=…) from the
-# no-cache HTML, so browsers may cache them for a day without going stale.
+# Revalidate CSS/JS on every load. The ?v= query strings in the HTML are
+# maintained by hand and were missed more than once, which served stale
+# styles and scripts for a day. Revalidation costs a 304 and removes that
+# whole failure mode; only the pinned vendor bundle below is cached hard.
 /css/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: no-cache
 
 /js/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: no-cache
 
 # Nach /js/* notiert, damit die längere Cache-Zeit für die Vendor-Datei gewinnt
 /js/vendor/*
