@@ -391,19 +391,29 @@
     return 'Rechnung_' + (number || 'brenntel').replace(/[^\w.-]+/g, '_') + '.pdf';
   }
 
-  // Erzeugt die PDF aus der Vorschau — im Aufnahme-Zustand, damit sie
-  // exakt der gedruckten Fassung entspricht.
-  function buildPdfBase64() {
+  // Verkleinert die Aufnahme für die Inline-Vorschau in der E-Mail
+  function shrinkToJpeg(canvas, maxWidth) {
+    if (canvas.width <= maxWidth) return canvas.toDataURL('image/jpeg', 0.86);
+    var scaled = document.createElement('canvas');
+    scaled.width = maxWidth;
+    scaled.height = Math.round(canvas.height * (maxWidth / canvas.width));
+    var ctx = scaled.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, scaled.width, scaled.height);
+    ctx.drawImage(canvas, 0, 0, scaled.width, scaled.height);
+    return scaled.toDataURL('image/jpeg', 0.86);
+  }
+
+  // Erzeugt PDF und Vorschaubild aus einer einzigen Aufnahme, damit
+  // beides exakt der gedruckten Fassung entspricht.
+  function buildOutputs() {
     var sheet = $('re-sheet');
     sheet.classList.add('pdf-capture');
 
-    function done(value, isError) {
-      sheet.classList.remove('pdf-capture');
-      if (isError) throw value;
-      return value;
-    }
+    function cleanup() { sheet.classList.remove('pdf-capture'); }
+    function strip(dataUri) { return dataUri.substring(dataUri.indexOf(',') + 1); }
 
-    return html2pdf()
+    var worker = html2pdf()
       .set({
         margin: [12, 12, 12, 12],
         image: { type: 'jpeg', quality: 0.98 },
@@ -412,12 +422,20 @@
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       })
       .from(sheet)
-      .outputPdf('datauristring')
-      .then(function (uri) {
-        return done(uri.substring(uri.indexOf(',') + 1), false);
+      .toContainer()
+      .toCanvas();
+
+    return worker.get('canvas')
+      .then(function (canvas) {
+        var preview = strip(shrinkToJpeg(canvas, 1100));
+        return worker.toPdf().outputPdf('datauristring').then(function (uri) {
+          cleanup();
+          return { pdf: strip(uri), preview: preview };
+        });
       })
       .catch(function (err) {
-        return done(err, true);
+        cleanup();
+        throw err;
       });
   }
 
@@ -446,8 +464,8 @@
     btn.disabled = true;
     setSendStatus('PDF wird erzeugt…', 'busy');
 
-    buildPdfBase64()
-      .then(function (pdfBase64) {
+    buildOutputs()
+      .then(function (out) {
         setSendStatus('E-Mail wird gesendet…', 'busy');
         return fetch('/invoice-mail', {
           method: 'POST',
@@ -459,7 +477,8 @@
             subject: subject,
             message: message,
             filename: safeFilename(number),
-            pdfBase64: pdfBase64,
+            pdfBase64: out.pdf,
+            previewBase64: out.preview,
             replyTo: $('f-email').value.trim(),
             // Für die Rechnungs-Übersicht in der Mail
             meta: {

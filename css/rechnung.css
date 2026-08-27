@@ -910,6 +910,10 @@
    ======================================== */
 .re-sheet.pdf-capture {
   width: 700px;
+  /* Das Blatt ist ein Flex-Item: ohne diese beiden Zeilen staucht es auf
+     schmalen Viewports zusammen und die PDF wird rechts abgeschnitten. */
+  min-width: 700px;
+  flex-shrink: 0;
   max-width: none;
   margin: 0;
   padding: 10px 0 0;
@@ -965,33 +969,37 @@
 /* ========================================
    Mobile
    ======================================== */
+/* Jede Blatt-Regel hier ist von .pdf-capture ausgenommen: die Aufnahme
+   rendert immer das 700px-Layout, sonst fiele die vom Handy erzeugte
+   PDF anders aus als die gedruckte. */
 @media (max-width: 700px) {
   .re-app { padding-top: 5rem; }
 
-  .re-sheet {
+  .re-sheet:not(.pdf-capture) {
     padding: 2rem 1.35rem 1.75rem;
     font-size: 12.5px;
   }
 
-  .re-doc-addr-row {
+  .re-sheet:not(.pdf-capture) .re-doc-addr-row {
     margin: 1.75rem 0;
     gap: 1.25rem;
   }
 
-  .re-doc-meta { min-width: 0; width: 100%; }
+  .re-sheet:not(.pdf-capture) .re-doc-meta { min-width: 0; width: 100%; }
 
-  .re-doc-titlebar { gap: 1rem; }
-  .re-doc-title { font-size: 1.7rem; }
+  .re-sheet:not(.pdf-capture) .re-doc-titlebar { gap: 1rem; }
+  .re-sheet:not(.pdf-capture) .re-doc-title { font-size: 1.7rem; }
 
-  .re-items-head,
-  .re-item-row {
+  .re-sheet:not(.pdf-capture) .re-items-head,
+  .re-sheet:not(.pdf-capture) .re-item-row {
     grid-template-columns: 24px minmax(0, 1fr) minmax(84px, auto);
     gap: 0.75rem;
   }
 
-  .re-item-index { font-size: 1.05rem; }
-  .re-item-amount { font-size: 13.5px; }
+  .re-sheet:not(.pdf-capture) .re-item-index { font-size: 1.05rem; }
+  .re-sheet:not(.pdf-capture) .re-item-amount { font-size: 13.5px; }
 
+  /* Editor, nicht das Blatt */
   .re-item-grid { grid-template-columns: 1fr 1fr; }
 }
 
