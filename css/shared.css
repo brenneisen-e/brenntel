@@ -230,17 +230,6 @@ select:focus-visible {
   color: var(--color-accent);
 }
 
-/* On mobile, hide the header logo while the hero title is visible —
-   it would duplicate the big "brenntel. mediadesign" headline. Fades
-   in once the user scrolls past the hero. */
-@media (max-width: 767px) {
-  .site-header:not(.scrolled) .logo {
-    opacity: 0;
-    transform: translateY(-4px);
-    pointer-events: none;
-  }
-}
-
 /* Desktop Nav */
 .nav-desktop {
   display: none;
