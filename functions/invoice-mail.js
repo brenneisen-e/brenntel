@@ -84,6 +84,115 @@ function senderDomainAllowed(from) {
   );
 }
 
+/* ----------------------------------------
+   Gebrandete HTML-Mail
+   Tabellenlayout und Inline-Styles, weil Outlook & Co. weder Flexbox,
+   Grid noch <style>-Blöcke zuverlässig unterstützen.
+   ---------------------------------------- */
+const FONT = "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
+
+function metaRow(label, value, strong) {
+  if (!value) return '';
+  return (
+    `<tr>` +
+    `<td style="padding:7px 0;font:400 13px ${FONT};color:#6f665c">${escapeHtml(label)}</td>` +
+    `<td align="right" style="padding:7px 0;font:${strong ? '700 17px' : '600 13px'} ${FONT};` +
+    `color:#14100c;white-space:nowrap">${escapeHtml(value)}</td>` +
+    `</tr>`
+  );
+}
+
+function renderEmail(message, meta, filename) {
+  // Leerzeilen trennen Absätze, einzelne Umbrüche bleiben Umbrüche
+  const paragraphs = message
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map(
+      (block) =>
+        `<p style="margin:0 0 16px;font:400 15px/1.7 ${FONT};color:#14100c">` +
+        escapeHtml(block).replace(/\n/g, '<br>') +
+        `</p>`
+    )
+    .join('');
+
+  const summary =
+    metaRow('Rechnungsnummer', meta.number) +
+    metaRow(meta.paid ? 'Betrag (bezahlt)' : 'Gesamtbetrag', meta.total, true) +
+    (meta.paid
+      ? metaRow('Erhalten am', meta.paidDate)
+      : metaRow('Zahlbar bis', meta.dueDate));
+
+  const footerLines = [
+    [meta.company, meta.owners].filter(Boolean).join(' · '),
+    [meta.street, meta.city].filter(Boolean).join(' · '),
+    meta.taxid ? 'Steuernummer: ' + meta.taxid : '',
+    [meta.email, meta.phone].filter(Boolean).join(' · '),
+  ]
+    .filter(Boolean)
+    .map(
+      (line) =>
+        `<div style="font:400 11px/1.6 ${FONT};color:#8a8074">${escapeHtml(line)}</div>`
+    )
+    .join('');
+
+  return `<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rechnung</title></head>
+<body style="margin:0;padding:0;background:#f5ecdb;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5ecdb;">
+<tr><td align="center" style="padding:32px 14px;">
+
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+       style="width:100%;max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;">
+
+  <tr><td bgcolor="#e8720c" style="height:5px;line-height:5px;font-size:0;
+      background:#e8720c;background:linear-gradient(90deg,#e8720c,#f5a623 55%,#e8720c);">&nbsp;</td></tr>
+
+  <tr><td style="padding:30px 36px 0;">
+    <div style="font:800 21px ${FONT};letter-spacing:-0.03em;color:#14100c;">
+      brenntel<span style="color:#e8720c;">.</span>
+      <span style="font-weight:300;color:#6f665c;">mediadesign</span>
+    </div>
+  </td></tr>
+
+  <tr><td style="padding:26px 36px 0;">${paragraphs}</td></tr>
+
+  ${summary
+    ? `<tr><td style="padding:10px 36px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background:#fdf6ec;border:1px solid #f3d9bb;border-radius:12px;">
+      <tr><td style="padding:16px 20px;">
+        <div style="font:700 9px ${FONT};letter-spacing:0.2em;text-transform:uppercase;
+             color:#8a8074;padding-bottom:6px;">Rechnung</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${summary}</table>
+      </td></tr>
+    </table>
+  </td></tr>`
+    : ''}
+
+  <tr><td style="padding:18px 36px 0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+           style="border:1px solid #e6ded0;border-radius:9px;">
+      <tr>
+        <td style="padding:9px 12px 9px 14px;font:400 16px ${FONT};color:#e8720c;">&#128206;</td>
+        <td style="padding:9px 16px 9px 0;font:600 13px ${FONT};color:#14100c;">
+          ${escapeHtml(filename)}
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="padding:26px 36px 30px;">
+    <div style="border-top:1px solid #e6ded0;padding-top:16px;">${footerLines}</div>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
   const origin = request.headers.get('Origin') || '';
@@ -150,20 +259,29 @@ export async function onRequest(context) {
     return jsonResponse({ error: 'Ungültiger Dateiname' }, 400, cors);
   }
 
+  const meta = (payload.meta && typeof payload.meta === 'object') ? payload.meta : {};
   const textBody = message || 'Im Anhang findest du unsere Rechnung.';
-  const htmlBody =
-    `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;` +
-    `font-size:15px;line-height:1.65;color:#1a1410">` +
-    `<p style="white-space:pre-wrap;margin:0 0 1.25rem">${escapeHtml(textBody)}</p>` +
-    `<p style="margin:0;color:#6a5e52;font-size:13px">` +
-    `Die Rechnung liegt dieser E-Mail als PDF bei.</p>` +
-    `</div>`;
+  const htmlBody = renderEmail(textBody, meta, filename);
+
+  // Klartext-Variante mit derselben Übersicht
+  const textSummary = [
+    meta.number ? 'Rechnungsnummer: ' + meta.number : '',
+    meta.total ? (meta.paid ? 'Betrag (bezahlt): ' : 'Gesamtbetrag: ') + meta.total : '',
+    meta.paid
+      ? (meta.paidDate ? 'Erhalten am: ' + meta.paidDate : '')
+      : (meta.dueDate ? 'Zahlbar bis: ' + meta.dueDate : ''),
+  ].filter(Boolean).join('\n');
+
+  const plainText =
+    textBody +
+    (textSummary ? '\n\n--\n' + textSummary : '') +
+    '\n\nAnhang: ' + filename;
 
   const mail = {
     from,
     to: [to],
     subject,
-    text: textBody,
+    text: plainText,
     html: htmlBody,
     attachments: [{ filename, content: pdfBase64 }],
   };
