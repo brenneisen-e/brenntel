@@ -994,3 +994,34 @@
 
   .re-item-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Label-Zeile mit Reset-Link (z. B. beim Nachrichtentext) */
+.re-field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.re-field-head label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+}
+
+.re-reset-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.re-reset-link:hover { color: var(--color-accent-hover); }

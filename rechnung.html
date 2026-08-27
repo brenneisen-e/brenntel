@@ -234,9 +234,13 @@
             <label class="re-field"><span>Betreff</span>
               <input type="text" id="f-mailsubject" placeholder="wird automatisch gesetzt">
             </label>
-            <label class="re-field"><span>Nachricht</span>
+            <div class="re-field">
+              <span class="re-field-head">
+                <label for="f-mailtext">Nachricht</label>
+                <button type="button" class="re-reset-link" id="re-reset-mailtext">Standardtext</button>
+              </span>
               <textarea id="f-mailtext" rows="5"></textarea>
-            </label>
+            </div>
             <button type="button" class="re-btn re-btn-primary re-send-btn" id="re-send-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
               <span class="re-send-label">Rechnung als PDF senden</span>
