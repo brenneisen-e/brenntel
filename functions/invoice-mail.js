@@ -102,9 +102,7 @@ function metaRow(label, value, strong) {
   );
 }
 
-const PREVIEW_CID = 'rechnung-vorschau';
-
-function renderEmail(message, meta, filename, hasPreview) {
+function renderEmail(message, meta, filename) {
   // Leerzeilen trennen Absätze, einzelne Umbrüche bleiben Umbrüche
   const paragraphs = message
     .split(/\n{2,}/)
@@ -174,15 +172,7 @@ function renderEmail(message, meta, filename, hasPreview) {
   </td></tr>`
     : ''}
 
-  ${hasPreview
-    ? `<tr><td style="padding:22px 36px 0;">
-    <img src="cid:${PREVIEW_CID}" alt="${escapeHtml(filename)}" width="528"
-         style="display:block;width:100%;max-width:528px;height:auto;
-                border:1px solid #e6ded0;border-radius:10px;">
-  </td></tr>`
-    : ''}
-
-  <tr><td style="padding:14px 36px 0;font:400 12px ${FONT};color:#8a8074;">
+  <tr><td style="padding:18px 36px 0;font:400 12px ${FONT};color:#8a8074;">
     &#128206; ${escapeHtml(filename)} — liegt dieser E-Mail als PDF bei.
   </td></tr>
 
@@ -227,7 +217,6 @@ export async function onRequest(context) {
   const message = (payload.message || '').toString().trim();
   const filename = (payload.filename || 'Rechnung.pdf').toString().trim();
   const pdfBase64 = (payload.pdfBase64 || '').toString();
-  const previewBase64 = (payload.previewBase64 || '').toString();
   const replyTo = (payload.replyTo || '').toString().trim();
 
   if (!isValidEmail(to)) {
@@ -261,14 +250,10 @@ export async function onRequest(context) {
   if (!/^[\w .,()-]+\.pdf$/i.test(filename)) {
     return jsonResponse({ error: 'Ungültiger Dateiname' }, 400, cors);
   }
-  if (previewBase64 &&
-      (previewBase64.length > MAX_PDF_BASE64 || !/^[A-Za-z0-9+/=]+$/.test(previewBase64))) {
-    return jsonResponse({ error: 'Vorschaubild ungültig' }, 400, cors);
-  }
 
   const meta = (payload.meta && typeof payload.meta === 'object') ? payload.meta : {};
   const textBody = message || 'Im Anhang findest du unsere Rechnung.';
-  const htmlBody = renderEmail(textBody, meta, filename, !!previewBase64);
+  const htmlBody = renderEmail(textBody, meta, filename);
 
   // Klartext-Variante mit derselben Übersicht
   const textSummary = [
@@ -290,18 +275,7 @@ export async function onRequest(context) {
     subject,
     text: plainText,
     html: htmlBody,
-    // Die PDF bleibt regulärer Anhang; das Bild wird über content_id
-    // inline im Text angezeigt statt als zweiter Anhang.
-    attachments: previewBase64
-      ? [
-          { filename, content: pdfBase64 },
-          {
-            filename: 'rechnung-vorschau.jpg',
-            content: previewBase64,
-            content_id: PREVIEW_CID,
-          },
-        ]
-      : [{ filename, content: pdfBase64 }],
+    attachments: [{ filename, content: pdfBase64 }],
   };
   if (bcc) mail.bcc = [bcc];
   if (replyTo && isValidEmail(replyTo)) mail.reply_to = replyTo;
