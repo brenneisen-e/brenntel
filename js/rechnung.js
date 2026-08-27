@@ -46,6 +46,17 @@
     }]
   };
 
+  // Neutraler Anschreiben-Text ohne Namen — für neue Rechnungen und Reset
+  var GENERIC_MAILTEXT =
+    'Hallo,\n\nanbei findest du unsere Rechnung als PDF.\n\n' +
+    'Melde dich jederzeit, wenn du Fragen hast.\n\nLiebe Grüße\nEike und Irena';
+
+  // Frühere Standardtexte: steht so etwas noch im Browser-Speicher, war es
+  // nie angepasst und wird durch den aktuellen Text ersetzt.
+  var LEGACY_MAILTEXTS = [
+    'Hallo,\n\nanbei unsere Rechnung als PDF. Bei Fragen melde dich gern jederzeit.\n\nViele Grüße\nEike und Irena'
+  ];
+
   var SENDER_FIELDS = ['company', 'owners', 'street', 'city', 'email', 'phone',
                        'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays',
                        'mailfrom', 'mailbcc'];
@@ -193,6 +204,11 @@
 
     if (!$('f-date').value) $('f-date').value = todayISO();
 
+    // Nie angepasster Alt-Text: auf den aktuellen Standard heben
+    if (LEGACY_MAILTEXTS.indexOf($('f-mailtext').value) !== -1) {
+      $('f-mailtext').value = DEFAULT_DRAFT.mailtext;
+    }
+
     var items = Array.isArray(draft.items) && draft.items.length
       ? draft.items
       : [{ desc: '', qty: '1', unit: 'Pauschal', price: '' }];
@@ -335,13 +351,18 @@
        'remail', 'mailsubject'].forEach(function (key) {
         $('f-' + key).value = '';
       });
-      $('f-mailtext').value = 'Hallo,\n\nanbei findest du unsere Rechnung als PDF.' +
-        '\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nLiebe Grüße\nEike und Irena';
+      $('f-mailtext').value = GENERIC_MAILTEXT;
       itemsWrap.innerHTML = '';
       addItem();
       setSendStatus('', '');
       onChange();
       $('f-rname').focus();
+    });
+
+    $('re-reset-mailtext').addEventListener('click', function () {
+      $('f-mailtext').value = GENERIC_MAILTEXT;
+      onChange();
+      $('f-mailtext').focus();
     });
 
     $('re-send-btn').addEventListener('click', sendMail);
