@@ -1,0 +1,60 @@
+# Auto-merge: every push to a claude/* branch lands on main automatically.
+#
+# - Merges (never force-pushes), so parallel claude branches can't erase
+#   each other's work on main.
+# - On a merge conflict the run fails visibly in the Actions tab — resolve
+#   it manually (e.g. via a pull request), then the next push merges again.
+# - Pushes made with GITHUB_TOKEN never trigger workflows, so this cannot
+#   loop on itself.
+
+name: Auto-merge claude branches to main
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+
+permissions:
+  contents: write
+
+# Serialize runs so two claude branches pushed at once merge one after another
+concurrency:
+  group: auto-merge-to-main
+  cancel-in-progress: false
+
+jobs:
+  merge-to-main:
+    # Branch deletions also fire push events — nothing to merge then
+    if: ${{ !github.event.deleted }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Merge ${{ github.ref_name }} into main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git merge --no-edit "origin/${GITHUB_REF_NAME}" -m "Auto-merge ${GITHUB_REF_NAME} into main"; then
+            echo "::error::Merge-Konflikt zwischen '${GITHUB_REF_NAME}' und 'main' — bitte manuell auflösen, z. B. per Pull Request."
+            exit 1
+          fi
+
+      - name: Push main
+        run: |
+          for attempt in 1 2 3; do
+            if git push origin main; then
+              exit 0
+            fi
+            echo "main hat sich währenddessen bewegt — hole neuen Stand (Versuch ${attempt})…"
+            git fetch origin main
+            if ! git merge --no-edit origin/main; then
+              echo "::error::Konflikt beim Nachziehen von main."
+              exit 1
+            fi
+          done
+          echo "::error::Push nach main ist mehrfach fehlgeschlagen."
+          exit 1
