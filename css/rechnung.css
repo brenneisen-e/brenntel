@@ -469,7 +469,7 @@
 }
 
 /* ========================================
-   Vorschau — A4-Blatt (immer Papierfarben)
+   Vorschau — das Dokument (immer Papierfarben)
    ======================================== */
 .re-preview {
   display: flex;
@@ -482,163 +482,268 @@
 
 .re-sheet {
   --paper: #ffffff;
-  --ink: #1a1410;
-  --ink-soft: #5f574e;
-  --rule: #dcd5c8;
-  --brand: #e8720c;
+  --ink: #14100c;
+  --muted: #6f665c;
+  --rule: #e6ded0;
+  --accent: #e8720c;
+  --tint: #fdf6ec;
 
+  position: relative;
   width: 100%;
   max-width: 860px;
   background: var(--paper);
   color: var(--ink);
-  padding: 3.5rem 3.25rem 3rem;
+  padding: 3.75rem 3.5rem 3rem;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.1);
   font-size: 13.5px;
   line-height: 1.6;
+  overflow: hidden;
 }
 
-/* Kopf */
+/* Akzentleiste an der Blattoberkante */
+.re-sheet-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--accent), #f5a623 55%, var(--accent));
+}
+
+/* Kleines Label über Blöcken */
+.re-doc-label {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.45rem;
+}
+
+/* ---------- Kopf ---------- */
 .re-doc-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--ink);
+  gap: 0.6rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--rule);
 }
 
 .re-doc-brand {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--ink);
+  letter-spacing: -0.035em;
 }
 
-.re-doc-brand span { color: var(--brand); }
+.re-doc-brand span { color: var(--accent); }
 
 .re-doc-brand em {
   font-style: normal;
   font-weight: 300;
-  color: var(--ink-soft);
+  color: var(--muted);
 }
 
 .re-doc-sender-line {
-  font-size: 10.5px;
-  color: var(--ink-soft);
-  letter-spacing: 0.01em;
+  font-size: 10px;
+  color: var(--muted);
 }
 
-/* Empfänger + Meta */
+/* ---------- Empfänger + Metadaten ---------- */
 .re-doc-addr-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 2.5rem;
-  margin: 2.75rem 0 2.5rem;
+  gap: 3rem;
+  margin: 2.5rem 0 2.75rem;
   flex-wrap: wrap;
 }
 
 .re-doc-recipient p { margin: 0; }
 
-.re-doc-r-name { font-weight: 700; }
-
-.re-doc-meta {
-  border-collapse: collapse;
-  font-size: 12.5px;
-  min-width: 250px;
+.re-doc-r-name {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
 }
 
-.re-doc-meta th {
-  text-align: left;
-  font-weight: 500;
-  color: var(--ink-soft);
-  padding: 0.18rem 1.25rem 0.18rem 0;
+.re-doc-meta {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.3rem 1.5rem;
+  margin: 0;
+  font-size: 12px;
+  min-width: 240px;
+}
+
+.re-doc-meta dt {
+  color: var(--muted);
   white-space: nowrap;
 }
 
-.re-doc-meta td {
+.re-doc-meta dd {
+  margin: 0;
   text-align: right;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  padding: 0.18rem 0;
 }
 
-/* Titel */
+/* ---------- Titelzeile mit Betrags-Badge ---------- */
+.re-doc-titlebar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.25rem;
+}
+
 .re-doc-title {
-  font-size: 1.5rem;
+  font-size: 2.15rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 1.5rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Positionstabelle */
-.re-doc-items {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12.5px;
-}
-
-.re-doc-items thead th {
-  text-align: left;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  padding: 0 0.6rem 0.5rem;
-  border-bottom: 1.5px solid var(--ink);
-}
-
-.re-doc-items thead th:first-child { padding-left: 0; }
-.re-doc-items thead th:last-child { padding-right: 0; }
-
-.re-doc-items td {
-  padding: 0.7rem 0.6rem;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-
-.re-doc-items td:first-child { padding-left: 0; }
-.re-doc-items td:last-child { padding-right: 0; }
-
-.re-doc-items .col-pos { width: 34px; }
-.re-doc-items .col-qty,
-.re-doc-items .col-unit { width: 70px; }
-.re-doc-items .col-price,
-.re-doc-items .col-total { width: 110px; text-align: right; }
-
-.re-doc-items td.num {
+.re-doc-badge {
   text-align: right;
+  padding: 0.7rem 1.1rem;
+  background: var(--tint);
+  border: 1px solid rgba(232, 114, 12, 0.2);
+  border-radius: 10px;
+}
+
+.re-doc-badge .re-doc-label { margin-bottom: 0.2rem; }
+
+.re-doc-badge strong {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.re-doc-items td.desc { white-space: pre-line; }
+/* ---------- Positionen ---------- */
+.re-items-head,
+.re-item-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) minmax(110px, auto);
+  gap: 1.25rem;
+  align-items: start;
+}
 
-.re-doc-items .re-doc-empty {
-  padding: 1.5rem 0;
-  color: var(--ink-soft);
+.re-items-head {
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid var(--ink);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.re-items-head span:last-child { text-align: right; }
+
+.re-item-row {
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Bewusst gefüllt statt -webkit-text-stroke: html2canvas rendert
+   Konturschrift nicht, die gemailte PDF hätte sonst keine Nummern. */
+.re-item-index {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.re-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.15rem;
+}
+
+.re-item-details {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.re-item-details li {
+  position: relative;
+  padding-left: 0.95rem;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Gesetzter Aufzählungspunkt statt Zeichen im Text */
+.re-item-details li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.re-item-price {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.re-item-qty {
+  display: block;
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-bottom: 0.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.re-item-amount {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.re-doc-empty {
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
   font-style: italic;
   text-align: center;
 }
 
-/* Summen */
+/* ---------- Summen ---------- */
 .re-doc-sums {
-  margin-top: 1.25rem;
+  margin-top: 1.35rem;
   margin-left: auto;
-  width: min(340px, 100%);
+  width: min(330px, 100%);
 }
 
 .re-doc-sumrow {
   display: flex;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 0.35rem 0;
+  padding: 0.3rem 0;
   font-size: 12.5px;
-  color: var(--ink-soft);
+  color: var(--muted);
 }
 
 .re-doc-sumrow span:last-child {
@@ -648,53 +753,74 @@
 
 .re-doc-total {
   margin-top: 0.4rem;
-  padding-top: 0.6rem;
+  padding-top: 0.65rem;
   border-top: 2px solid var(--ink);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--ink);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .re-doc-kleinhinweis {
-  margin-top: 0.75rem;
-  font-size: 11px;
+  margin-top: 0.7rem;
+  font-size: 10.5px;
   line-height: 1.5;
-  color: var(--ink-soft);
+  color: var(--muted);
   text-align: right;
 }
 
-/* Zahlung */
+/* ---------- Zahlung ---------- */
 .re-doc-payment {
   margin-top: 2.5rem;
-  padding: 1rem 1.25rem;
-  background: #faf6ee;
-  border-left: 3px solid var(--brand);
+  padding: 1.15rem 1.35rem;
+  background: var(--tint);
+  border-radius: 10px;
+  border: 1px solid rgba(232, 114, 12, 0.18);
   font-size: 12px;
   line-height: 1.65;
 }
 
+.re-doc-payment p { margin: 0; }
+
 .re-doc-bank {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 1.75rem;
-  margin-top: 0.5rem;
-  font-variant-numeric: tabular-nums;
+  gap: 0.6rem 2.25rem;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(232, 114, 12, 0.18);
 }
 
-/* Abschluss */
-.re-doc-closing { margin-top: 2.25rem; }
+.re-doc-bank > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.re-doc-bank em {
+  font-style: normal;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Abschluss ---------- */
+.re-doc-closing { margin-top: 2.5rem; }
 
 .re-doc-closing p { margin: 0; }
 
-.re-doc-signoff { margin-top: 1.5rem !important; }
+.re-doc-signoff { margin-top: 1.5rem !important; color: var(--muted); }
 
 .re-doc-names {
-  margin-top: 0.35rem !important;
+  margin-top: 0.3rem !important;
   font-weight: 700;
 }
 
-/* Fußzeile */
+/* ---------- Fußzeile ---------- */
 .re-doc-foot {
   margin-top: 3rem;
   padding-top: 0.85rem;
@@ -702,8 +828,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.2rem 1.5rem;
-  font-size: 10px;
-  color: var(--ink-soft);
+  font-size: 9.5px;
+  color: var(--muted);
 }
 
 /* ========================================
@@ -712,7 +838,7 @@
 @media print {
   @page {
     size: A4;
-    margin: 16mm 15mm 12mm;
+    margin: 12mm 14mm 10mm;
   }
 
   .site-header,
@@ -730,55 +856,111 @@
     padding: 0;
   }
 
-  .re-app {
-    padding: 0;
-    max-width: none;
-  }
-
-  .re-layout {
-    display: block;
-  }
-
+  .re-app { padding: 0; max-width: none; }
+  .re-layout { display: block; }
   .re-preview { display: block; }
 
   .re-sheet {
     max-width: none;
     width: auto;
     margin: 0;
-    padding: 0;
+    padding: 4mm 0 0;
     border: 0;
     border-radius: 0;
     box-shadow: none;
     font-size: 10.5pt;
     line-height: 1.5;
+    overflow: visible;
   }
 
-  .re-doc-addr-row { margin: 18mm 0 10mm; }
+  .re-sheet-bar {
+    left: 0;
+    right: 0;
+    height: 3px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 
-  /* Tabellenzeilen und Blöcke nicht über Seiten zerreißen */
-  .re-doc-items tr,
+  /* Kompakt genug, damit eine normale Rechnung auf eine Seite passt */
+  .re-doc-addr-row { margin: 8mm 0 7mm; }
+  .re-doc-titlebar { margin-bottom: 6mm; }
+  .re-item-row { padding: 3mm 0; }
+  .re-doc-sums { margin-top: 4mm; }
+  .re-doc-payment { margin-top: 6mm; }
+  .re-doc-closing { margin-top: 6mm; }
+  .re-doc-foot { margin-top: 6mm; }
+
+  .re-item-row,
   .re-doc-sums,
   .re-doc-payment,
   .re-doc-closing { break-inside: avoid; page-break-inside: avoid; }
 
-  .re-doc-items thead { display: table-header-group; }
-
-  .re-doc-payment {
-    background: #faf6ee !important;
+  .re-doc-badge,
+  .re-doc-payment,
+  .re-item-details li::before {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-
-  .re-doc-brand span,
-  .re-doc-payment {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .re-doc-foot {
-    margin-top: 12mm;
   }
 }
+
+/* ========================================
+   Aufnahme-Zustand für die gemailte PDF
+   Breite muss zur bedruckbaren A4-Fläche passen (210mm − 2×12mm
+   = 186mm ≈ 703px bei 96dpi), sonst schneidet html2pdf rechts ab.
+   ======================================== */
+.re-sheet.pdf-capture {
+  width: 700px;
+  max-width: none;
+  margin: 0;
+  padding: 10px 0 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.re-sheet.pdf-capture .re-doc-addr-row { margin: 40px 0 32px; }
+.re-sheet.pdf-capture .re-doc-titlebar { margin-bottom: 28px; }
+.re-sheet.pdf-capture .re-item-row { padding: 13px 0; }
+.re-sheet.pdf-capture .re-doc-payment { margin-top: 28px; }
+.re-sheet.pdf-capture .re-doc-closing { margin-top: 28px; }
+.re-sheet.pdf-capture .re-doc-foot { margin-top: 28px; }
+
+/* ========================================
+   E-Mail-Versand
+   ======================================== */
+.re-send-btn { align-self: flex-start; }
+
+.re-send-btn[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+
+.re-send-status {
+  font-size: 0.83rem;
+  line-height: 1.5;
+  min-height: 1.2em;
+}
+
+.re-send-status.ok { color: #1b9c3f; font-weight: 600; }
+.re-send-status.err { color: #d64545; font-weight: 600; }
+.re-send-status.busy { color: var(--color-text-light); }
+
+/* Hinweis über den Positionen */
+.re-panel-note {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--color-text-light);
+  padding: 0.7rem 0.85rem;
+  background: rgba(232, 114, 12, 0.07);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 0.25rem;
+}
+
+.re-panel-note em { font-style: italic; color: var(--color-text); }
 
 /* ========================================
    Mobile
@@ -787,7 +969,7 @@
   .re-app { padding-top: 5rem; }
 
   .re-sheet {
-    padding: 1.75rem 1.35rem;
+    padding: 2rem 1.35rem 1.75rem;
     font-size: 12.5px;
   }
 
@@ -798,21 +980,17 @@
 
   .re-doc-meta { min-width: 0; width: 100%; }
 
-  /* Feste Spaltenbreiten sprengen sonst die Blattbreite */
-  .re-doc-items { font-size: 11.5px; }
+  .re-doc-titlebar { gap: 1rem; }
+  .re-doc-title { font-size: 1.7rem; }
 
-  .re-doc-items .col-unit,
-  .re-doc-items td.unit { display: none; }
+  .re-items-head,
+  .re-item-row {
+    grid-template-columns: 24px minmax(0, 1fr) minmax(84px, auto);
+    gap: 0.75rem;
+  }
 
-  .re-doc-items .col-pos { width: 22px; }
-  .re-doc-items .col-qty { width: 42px; }
-  .re-doc-items .col-price,
-  .re-doc-items .col-total { width: auto; }
-
-  .re-doc-items thead th,
-  .re-doc-items td { padding-left: 0.3rem; padding-right: 0.3rem; }
-
-  .re-doc-items thead th { font-size: 9px; letter-spacing: 0.05em; }
+  .re-item-index { font-size: 1.05rem; }
+  .re-item-amount { font-size: 13.5px; }
 
   .re-item-grid { grid-template-columns: 1fr 1fr; }
 }

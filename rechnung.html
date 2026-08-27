@@ -198,6 +198,7 @@
         <div class="re-panel re-panel-open">
           <h2 class="re-panel-title">Positionen</h2>
           <div class="re-panel-body">
+            <p class="re-panel-note">Die Beschreibung muss Art <em>und</em> Umfang der Leistung so benennen, dass sie eindeutig und leicht nachprüfbar ist (§ 14 Abs. 4 Nr. 5 UStG) — erschöpfend muss sie nicht sein. „Dienstleistungen“ allein reicht nicht; nenne die Leistung und die wichtigsten Bestandteile, gern als Liste.</p>
             <div id="re-items"></div>
             <button type="button" class="re-btn re-btn-ghost re-add-item" id="re-add-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -212,6 +213,29 @@
             <label class="re-field"><span>Text unter der Summe</span>
               <textarea id="f-closing" rows="3">Vielen Dank für die gute Zusammenarbeit!</textarea>
             </label>
+          </div>
+        </div>
+
+        <div class="re-panel re-panel-open">
+          <h2 class="re-panel-title">Per E-Mail senden</h2>
+          <div class="re-panel-body">
+            <label class="re-field"><span>E-Mail des Empfängers</span>
+              <input type="email" id="f-remail" placeholder="name@firma.de" autocomplete="off">
+            </label>
+            <label class="re-field"><span>Betreff</span>
+              <input type="text" id="f-mailsubject" placeholder="wird automatisch gesetzt">
+            </label>
+            <label class="re-field"><span>Nachricht</span>
+              <textarea id="f-mailtext" rows="5"></textarea>
+            </label>
+            <label class="re-field"><span>Freigabe-Wort für den Versand</span>
+              <input type="password" id="f-mailtoken" placeholder="einmal pro Sitzung" autocomplete="off">
+            </label>
+            <button type="button" class="re-btn re-btn-primary re-send-btn" id="re-send-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+              <span class="re-send-label">Rechnung als PDF senden</span>
+            </button>
+            <p class="re-send-status" id="re-send-status" aria-live="polite"></p>
           </div>
         </div>
 
@@ -234,6 +258,7 @@
       <!-- ======== Live Preview / Print Sheet ======== -->
       <section class="re-preview" aria-label="Vorschau">
         <article class="re-sheet" id="re-sheet">
+          <span class="re-sheet-bar" aria-hidden="true"></span>
 
           <header class="re-doc-head">
             <div class="re-doc-brand">brenntel<span>.</span> <em>mediadesign</em></div>
@@ -241,34 +266,37 @@
           </header>
 
           <div class="re-doc-addr-row">
-            <div class="re-doc-recipient" id="p-recipient">
-              <p class="re-doc-r-name">—</p>
+            <div class="re-doc-recipient-wrap">
+              <span class="re-doc-label">Rechnung an</span>
+              <div class="re-doc-recipient" id="p-recipient">
+                <p class="re-doc-r-name">—</p>
+              </div>
             </div>
-            <table class="re-doc-meta">
-              <tbody>
-                <tr><th>Rechnungs-Nr.</th><td id="p-number">BR-2026-001</td></tr>
-                <tr><th>Rechnungsdatum</th><td id="p-date">—</td></tr>
-                <tr><th>Leistungsdatum</th><td id="p-service">—</td></tr>
-                <tr><th>Steuernummer</th><td id="p-taxid">217/5815/2041</td></tr>
-              </tbody>
-            </table>
+            <dl class="re-doc-meta">
+              <dt>Rechnungs-Nr.</dt><dd id="p-number">BR-2026-001</dd>
+              <dt>Rechnungsdatum</dt><dd id="p-date">—</dd>
+              <dt>Leistungszeitraum</dt><dd id="p-service">—</dd>
+              <dt>Steuernummer</dt><dd id="p-taxid">217/5815/2041</dd>
+            </dl>
           </div>
 
-          <h1 class="re-doc-title">Rechnung <span id="p-number-title">BR-2026-001</span></h1>
+          <div class="re-doc-titlebar">
+            <div class="re-doc-titlebar-left">
+              <span class="re-doc-label">Rechnung</span>
+              <h1 class="re-doc-title" id="p-number-title">BR-2026-001</h1>
+            </div>
+            <div class="re-doc-badge">
+              <span class="re-doc-label" id="p-badge-label">Gesamtbetrag</span>
+              <strong id="p-total-badge">0,00 €</strong>
+            </div>
+          </div>
 
-          <table class="re-doc-items">
-            <thead>
-              <tr>
-                <th class="col-pos">Pos.</th>
-                <th class="col-desc">Leistung</th>
-                <th class="col-qty">Menge</th>
-                <th class="col-unit">Einheit</th>
-                <th class="col-price">Einzelpreis</th>
-                <th class="col-total">Betrag</th>
-              </tr>
-            </thead>
-            <tbody id="p-items"></tbody>
-          </table>
+          <div class="re-items-head" aria-hidden="true">
+            <span>Pos.</span>
+            <span>Leistung</span>
+            <span>Betrag</span>
+          </div>
+          <div class="re-doc-items" id="p-items"></div>
 
           <div class="re-doc-sums">
             <div class="re-doc-sumrow" id="p-netrow" hidden>
@@ -287,11 +315,12 @@
           </div>
 
           <div class="re-doc-payment">
-            <p id="p-payment">Zahlbar ohne Abzug innerhalb von 14 Tagen. Bitte gib bei der Überweisung die Rechnungsnummer an.</p>
+            <span class="re-doc-label">Zahlung</span>
+            <p id="p-payment">Zahlbar ohne Abzug innerhalb von 14 Tagen.</p>
             <div class="re-doc-bank" id="p-bank" hidden>
-              <span><strong>IBAN:</strong> <span id="p-iban"></span></span>
-              <span id="p-holder-wrap"><strong>Kontoinhaber:</strong> <span id="p-holder"></span></span>
-              <span id="p-bankname-wrap"><strong>Bank:</strong> <span id="p-bankname"></span></span>
+              <span><em>IBAN</em><span id="p-iban"></span></span>
+              <span id="p-holder-wrap"><em>Kontoinhaber</em><span id="p-holder"></span></span>
+              <span id="p-bankname-wrap"><em>Bank</em><span id="p-bankname"></span></span>
             </div>
           </div>
 
@@ -324,6 +353,8 @@
     </div>
   </footer>
 
+  <!-- lokal eingebunden statt per CDN: kein Fremdzugriff beim Rechnungsversand -->
+  <script src="js/vendor/html2pdf.bundle.min.js"></script>
   <script src="js/shared.js?v=20260827b"></script>
   <script src="js/rechnung.js?v=20260827b"></script>
 </body>
