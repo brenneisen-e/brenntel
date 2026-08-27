@@ -13,10 +13,6 @@
   var UNLOCK_KEY = 'brenntel-re-unlocked';
   var DRAFT_KEY = 'brenntel-re-draft';
   var SENDER_KEY = 'brenntel-re-sender';
-  // Freigabe-Wort für den Mailversand: nur in der Sitzung, nie in
-  // localStorage und nie im Quelltext — der Server prüft es gegen
-  // INVOICE_TOKEN, damit der Endpunkt kein offenes Relay ist.
-  var TOKEN_KEY = 'brenntel-re-token';
 
   /* ----------------------------------------
      Startentwurf — die aktuell offene Rechnung.
@@ -51,7 +47,8 @@
   };
 
   var SENDER_FIELDS = ['company', 'owners', 'street', 'city', 'email', 'phone',
-                       'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays'];
+                       'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays',
+                       'mailfrom', 'mailbcc'];
   var DRAFT_FIELDS = ['number', 'date', 'service', 'paystatus', 'paiddate',
                       'rname', 'rextra', 'rstreet', 'rcity', 'closing', 'greeting',
                       'remail', 'mailsubject', 'mailtext'];
@@ -195,11 +192,6 @@
     });
 
     if (!$('f-date').value) $('f-date').value = todayISO();
-
-    try {
-      var token = sessionStorage.getItem(TOKEN_KEY);
-      if (token) $('f-mailtoken').value = token;
-    } catch (_) {}
 
     var items = Array.isArray(draft.items) && draft.items.length
       ? draft.items
@@ -409,7 +401,6 @@
   function sendMail() {
     var btn = $('re-send-btn');
     var to = $('f-remail').value.trim();
-    var token = $('f-mailtoken').value.trim();
     var number = $('f-number').value.trim();
     var subject = $('f-mailsubject').value.trim() ||
                   ('Rechnung ' + (number || '') + ' — brenntel mediadesign').replace(/\s+/g, ' ').trim();
@@ -420,9 +411,8 @@
       $('f-remail').focus();
       return;
     }
-    if (!token) {
-      setSendStatus('Bitte das Freigabe-Wort eingeben (entspricht INVOICE_TOKEN in Cloudflare).', 'err');
-      $('f-mailtoken').focus();
+    if (!$('f-mailfrom').value.trim()) {
+      setSendStatus('Bitte den Absender für den Versand eintragen (Panel „Absender & Konto“).', 'err');
       return;
     }
     if (typeof html2pdf === 'undefined') {
@@ -440,8 +430,9 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            token: token,
             to: to,
+            from: $('f-mailfrom').value.trim(),
+            bcc: $('f-mailbcc').value.trim(),
             subject: subject,
             message: message,
             filename: safeFilename(number),
@@ -461,7 +452,6 @@
         });
       })
       .then(function () {
-        try { sessionStorage.setItem(TOKEN_KEY, token); } catch (_) {}
         setSendStatus('Rechnung wurde an ' + to + ' gesendet.', 'ok');
       })
       .catch(function (err) {

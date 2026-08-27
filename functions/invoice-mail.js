@@ -4,34 +4,45 @@
  * Nimmt vom Rechnungsersteller (/rechnung) eine fertig gerenderte PDF
  * entgegen und verschickt sie als Anhang an die angegebene Adresse.
  *
- * Erforderliche Environment-Variablen (Cloudflare Pages → Settings →
- * Environment variables; als "Secret" anlegen, NICHT ins Repo):
+ * Einzige nötige Environment-Variable (Cloudflare Pages → Settings →
+ * Environment variables, als "Secret"):
  *   RESEND_API_KEY  — API-Key von https://resend.com
- *   INVOICE_TOKEN   — Freigabe-Wort; muss mit dem Zugangscode des
- *                     Rechnungserstellers übereinstimmen. Ohne diese
- *                     Variable lehnt der Endpunkt jeden Versand ab,
- *                     damit er nicht als offenes Mail-Relay dient.
- * Optional:
- *   RESEND_FROM     — verifizierter Absender, z. B.
- *                     "brenntel mediadesign <kontakt@brenntelmediadesign.com>"
- *   INVOICE_BCC     — Adresse für die eigene Kopie (Standard: Absender)
+ *
+ * Absender, BCC und Empfänger kommen aus dem Formular, nicht aus der
+ * Konfiguration.
+ *
+ * Missbrauchsschutz ohne weitere Konfiguration: Anfragen werden nur mit
+ * einem Origin-Header aus ALLOWED_ORIGINS angenommen, und als Absender
+ * sind nur eigene Domains erlaubt. Das hält fremde Seiten und einfache
+ * Skripte draußen; wer den Header selbst setzt, kommt daran vorbei —
+ * für echte Zugangskontrolle müsste Cloudflare Access vor /rechnung.
  */
 
 const ALLOWED_ORIGINS = [
   'https://brenntel.pages.dev',
   'https://brenntelmediadesign.com',
   'https://www.brenntelmediadesign.com',
-  'http://localhost',
+];
+
+// Absenderdomains, über die verschickt werden darf
+const ALLOWED_SENDER_DOMAINS = [
+  'brenntelmediadesign.com',
+  'brenneisen.info',
+  'resend.dev',
 ];
 
 const MAX_PDF_BASE64 = 8 * 1024 * 1024; // ~6 MB PDF
 
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (ALLOWED_ORIGINS.indexOf(origin) !== -1) return true;
+  // lokale Entwicklung
+  return /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+}
+
 function corsHeaders(origin) {
-  const allowed = ALLOWED_ORIGINS.some(
-    (o) => origin === o || origin.startsWith(o + ':') || origin.startsWith('http://localhost')
-  );
   return {
-    'Access-Control-Allow-Origin': allowed ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Origin': isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
@@ -58,17 +69,24 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-// Laufzeitkonstanter Vergleich, damit der Token nicht über die Antwortzeit erratbar wird
-function safeEqual(a, b) {
-  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
+// Akzeptiert "name@domain.de" und "Anzeigename <name@domain.de>"
+function extractEmail(value) {
+  const match = String(value).match(/<([^>]+)>\s*$/);
+  return (match ? match[1] : String(value)).trim();
+}
+
+function senderDomainAllowed(from) {
+  const email = extractEmail(from).toLowerCase();
+  if (!isValidEmail(email)) return false;
+  const domain = email.split('@')[1];
+  return ALLOWED_SENDER_DOMAINS.some(
+    (d) => domain === d || domain.endsWith('.' + d)
+  );
 }
 
 export async function onRequest(context) {
   const { request, env } = context;
-  const origin = request.headers.get('Origin') || ALLOWED_ORIGINS[0];
+  const origin = request.headers.get('Origin') || '';
   const cors = corsHeaders(origin);
 
   if (request.method === 'OPTIONS') {
@@ -76,6 +94,12 @@ export async function onRequest(context) {
   }
   if (request.method !== 'POST') {
     return jsonResponse({ error: 'Method not allowed' }, 405, cors);
+  }
+  if (!isAllowedOrigin(origin)) {
+    return jsonResponse({ error: 'Nicht berechtigt' }, 403, cors);
+  }
+  if (!env.RESEND_API_KEY) {
+    return jsonResponse({ error: 'Mail service not configured' }, 500, cors);
   }
 
   let payload;
@@ -85,24 +109,9 @@ export async function onRequest(context) {
     return jsonResponse({ error: 'Invalid request body' }, 400, cors);
   }
 
-  // --- Freigabe prüfen ---
-  if (!env.INVOICE_TOKEN) {
-    return jsonResponse(
-      { error: 'Versand nicht konfiguriert — INVOICE_TOKEN fehlt in den Cloudflare-Variablen.' },
-      503,
-      cors
-    );
-  }
-  if (!safeEqual((payload.token || '').toString(), env.INVOICE_TOKEN)) {
-    return jsonResponse({ error: 'Nicht berechtigt' }, 401, cors);
-  }
-
-  if (!env.RESEND_API_KEY) {
-    return jsonResponse({ error: 'Mail service not configured' }, 500, cors);
-  }
-
-  // --- Eingaben prüfen ---
   const to = (payload.to || '').toString().trim();
+  const from = (payload.from || '').toString().trim();
+  const bcc = (payload.bcc || '').toString().trim();
   const subject = (payload.subject || '').toString().trim();
   const message = (payload.message || '').toString().trim();
   const filename = (payload.filename || 'Rechnung.pdf').toString().trim();
@@ -111,6 +120,16 @@ export async function onRequest(context) {
 
   if (!isValidEmail(to)) {
     return jsonResponse({ error: 'Ungültige Empfängeradresse' }, 400, cors);
+  }
+  if (!senderDomainAllowed(from)) {
+    return jsonResponse(
+      { error: 'Absenderadresse gehört nicht zu einer erlaubten Domain' },
+      400,
+      cors
+    );
+  }
+  if (bcc && !isValidEmail(bcc)) {
+    return jsonResponse({ error: 'Ungültige BCC-Adresse' }, 400, cors);
   }
   if (!subject || subject.length > 300) {
     return jsonResponse({ error: 'Betreff fehlt oder ist zu lang' }, 400, cors);
@@ -130,9 +149,6 @@ export async function onRequest(context) {
   if (!/^[\w .,()-]+\.pdf$/i.test(filename)) {
     return jsonResponse({ error: 'Ungültiger Dateiname' }, 400, cors);
   }
-
-  const from = env.RESEND_FROM || 'brenntel mediadesign <onboarding@resend.dev>';
-  const bcc = env.INVOICE_BCC || null;
 
   const textBody = message || 'Im Anhang findest du unsere Rechnung.';
   const htmlBody =
