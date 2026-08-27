@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rechnung — brenntel. mediadesign</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=20260827b">
+  <link rel="stylesheet" href="css/rechnung.css?v=20260827b">
+</head>
+<body class="re-body">
+
+  <!-- ======== Header ======== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
+      <nav class="nav-desktop" aria-label="Navigation">
+        <a href="index.html">Startseite</a>
+        <a href="kva.html">KVA</a>
+      </nav>
+      <div class="header-mobile-actions">
+        <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <nav class="nav-mobile" aria-label="Mobile Navigation">
+      <div class="nav-mobile-inner">
+        <a href="index.html">
+          <span>Startseite</span>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="kva.html">
+          <span>KVA</span>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
+  </header>
+
+  <!-- ======== Code Entry Screen ======== -->
+  <section class="re-entry" id="re-entry">
+    <div class="re-entry-content">
+      <div class="re-entry-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="4" width="48" height="56" rx="4" stroke="currentColor" stroke-width="2.5"/>
+          <line x1="18" y1="16" x2="46" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="24" x2="46" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="32" x2="38" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="44" x2="30" y2="44" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="36" y1="44" x2="46" y2="44" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1 class="re-entry-title">Rechnungsersteller</h1>
+      <p class="re-entry-sub">Internes Tool — bitte Zugangscode eingeben.</p>
+
+      <form class="re-code-form" id="re-code-form" autocomplete="off">
+        <input type="password" id="re-code-input" class="re-code-input" placeholder="Zugangscode" maxlength="20" spellcheck="false" autocomplete="off" aria-label="Zugangscode">
+        <button type="submit" class="re-submit-btn">Öffnen <span aria-hidden="true">&#8594;</span></button>
+      </form>
+      <p class="re-error" id="re-error" aria-live="polite">Ungültiger Code.</p>
+    </div>
+  </section>
+
+  <!-- ======== App ======== -->
+  <main class="re-app" id="re-app" hidden>
+    <div class="re-toolbar">
+      <div class="re-toolbar-title">
+        <h1>Rechnung erstellen</h1>
+        <p>Alle Daten bleiben lokal in deinem Browser — nichts wird an einen Server geschickt.</p>
+      </div>
+      <div class="re-toolbar-actions">
+        <button type="button" class="re-btn re-btn-ghost" id="re-new-btn" title="Formular leeren und nächste Rechnungsnummer vergeben">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Neue Rechnung
+        </button>
+        <button type="button" class="re-btn re-btn-primary" id="re-print-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg>
+          Drucken / PDF speichern
+        </button>
+      </div>
+    </div>
+
+    <div class="re-layout">
+
+      <!-- ======== Editor ======== -->
+      <aside class="re-editor" aria-label="Rechnungsdaten">
+
+        <details class="re-panel" id="re-sender-panel">
+          <summary>
+            <span>Absender &amp; Konto</span>
+            <span class="re-panel-hint">wird gespeichert</span>
+          </summary>
+          <div class="re-panel-body">
+            <label class="re-field"><span>Firma</span>
+              <input type="text" id="f-company" value="Brenntel Mediadesign GbR">
+            </label>
+            <label class="re-field"><span>Inhaber:innen</span>
+              <input type="text" id="f-owners" value="Eike und Irena Brenneisen">
+            </label>
+            <div class="re-field-row">
+              <label class="re-field"><span>Straße</span>
+                <input type="text" id="f-street" value="Schirmerstr. 18">
+              </label>
+              <label class="re-field"><span>PLZ &amp; Ort</span>
+                <input type="text" id="f-city" value="50823 Köln">
+              </label>
+            </div>
+            <div class="re-field-row">
+              <label class="re-field"><span>E-Mail</span>
+                <input type="text" id="f-email" value="kontakt@brenntelmediadesign.com">
+              </label>
+              <label class="re-field"><span>Telefon</span>
+                <input type="text" id="f-phone" value="+49 171 5518420">
+              </label>
+            </div>
+            <label class="re-field"><span>Steuernummer</span>
+              <input type="text" id="f-taxid" value="217/5815/2041">
+            </label>
+            <label class="re-field"><span>IBAN</span>
+              <input type="text" id="f-iban" value="DE68 5002 4024 7862 1968 01" placeholder="DE00 0000 0000 0000 0000 00">
+            </label>
+            <div class="re-field-row">
+              <label class="re-field"><span>Kontoinhaber</span>
+                <input type="text" id="f-holder" value="Eike Brenneisen">
+              </label>
+              <label class="re-field"><span>Bank (optional)</span>
+                <input type="text" id="f-bank" placeholder="z. B. Sparkasse KölnBonn">
+              </label>
+            </div>
+            <div class="re-field-row">
+              <label class="re-field"><span>Umsatzsteuer</span>
+                <select id="f-vatmode">
+                  <option value="klein" selected>Kleinunternehmer — § 19 UStG (keine USt)</option>
+                  <option value="ust19">19 % USt ausweisen</option>
+                </select>
+              </label>
+              <label class="re-field"><span>Zahlungsziel (Tage)</span>
+                <input type="number" id="f-paydays" value="14" min="0" max="90" step="1">
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <div class="re-panel re-panel-open">
+          <h2 class="re-panel-title">Rechnung</h2>
+          <div class="re-panel-body">
+            <div class="re-field-row">
+              <label class="re-field"><span>Rechnungs-Nr.</span>
+                <input type="text" id="f-number" value="BR-2026-001">
+              </label>
+              <label class="re-field"><span>Rechnungsdatum</span>
+                <input type="date" id="f-date">
+              </label>
+            </div>
+            <label class="re-field"><span>Leistungsdatum / -zeitraum</span>
+              <input type="text" id="f-service" placeholder="z. B. August 2026 oder 12.08.2026">
+            </label>
+            <div class="re-field-row">
+              <label class="re-field"><span>Zahlungsstatus</span>
+                <select id="f-paystatus">
+                  <option value="open" selected>Offen — mit Zahlungsziel</option>
+                  <option value="paid">Bereits bezahlt</option>
+                </select>
+              </label>
+              <label class="re-field"><span>Zahlungseingang am</span>
+                <input type="date" id="f-paiddate">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="re-panel re-panel-open">
+          <h2 class="re-panel-title">Empfänger</h2>
+          <div class="re-panel-body">
+            <label class="re-field"><span>Name / Firma</span>
+              <input type="text" id="f-rname" placeholder="Max Mustermann GmbH">
+            </label>
+            <label class="re-field"><span>Zusatz (optional)</span>
+              <input type="text" id="f-rextra" placeholder="z. B. Ansprechpartner">
+            </label>
+            <div class="re-field-row">
+              <label class="re-field"><span>Straße</span>
+                <input type="text" id="f-rstreet" placeholder="Musterstraße 1">
+              </label>
+              <label class="re-field"><span>PLZ &amp; Ort</span>
+                <input type="text" id="f-rcity" placeholder="50823 Köln">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="re-panel re-panel-open">
+          <h2 class="re-panel-title">Positionen</h2>
+          <div class="re-panel-body">
+            <div id="re-items"></div>
+            <button type="button" class="re-btn re-btn-ghost re-add-item" id="re-add-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              Position hinzufügen
+            </button>
+          </div>
+        </div>
+
+        <div class="re-panel re-panel-open">
+          <h2 class="re-panel-title">Schlusstext</h2>
+          <div class="re-panel-body">
+            <label class="re-field"><span>Text unter der Summe</span>
+              <textarea id="f-closing" rows="3">Vielen Dank für die gute Zusammenarbeit!</textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="re-panel re-panel-open re-checklist-panel">
+          <h2 class="re-panel-title">Pflichtangaben (§ 14 UStG)</h2>
+          <ul class="re-checklist" id="re-checklist">
+            <li data-check="sender">Absender mit Anschrift</li>
+            <li data-check="taxid">Steuernummer</li>
+            <li data-check="recipient">Empfänger mit Anschrift</li>
+            <li data-check="number">Fortlaufende Rechnungsnummer</li>
+            <li data-check="date">Rechnungsdatum</li>
+            <li data-check="service">Leistungsdatum / -zeitraum</li>
+            <li data-check="items">Mindestens eine Position</li>
+            <li data-check="desc">Leistungsbeschreibung je Position</li>
+            <li data-check="iban">Bankverbindung (für die Zahlung)</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ======== Live Preview / Print Sheet ======== -->
+      <section class="re-preview" aria-label="Vorschau">
+        <article class="re-sheet" id="re-sheet">
+
+          <header class="re-doc-head">
+            <div class="re-doc-brand">brenntel<span>.</span> <em>mediadesign</em></div>
+            <p class="re-doc-sender-line" id="p-senderline">Brenntel Mediadesign GbR · Schirmerstr. 18 · 50823 Köln</p>
+          </header>
+
+          <div class="re-doc-addr-row">
+            <div class="re-doc-recipient" id="p-recipient">
+              <p class="re-doc-r-name">—</p>
+            </div>
+            <table class="re-doc-meta">
+              <tbody>
+                <tr><th>Rechnungs-Nr.</th><td id="p-number">BR-2026-001</td></tr>
+                <tr><th>Rechnungsdatum</th><td id="p-date">—</td></tr>
+                <tr><th>Leistungsdatum</th><td id="p-service">—</td></tr>
+                <tr><th>Steuernummer</th><td id="p-taxid">217/5815/2041</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h1 class="re-doc-title">Rechnung <span id="p-number-title">BR-2026-001</span></h1>
+
+          <table class="re-doc-items">
+            <thead>
+              <tr>
+                <th class="col-pos">Pos.</th>
+                <th class="col-desc">Leistung</th>
+                <th class="col-qty">Menge</th>
+                <th class="col-unit">Einheit</th>
+                <th class="col-price">Einzelpreis</th>
+                <th class="col-total">Betrag</th>
+              </tr>
+            </thead>
+            <tbody id="p-items"></tbody>
+          </table>
+
+          <div class="re-doc-sums">
+            <div class="re-doc-sumrow" id="p-netrow" hidden>
+              <span>Zwischensumme (netto)</span>
+              <span id="p-net">0,00 €</span>
+            </div>
+            <div class="re-doc-sumrow" id="p-vatrow" hidden>
+              <span>zzgl. 19 % USt.</span>
+              <span id="p-vat">0,00 €</span>
+            </div>
+            <div class="re-doc-sumrow re-doc-total">
+              <span>Gesamtbetrag</span>
+              <span id="p-total">0,00 €</span>
+            </div>
+            <p class="re-doc-kleinhinweis" id="p-kleinhinweis">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
+          </div>
+
+          <div class="re-doc-payment">
+            <p id="p-payment">Zahlbar ohne Abzug innerhalb von 14 Tagen. Bitte gib bei der Überweisung die Rechnungsnummer an.</p>
+            <div class="re-doc-bank" id="p-bank" hidden>
+              <span><strong>IBAN:</strong> <span id="p-iban"></span></span>
+              <span id="p-holder-wrap"><strong>Kontoinhaber:</strong> <span id="p-holder"></span></span>
+              <span id="p-bankname-wrap"><strong>Bank:</strong> <span id="p-bankname"></span></span>
+            </div>
+          </div>
+
+          <div class="re-doc-closing">
+            <p id="p-closing">Vielen Dank für die gute Zusammenarbeit!</p>
+            <p class="re-doc-signoff">Mit freundlichen Grüßen</p>
+            <p class="re-doc-names" id="p-owners">Eike und Irena Brenneisen</p>
+          </div>
+
+          <footer class="re-doc-foot">
+            <span id="p-foot-company">Brenntel Mediadesign GbR · Eike und Irena Brenneisen</span>
+            <span id="p-foot-addr">Schirmerstr. 18 · 50823 Köln</span>
+            <span id="p-foot-tax">Steuernummer: 217/5815/2041</span>
+            <span id="p-foot-contact">kontakt@brenntelmediadesign.com · +49 171 5518420</span>
+          </footer>
+
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <!-- ======== Footer ======== -->
+  <footer class="site-footer re-site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign GbR</p>
+      <div class="footer-links">
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/shared.js?v=20260827b"></script>
+  <script src="js/rechnung.js?v=20260827b"></script>
+</body>
+</html>

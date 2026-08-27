@@ -7,6 +7,11 @@
 /Kva        /kva   301
 /Kva.html   /kva   301
 
+# Case-insensitive redirects for /rechnung
+/Rechnung        /rechnung   301
+/RECHNUNG        /rechnung   301
+/Rechnung.html   /rechnung   301
+
 # Case-insensitive redirects for /API
 /api        /API   301
 /Api        /API   301
