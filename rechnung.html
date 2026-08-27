@@ -133,6 +133,12 @@
                 <input type="text" id="f-bank" placeholder="z. B. Sparkasse KölnBonn">
               </label>
             </div>
+            <label class="re-field"><span>Absender für den E-Mail-Versand</span>
+              <input type="text" id="f-mailfrom" value="brenntel mediadesign &lt;kontakt@brenntelmediadesign.com&gt;">
+            </label>
+            <label class="re-field"><span>Kopie an mich (BCC, optional)</span>
+              <input type="email" id="f-mailbcc" placeholder="kontakt@brenntelmediadesign.com">
+            </label>
             <div class="re-field-row">
               <label class="re-field"><span>Umsatzsteuer</span>
                 <select id="f-vatmode">
@@ -230,9 +236,6 @@
             </label>
             <label class="re-field"><span>Nachricht</span>
               <textarea id="f-mailtext" rows="5"></textarea>
-            </label>
-            <label class="re-field"><span>Freigabe-Wort für den Versand</span>
-              <input type="password" id="f-mailtoken" placeholder="einmal pro Sitzung" autocomplete="off">
             </label>
             <button type="button" class="re-btn re-btn-primary re-send-btn" id="re-send-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
