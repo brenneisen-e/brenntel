@@ -32,7 +32,7 @@
     greeting: 'Liebe Grüße',
     remail: '',
     mailsubject: '',
-    mailtext: 'Hallo,\n\nanbei unsere Rechnung als PDF. Bei Fragen melde dich gern jederzeit.\n\nViele Grüße\nEike und Irena',
+    mailtext: 'Hallo Malte,\n\nvielen Dank für die gute Zusammenarbeit — anbei findest du unsere Rechnung als PDF.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nLiebe Grüße\nEike und Irena',
     items: [{
       title: 'Konzeption, Gestaltung und technische Umsetzung einer Website',
       details: 'Screendesign und responsives Layout für Desktop, Tablet und Mobile\n' +
@@ -335,6 +335,8 @@
        'remail', 'mailsubject'].forEach(function (key) {
         $('f-' + key).value = '';
       });
+      $('f-mailtext').value = 'Hallo,\n\nanbei findest du unsere Rechnung als PDF.' +
+        '\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nLiebe Grüße\nEike und Irena';
       itemsWrap.innerHTML = '';
       addItem();
       setSendStatus('', '');
@@ -437,7 +439,23 @@
             message: message,
             filename: safeFilename(number),
             pdfBase64: pdfBase64,
-            replyTo: $('f-email').value.trim()
+            replyTo: $('f-email').value.trim(),
+            // Für die Rechnungs-Übersicht in der Mail
+            meta: {
+              number: number,
+              total: $('p-total').textContent,
+              paid: $('f-paystatus').value === 'paid',
+              paidDate: formatDateDE($('f-paiddate').value),
+              dueDate: formatDateDE(addDays($('f-date').value || todayISO(),
+                                            parseInt($('f-paydays').value, 10) || 0)),
+              company: $('f-company').value.trim(),
+              owners: $('f-owners').value.trim(),
+              street: $('f-street').value.trim(),
+              city: $('f-city').value.trim(),
+              email: $('f-email').value.trim(),
+              phone: $('f-phone').value.trim(),
+              taxid: $('f-taxid').value.trim()
+            }
           })
         });
       })
