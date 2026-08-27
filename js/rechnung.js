@@ -33,6 +33,7 @@
     rstreet: 'Ohlendorffs Tannen 12',
     rcity: '22359 Hamburg',
     closing: 'Vielen Dank für die gute Zusammenarbeit!',
+    greeting: 'Liebe Grüße',
     remail: '',
     mailsubject: '',
     mailtext: 'Hallo,\n\nanbei unsere Rechnung als PDF. Bei Fragen melde dich gern jederzeit.\n\nViele Grüße\nEike und Irena',
@@ -45,14 +46,14 @@
                'Launch-Begleitung und Übergabe',
       qty: '1',
       unit: 'Pauschal',
-      price: '5000'
+      price: '4975'
     }]
   };
 
   var SENDER_FIELDS = ['company', 'owners', 'street', 'city', 'email', 'phone',
                        'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays'];
   var DRAFT_FIELDS = ['number', 'date', 'service', 'paystatus', 'paiddate',
-                      'rname', 'rextra', 'rstreet', 'rcity', 'closing',
+                      'rname', 'rextra', 'rstreet', 'rcity', 'closing', 'greeting',
                       'remail', 'mailsubject', 'mailtext'];
 
   /* ----------------------------------------
@@ -625,6 +626,7 @@
 
     /* --- Abschluss + Fußzeile --- */
     $('p-closing').textContent = v.closing;
+    $('p-greeting').textContent = v.greeting || 'Liebe Grüße';
     $('p-owners').textContent = v.owners;
     $('p-foot-company').textContent = [v.company, v.owners].filter(Boolean).join(' · ');
     $('p-foot-addr').textContent = [v.street, v.city].filter(Boolean).join(' · ');
