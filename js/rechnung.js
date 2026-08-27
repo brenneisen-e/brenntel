@@ -20,10 +20,10 @@
      ---------------------------------------- */
   var DEFAULT_DRAFT = {
     number: 'BR-2026-001',
-    date: '2026-07-27',
+    date: '2026-07-20',
     service: 'Juli 2026',
-    paystatus: 'paid',
-    paiddate: '2026-07-27',
+    paystatus: 'open',
+    paiddate: '',
     rname: 'Malte Brenneisen',
     rextra: '',
     rstreet: 'Ohlendorffs Tannen 12',
