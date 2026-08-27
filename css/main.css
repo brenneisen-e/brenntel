@@ -2497,42 +2497,143 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
   }
 
+  /* Phone frame — anatomy follows the classic pure-CSS device mockups
+     (devices.css / Flowbite pattern): dark bezel frame with big radius,
+     inset screen, punch-hole camera, status bar, side buttons and a
+     home indicator. No outer shadow by design. */
   .hs-device {
     position: relative;
-    width: 220px;
-    height: 380px;
-    border-radius: 22px;
-    background: linear-gradient(160deg, #ffffff 0%, #fafafa 60%, #fff3e8 100%);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+    width: 232px;
+    height: 468px;
+    border-radius: 38px;
+    background: linear-gradient(155deg, #2b2b30 0%, #17171a 55%, #212126 100%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    padding: 9px;
     isolation: isolate;
   }
 
-  /* Browser/device top bar — first to appear */
+  /* Power button (right) */
+  .hs-device::before {
+    content: '';
+    position: absolute;
+    right: -2.5px;
+    top: 128px;
+    width: 3px;
+    height: 54px;
+    border-radius: 2px;
+    background: #2e2e33;
+  }
+
+  /* Volume rocker (left, two segments) */
+  .hs-device::after {
+    content: '';
+    position: absolute;
+    left: -2.5px;
+    top: 100px;
+    width: 3px;
+    height: 92px;
+    border-radius: 2px;
+    background: linear-gradient(
+      #2e2e33 0 40px,
+      transparent 40px 52px,
+      #2e2e33 52px 92px);
+  }
+
+  .hs-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background: linear-gradient(160deg, #ffffff 0%, #fafafa 60%, #fff3e8 100%);
+    overflow: hidden;
+  }
+
+  /* Status bar — part of the phone, always visible */
   .hs-bar {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 8px 10px;
-    background: rgba(0, 0, 0, 0.04);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    animation: hs-reveal-0 22s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    justify-content: space-between;
+    padding: 9px 16px 5px;
   }
-  .hs-bar-dot {
-    width: 6px;
-    height: 6px;
+  .hs-time {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: #1a1410;
+  }
+  .hs-punch {
+    position: absolute;
+    left: 50%;
+    top: 7px;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.15);
+    background: #0c0c10;
+    border: 1.5px solid #232328;
   }
-  .hs-bar-dot:nth-child(1) { background: #ff5f57; }
-  .hs-bar-dot:nth-child(2) { background: #febc2e; }
-  .hs-bar-dot:nth-child(3) { background: #28c840; }
-  .hs-bar-url {
-    flex: 1;
-    height: 8px;
-    margin-left: 6px;
-    border-radius: 3px;
-    background: rgba(0, 0, 0, 0.08);
+  .hs-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .hs-sig {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 1.5px;
+  }
+  .hs-sig i {
+    display: block;
+    width: 2.5px;
+    border-radius: 1px;
+    background: #1a1410;
+  }
+  .hs-sig i:nth-child(1) { height: 3px; }
+  .hs-sig i:nth-child(2) { height: 5px; }
+  .hs-sig i:nth-child(3) { height: 7px; }
+  .hs-sig i:nth-child(4) { height: 9px; }
+  .hs-batt {
+    position: relative;
+    width: 16px;
+    height: 8.5px;
+    border: 1px solid rgba(26, 20, 16, 0.45);
+    border-radius: 2.5px;
+    padding: 1px;
+    display: flex;
+    align-items: center;
+  }
+  .hs-batt::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.5px;
+    height: 3.5px;
+    border-radius: 1px;
+    background: rgba(26, 20, 16, 0.45);
+  }
+  .hs-batt i {
+    display: block;
+    height: 100%;
+    width: 72%;
+    border-radius: 1.5px;
+    background: #28c840;
+  }
+
+  /* Home indicator */
+  .hs-home {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 66px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(26, 20, 16, 0.22);
+    z-index: 5;
   }
 
   /* Page body — scrolling content layout */
@@ -2684,8 +2785,8 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   /* Floating chat widget in bottom-right corner */
   .hs-chat {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 16px;
+    right: 11px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -2732,8 +2833,8 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   /* Live / uptime indicator in top-right */
   .hs-live {
     position: absolute;
-    top: 34px;
-    right: 10px;
+    top: 30px;
+    right: 11px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -2791,13 +2892,6 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 /* ====== Scene keyframes: all share 22s duration so they sync ====== */
 /* Pattern per keyframe: hide → appear at N% → hold → fade at 96% */
 
-/* 0%: browser frame comes in immediately */
-@keyframes hs-reveal-0 {
-  0%   { opacity: 0; transform: translateY(4px); }
-  4%   { opacity: 1; transform: none; }
-  96%  { opacity: 1; transform: none; }
-  100% { opacity: 0; transform: translateY(-3px); }
-}
 /* 4s / 18%: nav */
 @keyframes hs-reveal-1 {
   0%, 16% { opacity: 0; transform: translateY(6px); }
@@ -3348,8 +3442,8 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   .hero-facts { justify-content: flex-start; }
 
   .hero-visual .hs-device {
-    transform: scale(1.12);
-    margin: 1.5rem 0 2rem;
+    transform: scale(1.05);
+    margin: 1rem 0 1.5rem;
   }
 
   .scroll-indicator { display: flex; }
