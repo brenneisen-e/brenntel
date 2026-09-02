@@ -8,8 +8,10 @@
      KVA Registry — add new KVA codes here
      ---------------------------------------- */
   var VALID_CODES = {
-    'KVA-AF-2602': true
+    'KVA-AF-2602': 'kva.html',
+    'KVA-FA-2609': 'kva-feuerwehr.html'
   };
+  var THIS_PAGE = 'kva.html';
 
   /* ----------------------------------------
      DOM References
@@ -117,7 +119,13 @@
     if (VALID_CODES[code]) {
       codeInput.classList.add('success');
       codeInput.disabled = true;
+      var target = VALID_CODES[code];
       setTimeout(function () {
+        // Kostenvoranschläge mit eigener Seite werden dorthin weitergeleitet
+        if (target !== THIS_PAGE) {
+          window.location.href = target;
+          return;
+        }
         launchTransition();
       }, 400);
     } else {

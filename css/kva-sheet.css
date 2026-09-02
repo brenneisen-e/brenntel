@@ -1,0 +1,255 @@
+/* ========================================
+   Kostenvoranschlag als Blatt — ergänzt rechnung.css
+   Gleiche Papieroptik wie die Rechnung, plus Leistungsbeschreibung,
+   Seitenstruktur, Zahlungsschritte und Konditionen.
+   ======================================== */
+
+.ks-app { max-width: 1000px; }
+
+.ks-preview { display: block; }
+
+.ks-sheet { margin: 0 auto; }
+
+/* ---------- Titel ---------- */
+.ks-title {
+  font-size: 1.7rem;
+  line-height: 1.12;
+}
+
+.ks-subtitle {
+  margin: 0.55rem 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.re-doc-titlebar { align-items: flex-start; }
+
+/* ---------- Anschreiben ---------- */
+.ks-intro p { margin: 0 0 0.75rem; }
+.ks-intro p:last-child { margin-bottom: 0; }
+
+/* ---------- Abschnitte ---------- */
+.ks-section { margin-top: 2.5rem; }
+
+.ks-h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 1.1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.ks-h2-num {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.ks-h2-note {
+  margin-left: auto;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Leistungsbeschreibung ---------- */
+.ks-service {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ks-service:last-child { border-bottom: 0; }
+
+.ks-h3 {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.ks-list { margin-top: 0; }
+
+/* ---------- Seitenstruktur ---------- */
+.ks-pages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.ks-page {
+  padding: 0.75rem 0.9rem;
+  background: var(--tint);
+  border: 1px solid rgba(232, 114, 12, 0.16);
+  border-radius: 8px;
+}
+
+.ks-page strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.ks-page p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- Kalkulation ---------- */
+.ks-section-calc .re-items-head { margin-top: -0.25rem; }
+
+.ks-section-calc .re-doc-sums { width: min(360px, 100%); }
+
+.re-item-row { break-inside: avoid; page-break-inside: avoid; }
+
+/* ---------- Zahlung ---------- */
+.ks-payment { margin-top: 0; }
+
+.ks-pay-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+  margin-top: 0.35rem;
+}
+
+.ks-pay-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.ks-pay-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ks-pay-step strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ks-pay-step p {
+  margin: 0.1rem 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Konditionen ---------- */
+.ks-conditions {
+  margin: 1.35rem 0 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ks-condition {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 1.25rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--rule);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ks-condition:last-child { border-bottom: 0; }
+
+.ks-condition dt {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 0.25em;
+}
+
+.ks-condition dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+/* ---------- Abschluss ---------- */
+.ks-company {
+  margin-top: 0.1rem !important;
+  color: var(--muted);
+}
+
+.ks-legal {
+  margin: 2rem 0 0;
+  font-size: 9.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ========================================
+   Druck — Blatt über mehrere A4-Seiten
+   ======================================== */
+@media print {
+  .ks-toolbar { display: none !important; }
+
+  .ks-sheet { font-size: 10pt; }
+  .ks-sheet .re-item-row { padding: 2.6mm 0; }
+  .ks-sheet .re-doc-addr-row { margin: 7mm 0 6mm; }
+  .ks-sheet .re-doc-titlebar { margin-bottom: 5mm; }
+  .ks-page { padding: 2.2mm 3mm; }
+  .ks-section { margin-top: 6mm; }
+  .ks-h2 { break-after: avoid; page-break-after: avoid; }
+  .ks-service,
+  .ks-page,
+  .ks-payment,
+  .ks-conditions { break-inside: avoid; page-break-inside: avoid; }
+  .re-doc-items { break-inside: auto; page-break-inside: auto; }
+
+  .ks-page,
+  .ks-pay-num {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ========================================
+   Aufnahme-Zustand für die PDF (html2pdf)
+   ======================================== */
+.re-sheet.pdf-capture .ks-section { margin-top: 26px; }
+.re-sheet.pdf-capture .ks-service { padding: 9px 0; }
+
+/* ========================================
+   Mobile
+   ======================================== */
+@media (max-width: 700px) {
+  .re-sheet:not(.pdf-capture) .ks-service,
+  .re-sheet:not(.pdf-capture) .ks-condition {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .re-sheet:not(.pdf-capture) .ks-pages,
+  .re-sheet:not(.pdf-capture) .ks-pay-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .re-sheet:not(.pdf-capture) .ks-title { font-size: 1.35rem; }
+}
