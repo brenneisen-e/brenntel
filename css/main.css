@@ -1765,6 +1765,12 @@
     max-width: none;
     justify-self: stretch;
   }
+  /* Bleibt der Teaser am Ende allein in seiner Reihe, steht er mittig über beiden Spalten */
+  .work-grid .work-card-teaser:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: 680px;
+    justify-self: center;
+  }
 }
 
 /* Mobile refinements */
@@ -2423,7 +2429,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     gap: 1rem;
     margin: 1.25rem auto 1rem;
     opacity: 0;
-    animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+    animation: fadeUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
   }
 
   /* Phone frame — anatomy follows the classic pure-CSS device mockups
@@ -2821,84 +2827,83 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 /* ====== Scene keyframes: all share 22s duration so they sync ====== */
 /* Pattern per keyframe: hide → appear at N% → hold → fade at 96% */
 
-/* 4s / 18%: nav */
+/* sofort: status bar + nav */
 @keyframes hs-reveal-1 {
-  0%, 16% { opacity: 0; transform: translateY(6px); }
-  21%     { opacity: 1; transform: none; }
+  0%      { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
-/* 5s / 23%: hero block */
+/* ~1s: hero block */
 @keyframes hs-reveal-2 {
-  0%, 21% { opacity: 0; transform: translateY(6px); }
-  26%     { opacity: 1; transform: none; }
+  0%, 2%  { opacity: 0; transform: translateY(6px); }
+  6%      { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
-/* 7-8s / 32-37%: cards cascade */
+/* 2-3s: cards cascade */
 @keyframes hs-reveal-3a {
-  0%, 30% { opacity: 0; transform: translateY(8px) scale(0.9); }
-  35%     { opacity: 1; transform: none; }
+  0%, 6%  { opacity: 0; transform: translateY(8px) scale(0.9); }
+  10%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
 @keyframes hs-reveal-3b {
-  0%, 33% { opacity: 0; transform: translateY(8px) scale(0.9); }
-  38%     { opacity: 1; transform: none; }
+  0%, 8%  { opacity: 0; transform: translateY(8px) scale(0.9); }
+  12%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
 @keyframes hs-reveal-3c {
-  0%, 36% { opacity: 0; transform: translateY(8px) scale(0.9); }
-  41%     { opacity: 1; transform: none; }
+  0%, 10% { opacity: 0; transform: translateY(8px) scale(0.9); }
+  14%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
-/* 9s / 41%: text content */
+/* 3.5s: text content */
 @keyframes hs-reveal-4 {
-  0%, 40% { opacity: 0; transform: translateY(6px); }
-  45%     { opacity: 1; transform: none; }
+  0%, 12% { opacity: 0; transform: translateY(6px); }
+  16%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
-/* 10-11s / 45-50%: gallery */
+/* 4s: gallery */
 @keyframes hs-reveal-4b {
-  0%, 45% { opacity: 0; transform: translateX(-6px); }
-  50%     { opacity: 1; transform: none; }
+  0%, 15% { opacity: 0; transform: translateX(-6px); }
+  19%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; }
 }
 @keyframes hs-reveal-4c {
-  0%, 48% { opacity: 0; transform: translateX(6px); }
-  53%     { opacity: 1; transform: none; }
+  0%, 17% { opacity: 0; transform: translateX(6px); }
+  21%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; }
 }
-/* 12s / 55%: palette */
+/* 5s: palette */
 @keyframes hs-reveal-5 {
-  0%, 53% { opacity: 0; transform: translateY(6px); }
-  59%     { opacity: 1; transform: none; }
+  0%, 20% { opacity: 0; transform: translateY(6px); }
+  24%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
-/* 13s / 60%: social */
+/* 6s: social */
 @keyframes hs-reveal-5b {
-  0%, 58% { opacity: 0; transform: translateY(6px); }
-  64%     { opacity: 1; transform: none; }
+  0%, 23% { opacity: 0; transform: translateY(6px); }
+  27%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translateY(-3px); }
 }
-/* 15s / 68%: chat pops from corner */
+/* 7s: chat pops from corner */
 @keyframes hs-reveal-6 {
-  0%, 66% { opacity: 0; transform: translate(10px, 14px) scale(0.7); }
-  74%     { opacity: 1; transform: none; }
+  0%, 26% { opacity: 0; transform: translate(10px, 14px) scale(0.7); }
+  32%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; transform: translate(4px, 4px) scale(0.9); }
 }
-/* 17s / 78%: live indicator */
+/* 8s: live indicator */
 @keyframes hs-reveal-6b {
-  0%, 76% { opacity: 0; transform: scale(0.7); }
-  82%     { opacity: 1; transform: none; }
+  0%, 31% { opacity: 0; transform: scale(0.7); }
+  36%     { opacity: 1; transform: none; }
   96%     { opacity: 1; transform: none; }
   100%    { opacity: 0; }
 }
