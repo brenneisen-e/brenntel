@@ -1162,77 +1162,6 @@
 }
 
 /* ========================================
-   Marquee Ticker
-   ======================================== */
-.marquee-section {
-  position: relative;
-  padding: 2.25rem 0;
-  background: var(--color-text);
-  color: var(--color-bg);
-  overflow: hidden;
-  border-top: 1px solid var(--color-text);
-  border-bottom: 1px solid var(--color-text);
-}
-
-:root[data-theme="dark"] .marquee-section {
-  background: var(--color-accent);
-  color: #ffffff;
-  border-color: var(--color-accent);
-}
-
-.marquee {
-  display: flex;
-  overflow: hidden;
-  position: relative;
-  mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
-}
-
-.marquee-track {
-  display: flex;
-  align-items: center;
-  gap: 2.2rem;
-  padding-right: 2.2rem;
-  white-space: nowrap;
-  animation: marqueeScroll 38s linear infinite;
-  will-change: transform;
-}
-
-.marquee-section:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-.marquee-item {
-  font-size: clamp(1.8rem, 5vw, 3.2rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  text-transform: uppercase;
-  font-style: italic;
-}
-
-.marquee-dot {
-  color: var(--color-accent);
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-}
-
-:root[data-theme="dark"] .marquee-dot {
-  color: #1a1410;
-}
-
-@keyframes marqueeScroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
-}
-
-/* ========================================
    About Section (founder cards)
    ======================================== */
 .about {
@@ -3290,7 +3219,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 /* ============================================================
    AGENCY REDESIGN LAYER (2026-08)
    Split hero with word rotator, editorial section heads,
-   marquee, process, FAQ, CTA banner, structured footer.
+   process, FAQ, CTA banner, structured footer.
    Appended after the base styles — later rules win on purpose.
    ============================================================ */
 
