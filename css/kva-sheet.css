@@ -24,6 +24,11 @@
 
 .re-doc-titlebar { align-items: flex-start; }
 
+/* Mehr Luft zwischen Anschrift und Titelblock */
+.ks-sheet .re-doc-addr-row { margin: 3rem 0 3.75rem; }
+.ks-sheet .re-doc-titlebar { margin-bottom: 3rem; }
+.ks-sheet .ks-intro + .ks-section { margin-top: 3rem; }
+
 /* ---------- Anschreiben ---------- */
 .ks-intro p { margin: 0 0 0.75rem; }
 .ks-intro p:last-child { margin-bottom: 0; }
@@ -212,8 +217,9 @@
 
   .ks-sheet { font-size: 10pt; }
   .ks-sheet .re-item-row { padding: 2.6mm 0; }
-  .ks-sheet .re-doc-addr-row { margin: 7mm 0 6mm; }
-  .ks-sheet .re-doc-titlebar { margin-bottom: 5mm; }
+  .ks-sheet .re-doc-addr-row { margin: 10mm 0 13mm; }
+  .ks-sheet .re-doc-titlebar { margin-bottom: 10mm; }
+  .ks-sheet .ks-intro + .ks-section { margin-top: 9mm; }
   .ks-page { padding: 2.2mm 3mm; }
   .ks-section { margin-top: 6mm; }
   .ks-h2 { break-after: avoid; page-break-after: avoid; }
@@ -233,6 +239,8 @@
 /* ========================================
    Aufnahme-Zustand für die PDF (html2pdf)
    ======================================== */
+.re-sheet.pdf-capture .re-doc-addr-row { margin: 40px 0 48px; }
+.re-sheet.pdf-capture .re-doc-titlebar { margin-bottom: 40px; }
 .re-sheet.pdf-capture .ks-section { margin-top: 26px; }
 .re-sheet.pdf-capture .ks-service { padding: 9px 0; }
 
