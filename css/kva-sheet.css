@@ -84,6 +84,13 @@
 .ks-list { margin-top: 0; }
 
 /* ---------- Seitenstruktur ---------- */
+.ks-note {
+  margin: -0.35rem 0 0.9rem;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
 .ks-pages {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
