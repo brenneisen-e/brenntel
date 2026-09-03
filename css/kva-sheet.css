@@ -10,6 +10,14 @@
 
 .ks-sheet { margin: 0 auto; }
 
+/* ---------- Mailversand ---------- */
+.ks-mail {
+  max-width: 860px;
+  margin: 0 auto 1.5rem;
+}
+
+.ks-mail .re-panel-body { padding-top: 0.25rem; }
+
 /* ---------- Titel ---------- */
 .ks-title {
   font-size: 1.7rem;
@@ -220,7 +228,8 @@
    Druck — Blatt über mehrere A4-Seiten
    ======================================== */
 @media print {
-  .ks-toolbar { display: none !important; }
+  .ks-toolbar,
+  .ks-mail { display: none !important; }
 
   .ks-sheet { font-size: 10pt; }
   .ks-sheet .re-item-row { padding: 2.6mm 0; }

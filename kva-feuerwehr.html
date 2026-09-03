@@ -58,6 +58,41 @@
       </div>
     </div>
 
+    <details class="re-panel ks-mail" id="ks-mail">
+      <summary>Per E-Mail senden <span class="re-panel-hint">PDF wird angehängt</span></summary>
+      <div class="re-panel-body">
+        <div class="re-field-row">
+          <label class="re-field"><span>Empfänger</span>
+            <input type="email" id="ks-mail-to" value="eike@brenneisen.info" autocomplete="off">
+          </label>
+          <label class="re-field"><span>Absender</span>
+            <input type="text" id="ks-mail-from" value="brenntel mediadesign &lt;kontakt@brenntelmediadesign.com&gt;" autocomplete="off">
+          </label>
+        </div>
+        <label class="re-field"><span>Betreff</span>
+          <input type="text" id="ks-mail-subject" value="Kostenvoranschlag KVA-FA-2609 – Neue Website der Freiwilligen Feuerwehr Ahrensburg" autocomplete="off">
+        </label>
+        <label class="re-field"><span>Nachricht</span>
+          <textarea id="ks-mail-text" rows="11">Sehr geehrter Herr Stephani,
+
+vielen Dank für das gute Gespräch und Ihr Interesse an einer Zusammenarbeit. Wie besprochen erhalten Sie anbei unseren Kostenvoranschlag für die Neukonzeption und individuelle Entwicklung des Webauftritts der Freiwilligen Feuerwehr Ahrensburg als PDF.
+
+Der Kostenvoranschlag enthält die Leistungsbeschreibung, einen exemplarischen Vorschlag zur Seitenstruktur, die Kalkulation sowie die Konditionen. Für Rückfragen oder ein gemeinsames Durchsprechen der einzelnen Punkte stehen wir jederzeit gerne zur Verfügung.
+
+Wir würden uns freuen, das Projekt gemeinsam mit Ihnen umzusetzen.
+
+Mit freundlichen Grüßen
+Irena Brenneisen
+Brenntel Mediadesign GbR</textarea>
+        </label>
+        <button type="button" class="re-btn re-btn-primary re-send-btn" id="ks-send-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <span>Kostenvoranschlag als PDF senden</span>
+        </button>
+        <p class="re-send-status" id="ks-send-status" aria-live="polite"></p>
+      </div>
+    </details>
+
     <section class="re-preview ks-preview" aria-label="Kostenvoranschlag">
       <article class="re-sheet ks-sheet" id="ks-sheet">
         <span class="re-sheet-bar" aria-hidden="true"></span>

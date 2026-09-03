@@ -1,8 +1,9 @@
 /**
- * Cloudflare Pages Function — Rechnungsversand via Resend
+ * Cloudflare Pages Function — Dokumentversand via Resend
  *
- * Nimmt vom Rechnungsersteller (/rechnung) eine fertig gerenderte PDF
- * entgegen und verschickt sie als Anhang an die angegebene Adresse.
+ * Nimmt vom Rechnungsersteller (/rechnung) oder einer KVA-Seite eine fertig
+ * gerenderte PDF entgegen und verschickt sie als Anhang an die angegebene
+ * Adresse. meta.kind = 'kva' schaltet die Beschriftung auf Kostenvoranschlag.
  *
  * Einzige nötige Environment-Variable (Cloudflare Pages → Settings →
  * Environment variables, als "Secret"):
@@ -102,7 +103,28 @@ function metaRow(label, value, strong) {
   );
 }
 
+// Beschriftungen je Dokumentart
+function labelsFor(meta) {
+  if (meta.kind === 'kva') {
+    return {
+      title: 'Kostenvoranschlag',
+      number: 'Referenz',
+      total: 'Gesamtbetrag',
+      due: 'Gültig bis',
+      fallback: 'Im Anhang finden Sie unseren Kostenvoranschlag.',
+    };
+  }
+  return {
+    title: 'Rechnung',
+    number: 'Rechnungsnummer',
+    total: 'Gesamtbetrag',
+    due: 'Zahlbar bis',
+    fallback: 'Im Anhang findest du unsere Rechnung.',
+  };
+}
+
 function renderEmail(message, meta, filename) {
+  const L = labelsFor(meta);
   // Leerzeilen trennen Absätze, einzelne Umbrüche bleiben Umbrüche
   const paragraphs = message
     .split(/\n{2,}/)
@@ -117,11 +139,11 @@ function renderEmail(message, meta, filename) {
     .join('');
 
   const summary =
-    metaRow('Rechnungsnummer', meta.number) +
-    metaRow(meta.paid ? 'Betrag (bezahlt)' : 'Gesamtbetrag', meta.total, true) +
+    metaRow(L.number, meta.number) +
+    metaRow(meta.paid ? 'Betrag (bezahlt)' : L.total, meta.total, true) +
     (meta.paid
       ? metaRow('Erhalten am', meta.paidDate)
-      : metaRow('Zahlbar bis', meta.dueDate));
+      : metaRow(L.due, meta.dueDate));
 
   const footerLines = [
     [meta.company, meta.owners].filter(Boolean).join(' · '),
@@ -139,7 +161,7 @@ function renderEmail(message, meta, filename) {
   return `<!DOCTYPE html>
 <html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rechnung</title></head>
+<title>${escapeHtml(L.title)}</title></head>
 <body style="margin:0;padding:0;background:#f5ecdb;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5ecdb;">
 <tr><td align="center" style="padding:32px 14px;">
@@ -165,7 +187,7 @@ function renderEmail(message, meta, filename) {
            style="background:#fdf6ec;border:1px solid #f3d9bb;border-radius:12px;">
       <tr><td style="padding:16px 20px;">
         <div style="font:700 9px ${FONT};letter-spacing:0.2em;text-transform:uppercase;
-             color:#8a8074;padding-bottom:6px;">Rechnung</div>
+             color:#8a8074;padding-bottom:6px;">${escapeHtml(L.title)}</div>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${summary}</table>
       </td></tr>
     </table>
@@ -252,16 +274,17 @@ export async function onRequest(context) {
   }
 
   const meta = (payload.meta && typeof payload.meta === 'object') ? payload.meta : {};
-  const textBody = message || 'Im Anhang findest du unsere Rechnung.';
+  const L = labelsFor(meta);
+  const textBody = message || L.fallback;
   const htmlBody = renderEmail(textBody, meta, filename);
 
   // Klartext-Variante mit derselben Übersicht
   const textSummary = [
-    meta.number ? 'Rechnungsnummer: ' + meta.number : '',
-    meta.total ? (meta.paid ? 'Betrag (bezahlt): ' : 'Gesamtbetrag: ') + meta.total : '',
+    meta.number ? L.number + ': ' + meta.number : '',
+    meta.total ? (meta.paid ? 'Betrag (bezahlt): ' : L.total + ': ') + meta.total : '',
     meta.paid
       ? (meta.paidDate ? 'Erhalten am: ' + meta.paidDate : '')
-      : (meta.dueDate ? 'Zahlbar bis: ' + meta.dueDate : ''),
+      : (meta.dueDate ? L.due + ': ' + meta.dueDate : ''),
   ].filter(Boolean).join('\n');
 
   const plainText =
