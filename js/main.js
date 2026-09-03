@@ -214,7 +214,7 @@
     function fitAll() {
       viewports.forEach(function (vp) {
         var iframe = vp.querySelector('iframe');
-        if (!iframe) return;
+        if (!iframe) return; // statische Vorschaubilder brauchen keine Skalierung
         var w = vp.clientWidth;
         var h = vp.clientHeight;
         if (w === 0 || h === 0) return;
@@ -224,15 +224,16 @@
       });
     }
 
-    // Mark iframes as loaded to fade them in
+    // Mark previews (iframe or image) as loaded to fade them in
     viewports.forEach(function (vp) {
-      var iframe = vp.querySelector('iframe');
+      var iframe = vp.querySelector('iframe, img');
       if (!iframe) return;
       function markLoaded() {
         iframe.classList.add('loaded');
         vp.classList.add('is-loaded');
       }
       iframe.addEventListener('load', markLoaded);
+      if (iframe.tagName === 'IMG' && iframe.complete && iframe.naturalWidth > 0) markLoaded();
       // Safety: if load doesn't fire within 6s, reveal anyway
       setTimeout(function () {
         if (!iframe.classList.contains('loaded')) markLoaded();
