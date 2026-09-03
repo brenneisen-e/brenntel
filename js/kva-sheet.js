@@ -75,12 +75,19 @@
   if (sendBtn) {
     sendBtn.addEventListener('click', function () {
       var to = val('ks-mail-to');
+      var cc = val('ks-mail-cc');
       var from = val('ks-mail-from');
       var subject = val('ks-mail-subject');
       var message = document.getElementById('ks-mail-text').value;
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
         setSendStatus('Bitte eine gültige Empfängeradresse eingeben.', 'err');
+        return;
+      }
+      var ccList = cc ? cc.split(/[,;\s]+/).filter(Boolean) : [];
+      var badCc = ccList.filter(function (a) { return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a); });
+      if (badCc.length) {
+        setSendStatus('Ungültige CC-Adresse: ' + badCc.join(', '), 'err');
         return;
       }
       if (!from) {
@@ -108,6 +115,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               to: to,
+              cc: ccList.join(','),
               from: from,
               subject: subject,
               message: message,
@@ -140,7 +148,7 @@
           });
         })
         .then(function () {
-          setSendStatus('Kostenvoranschlag wurde an ' + to + ' gesendet.', 'ok');
+          setSendStatus('Kostenvoranschlag wurde an ' + to + (ccList.length ? ' (CC: ' + ccList.join(', ') + ')' : '') + ' gesendet.', 'ok');
         })
         .catch(function (err) {
           setSendStatus('Versand fehlgeschlagen: ' + (err && err.message ? err.message : err), 'err');

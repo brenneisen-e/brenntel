@@ -235,6 +235,8 @@ export async function onRequest(context) {
   const to = (payload.to || '').toString().trim();
   const from = (payload.from || '').toString().trim();
   const bcc = (payload.bcc || '').toString().trim();
+  // CC: eine Adresse oder mehrere, durch Komma/Semikolon getrennt
+  const cc = (payload.cc || '').toString().split(/[,;\s]+/).map((a) => a.trim()).filter(Boolean);
   const subject = (payload.subject || '').toString().trim();
   const message = (payload.message || '').toString().trim();
   const filename = (payload.filename || 'Rechnung.pdf').toString().trim();
@@ -253,6 +255,9 @@ export async function onRequest(context) {
   }
   if (bcc && !isValidEmail(bcc)) {
     return jsonResponse({ error: 'Ungültige BCC-Adresse' }, 400, cors);
+  }
+  if (cc.length > 10 || cc.some((a) => !isValidEmail(a))) {
+    return jsonResponse({ error: 'Ungültige CC-Adresse' }, 400, cors);
   }
   if (!subject || subject.length > 300) {
     return jsonResponse({ error: 'Betreff fehlt oder ist zu lang' }, 400, cors);
@@ -300,6 +305,7 @@ export async function onRequest(context) {
     html: htmlBody,
     attachments: [{ filename, content: pdfBase64 }],
   };
+  if (cc.length) mail.cc = cc;
   if (bcc) mail.bcc = [bcc];
   if (replyTo && isValidEmail(replyTo)) mail.reply_to = replyTo;
 
