@@ -55,22 +55,68 @@
     if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
   });
 
-  // Auto-open on first downward scroll (desktop & mobile).
-  // Only fires once — if the user closes the panel, we don't reopen it.
-  var autoOpened = false;
-  function autoOpen() {
-    if (autoOpened) return;
-    autoOpened = true;
-    if (!panel.classList.contains('open')) openPanel();
+  // Der Chat öffnet sich nur auf Klick — die Startseite soll erst einmal
+  // ohne Panel zu sehen sein.
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
-  var onFirstScroll = function () {
-    if (window.scrollY > 40) {
-      autoOpen();
-      window.removeEventListener('scroll', onFirstScroll);
+  // "Titel – Erklärung" oder "Titel: Erklärung" → Titel hervorheben
+  function formatListItem(text) {
+    var m = text.match(/^(.{2,40}?)\s+[–—-]\s+(.+)$/) || text.match(/^([^:]{2,40}):\s+(.+)$/);
+    if (m) {
+      return '<strong>' + escapeHtml(m[1]) + ':</strong> ' + escapeHtml(m[2]);
     }
-  };
-  window.addEventListener('scroll', onFirstScroll, { passive: true });
+    return escapeHtml(text);
+  }
+
+  // Antworttext des Modells in Absätze und Listen umsetzen.
+  // Es entsteht nur HTML aus escapetem Text — kein Markdown, keine Links.
+  function formatReply(text) {
+    var lines = String(text).replace(/\*\*/g, '').split(/\r?\n/);
+    var html = '';
+    var para = [];
+    var list = null; // { type: 'ol' | 'ul', items: [] }
+
+    function flushPara() {
+      if (para.length) {
+        html += '<p>' + escapeHtml(para.join(' ')) + '</p>';
+        para = [];
+      }
+    }
+    function flushList() {
+      if (list) {
+        html += '<' + list.type + ' class="chat-msg-list">' +
+          list.items.map(function (it) { return '<li>' + formatListItem(it) + '</li>'; }).join('') +
+          '</' + list.type + '>';
+        list = null;
+      }
+    }
+
+    lines.forEach(function (raw) {
+      var line = raw.trim();
+      if (!line) { flushPara(); flushList(); return; }
+      var ol = line.match(/^(\d{1,2})[.)]\s+(.+)$/);
+      var ul = line.match(/^[-•*]\s+(.+)$/);
+      if (ol || ul) {
+        flushPara();
+        var type = ol ? 'ol' : 'ul';
+        if (!list || list.type !== type) { flushList(); list = { type: type, items: [] }; }
+        list.items.push(ol ? ol[2] : ul[1]);
+      } else {
+        flushList();
+        para.push(line);
+      }
+    });
+    flushPara();
+    flushList();
+    return html;
+  }
 
   // Append a message element to the DOM. Returns the bubble el for streaming updates.
   function appendMessage(role, text, opts) {
@@ -81,6 +127,9 @@
     bubble.className = 'chat-msg-bubble';
     if (opts.typing) {
       bubble.innerHTML = '<span></span><span></span><span></span>';
+    } else if (role === 'ai' && !opts.extra) {
+      bubble.classList.add('chat-msg-formatted');
+      bubble.innerHTML = formatReply(text);
     } else {
       bubble.textContent = text;
     }
@@ -112,6 +161,10 @@
         var msg = chip.getAttribute('data-msg-' + lang) ||
                   chip.getAttribute('data-msg-de') || '';
         if (!msg) return;
+        if (chip.getAttribute('data-intent') === 'process') {
+          answerProcess(msg);
+          return;
+        }
         input.value = msg;
         form.requestSubmit();
       });
@@ -193,6 +246,72 @@
     );
 
     showSuggestions();
+  }
+
+  var PROCESS_STEPS = {
+    de: {
+      title: 'So läuft ein Projekt bei uns ab',
+      steps: [
+        ['Erstgespräch', 'Ziel, Zielgruppe und Anforderungen klären'],
+        ['Konzept & Planung', 'Lösung, Umfang und Zeitplan skizzieren'],
+        ['Design & Entwicklung', 'Gestaltung, Umsetzung und Inhalte'],
+        ['Testing & Feedback', 'Prüfen, abstimmen, feinschleifen'],
+        ['Launch & Support', 'Go-Live und Begleitung danach']
+      ],
+      foot: 'Wie intensiv jede Phase ist, hängt vom Projekt ab. Erzähl mir gern, was du vorhast.'
+    },
+    en: {
+      title: 'How a project runs with us',
+      steps: [
+        ['First call', 'Goals, audience and requirements'],
+        ['Concept & planning', 'Solution, scope and timeline'],
+        ['Design & development', 'Visuals, build and content'],
+        ['Testing & feedback', 'Review, refine, polish'],
+        ['Launch & support', 'Go-live and ongoing care']
+      ],
+      foot: 'How intense each phase is depends on the project. Tell me what you have in mind.'
+    }
+  };
+
+  function processCardHtml(lang) {
+    var c = PROCESS_STEPS[lang] || PROCESS_STEPS.de;
+    return '<div class="chat-steps">' +
+      '<div class="chat-demo-title">' + escapeHtml(c.title) + '</div>' +
+      '<ol class="chat-steps-list">' +
+        c.steps.map(function (st) {
+          return '<li><strong>' + escapeHtml(st[0]) + '</strong><span>' + escapeHtml(st[1]) + '</span></li>';
+        }).join('') +
+      '</ol>' +
+      '<p class="chat-steps-foot">' + escapeHtml(c.foot) + '</p>' +
+    '</div>';
+  }
+
+  function processCardText(lang) {
+    var c = PROCESS_STEPS[lang] || PROCESS_STEPS.de;
+    return c.title + '\n' + c.steps.map(function (st, i) {
+      return (i + 1) + '. ' + st[0] + ' – ' + st[1];
+    }).join('\n') + '\n' + c.foot;
+  }
+
+  // Feste Antwort auf die Ablauf-Frage: schneller und immer sauber formatiert
+  async function answerProcess(text) {
+    if (sending) return;
+    sending = true;
+    appendMessage('user', text);
+    history.push({ role: 'user', content: text });
+    hideSuggestions();
+    input.value = '';
+    autoGrow();
+
+    var typingEl = appendTyping();
+    await sleep(900);
+    typingEl.remove();
+
+    var lang = currentLang();
+    appendHtmlMessage(processCardHtml(lang));
+    history.push({ role: 'assistant', content: processCardText(lang) });
+    sending = false;
+    input.focus();
   }
 
   async function sendMessage(text) {
