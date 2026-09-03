@@ -254,7 +254,27 @@
 
 /* ========================================
    Aufnahme-Zustand für die PDF (html2pdf)
+   Etwas schmaler als die 703 px bedruckbare A4-Breite (rechnung.css nimmt
+   700 px), damit rechts sicher Rand bleibt – auf Handys war die PDF sonst
+   am rechten Rand abgeschnitten. Muss zu CAPTURE_WIDTH in kva-sheet.js passen.
    ======================================== */
+.ks-sheet.pdf-capture {
+  width: 680px;
+  min-width: 680px;
+}
+
+/* Umbruchregeln auch im Aufnahme-Zustand: html2pdf liest sie im Modus "css"
+   aus den berechneten Stilen, die Druck-Media-Query greift dort nicht. */
+.re-sheet.pdf-capture .ks-h2,
+.re-sheet.pdf-capture .re-items-head { page-break-after: avoid; }
+.re-sheet.pdf-capture .ks-service,
+.re-sheet.pdf-capture .ks-page,
+.re-sheet.pdf-capture .ks-payment,
+.re-sheet.pdf-capture .ks-condition,
+.re-sheet.pdf-capture .re-doc-sums,
+.re-sheet.pdf-capture .re-doc-closing,
+.re-sheet.pdf-capture .re-item-row { page-break-inside: avoid; }
+
 .re-sheet.pdf-capture .re-doc-addr-row { margin: 40px 0 48px; }
 .re-sheet.pdf-capture .re-doc-titlebar { margin-bottom: 40px; }
 .re-sheet.pdf-capture .ks-section { margin-top: 26px; }

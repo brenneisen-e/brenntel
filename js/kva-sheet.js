@@ -47,6 +47,53 @@
     return '';
   }
 
+  // html2pdf zentriert seinen Aufnahme-Container (margin: auto) im Fenster.
+  // html2canvas rendert die Kopie aber in einem eigenen Fenster von
+  // windowWidth Pixeln – und ist das anders breit als das echte Fenster,
+  // liegt das Blatt in der Aufnahme an einer anderen Stelle als erwartet.
+  // Auf Handys ragte es dadurch rechts über die Seite hinaus. Deshalb beides
+  // festnageln: eigenes Fenster fest 800 px breit, Overlay genauso breit und
+  // Container linksbündig, dann ist die Lage in Original und Kopie gleich.
+  var CAPTURE_WINDOW_WIDTH = 800;
+
+  function pinCaptureContainer() {
+    var overlay = document.querySelector('.html2pdf__overlay');
+    var container = document.querySelector('.html2pdf__container');
+    if (overlay) {
+      overlay.style.width = CAPTURE_WINDOW_WIDTH + 'px';
+      overlay.style.right = 'auto';
+    }
+    if (container) container.style.margin = '0';
+  }
+
+  // Gemeinsamer Aufnahme-Pfad für Download und Mailversand
+  function pdfWorker(extra) {
+    return html2pdf()
+      .set(Object.assign(pdfOptions(), extra || {}))
+      .from(sheet)
+      .toContainer()
+      .then(pinCaptureContainer)
+      .toCanvas()
+      .toPdf();
+  }
+
+  function pdfOptions() {
+    return {
+      margin: [12, 12, 12, 12],
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: CAPTURE_WINDOW_WIDTH
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+  }
+
   // PDF im Aufnahme-Zustand erzeugen, damit sie der Druckfassung entspricht
   function buildPdfBase64() {
     sheet.classList.add('pdf-capture');
@@ -58,15 +105,7 @@
       return value;
     }
 
-    return html2pdf()
-      .set({
-        margin: [12, 12, 12, 12],
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-      })
-      .from(sheet)
+    return pdfWorker()
       .outputPdf('datauristring')
       .then(function (uri) { return done(uri.substring(uri.indexOf(',') + 1), false); })
       .catch(function (err) { return done(err, true); });
@@ -173,16 +212,7 @@
       }
 
       setTimeout(function () {
-        html2pdf()
-          .set({
-            margin: [12, 12, 12, 12],
-            filename: filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['css', 'legacy'] }
-          })
-          .from(sheet)
+        pdfWorker({ filename: filename })
           .save()
           .then(cleanup)
           .catch(cleanup);
