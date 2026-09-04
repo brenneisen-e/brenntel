@@ -42,6 +42,13 @@
 .ks-sheet .re-doc-titlebar { margin-bottom: 3rem; }
 .ks-sheet .ks-intro + .ks-section { margin-top: 3rem; }
 
+/* Keine einzelnen Wörter in der letzten Zeile von Überschriften und Text;
+   Überschriften mit gleichmäßig verteilten Zeilen */
+.ks-title, .ks-h2, .ks-h3, .re-item-title, .ks-page strong, .ks-condition dt,
+.ks-pay-step strong, .re-doc-r-name { text-wrap: balance; }
+.ks-subtitle, .ks-intro p, .ks-list li, .re-item-details li, .ks-page p,
+.ks-condition dd, .re-doc-closing p, .ks-legal, .re-doc-kleinhinweis { text-wrap: pretty; }
+
 /* ---------- Anschreiben ---------- */
 .ks-intro p { margin: 0 0 0.75rem; }
 .ks-intro p:last-child { margin-bottom: 0; }
@@ -236,13 +243,16 @@
   .ks-toolbar,
   .ks-mail { display: none !important; }
 
-  .ks-sheet { font-size: 10pt; }
-  .ks-sheet .re-item-row { padding: 2.2mm 0; }
-  .ks-sheet .ks-service { padding: 2.4mm 0; }
-  .ks-sheet .re-doc-addr-row { margin: 10mm 0 13mm; }
-  .ks-sheet .re-doc-titlebar { margin-bottom: 10mm; }
-  .ks-sheet .ks-intro + .ks-section { margin-top: 9mm; }
+  .ks-sheet { font-size: 9.5pt; }
+  .ks-sheet .re-item-row { padding: 2mm 0; }
+  .ks-sheet .ks-service { padding: 2.2mm 0; }
+  .ks-sheet .ks-condition { padding-bottom: 1.6mm; }
+  .ks-sheet .ks-conditions { gap: 1.6mm; }
+  .ks-sheet .re-doc-addr-row { margin: 8mm 0 10mm; }
+  .ks-sheet .re-doc-titlebar { margin-bottom: 8mm; }
+  .ks-sheet .ks-intro + .ks-section { margin-top: 7mm; }
   .ks-page { padding: 2mm 3mm; }
+  .ks-pages { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.6mm; }
   .ks-section { margin-top: 5mm; }
   .ks-conditions { break-inside: auto; page-break-inside: auto; }
   .ks-sheet .re-doc-closing { margin-top: 5mm; }
