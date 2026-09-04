@@ -115,6 +115,7 @@
     sendBtn.addEventListener('click', function () {
       var to = val('ks-mail-to');
       var cc = val('ks-mail-cc');
+      var bcc = val('ks-mail-bcc');
       var from = val('ks-mail-from');
       var subject = val('ks-mail-subject');
       var message = document.getElementById('ks-mail-text').value;
@@ -127,6 +128,10 @@
       var badCc = ccList.filter(function (a) { return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a); });
       if (badCc.length) {
         setSendStatus('Ungültige CC-Adresse: ' + badCc.join(', '), 'err');
+        return;
+      }
+      if (bcc && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bcc)) {
+        setSendStatus('Ungültige BCC-Adresse.', 'err');
         return;
       }
       if (!from) {
@@ -155,6 +160,7 @@
             body: JSON.stringify({
               to: to,
               cc: ccList.join(','),
+              bcc: bcc,
               from: from,
               subject: subject,
               message: message,
