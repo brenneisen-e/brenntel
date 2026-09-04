@@ -32,6 +32,11 @@
 
 .re-doc-titlebar { align-items: flex-start; }
 
+/* Betrags-Badge bleibt rechts neben dem Titel, der Untertitel bricht um */
+.ks-sheet .re-doc-titlebar { flex-wrap: nowrap; }
+.ks-sheet .re-doc-titlebar-left { flex: 1 1 auto; min-width: 0; }
+.ks-sheet .re-doc-badge { flex: 0 0 auto; }
+
 /* Mehr Luft zwischen Anschrift und Titelblock */
 .ks-sheet .re-doc-addr-row { margin: 3rem 0 3.75rem; }
 .ks-sheet .re-doc-titlebar { margin-bottom: 3rem; }
@@ -232,17 +237,21 @@
   .ks-mail { display: none !important; }
 
   .ks-sheet { font-size: 10pt; }
-  .ks-sheet .re-item-row { padding: 2.6mm 0; }
+  .ks-sheet .re-item-row { padding: 2.2mm 0; }
+  .ks-sheet .ks-service { padding: 2.4mm 0; }
   .ks-sheet .re-doc-addr-row { margin: 10mm 0 13mm; }
   .ks-sheet .re-doc-titlebar { margin-bottom: 10mm; }
   .ks-sheet .ks-intro + .ks-section { margin-top: 9mm; }
-  .ks-page { padding: 2.2mm 3mm; }
-  .ks-section { margin-top: 6mm; }
+  .ks-page { padding: 2mm 3mm; }
+  .ks-section { margin-top: 5mm; }
+  .ks-conditions { break-inside: auto; page-break-inside: auto; }
+  .ks-sheet .re-doc-closing { margin-top: 5mm; }
   .ks-h2 { break-after: avoid; page-break-after: avoid; }
   .ks-service,
   .ks-page,
   .ks-payment,
-  .ks-conditions { break-inside: avoid; page-break-inside: avoid; }
+  .ks-condition,
+  .re-doc-closing { break-inside: avoid; page-break-inside: avoid; }
   .re-doc-items { break-inside: auto; page-break-inside: auto; }
 
   .ks-page,
@@ -296,4 +305,5 @@
   }
 
   .re-sheet:not(.pdf-capture) .ks-title { font-size: 1.35rem; }
+  .re-sheet:not(.pdf-capture) .re-doc-titlebar { flex-wrap: wrap; }
 }
