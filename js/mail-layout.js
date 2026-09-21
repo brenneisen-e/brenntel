@@ -61,6 +61,15 @@ function absaetze(text, stil) {
 
 const STIL_ABSATZ = `margin:0 0 16px;font:400 15px/1.7 ${FONT};color:${FARBE.text}`;
 
+/**
+ * Platzhalter für den in der Mail-App getippten Text.
+ *
+ * Eine Vorlage ohne diese Marke ist eine fertige Mail; eine MIT ihr ist ein
+ * Rahmen, in den die App den Text setzt. Der Wert steht auch in der App
+ * (ComposeActivity.BODY_SLOT) — ändert er sich hier, muss er dort mit.
+ */
+export const BODY_SLOT = '<!--brenntel:body-->';
+
 function blockHtml(block) {
   switch (block && block.type) {
     case 'heading':
@@ -103,6 +112,12 @@ function blockHtml(block) {
 
     case 'divider':
       return `<div style="border-top:1px solid ${FARBE.linie};margin:22px 0"></div>`;
+
+    case 'slot':
+      // Die Stelle, an der die Mail-App den getippten Text einsetzt. Als
+      // Kommentar, damit sie in der Vorschau und in einer verschickten Mail
+      // nichts anrichtet: Wer die Vorlage nur als .eml benutzt, sieht sie nie.
+      return BODY_SLOT;
 
     default:
       return '';
@@ -192,6 +207,7 @@ export function renderMailText(doc) {
         return ziel ? `${String(block.text || '').trim()}: ${ziel}` : '';
       }
       case 'divider': return '--';
+      case 'slot': return BODY_SLOT;
       default: return '';
     }
   }).filter(Boolean);

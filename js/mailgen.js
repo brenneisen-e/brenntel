@@ -42,6 +42,7 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     note: 'Hinweis',
     button: 'Knopf',
     divider: 'Trenner',
+    slot: 'Platzhalter',
   };
 
   var doc = null;
@@ -180,7 +181,9 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     } else {
       var hinweis = document.createElement('p');
       hinweis.className = 'mg-block-empty';
-      hinweis.textContent = 'Eine waagerechte Linie.';
+      hinweis.textContent = block.type === 'slot'
+        ? 'Hier setzt die Mail-App den getippten Text ein. In der Vorschau und in der .eml unsichtbar.'
+        : 'Eine waagerechte Linie.';
       karte.appendChild(hinweis);
     }
 
@@ -215,7 +218,7 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     var neu = { type: type };
     if (type === 'list') neu.items = [''];
     else if (type === 'button') { neu.text = ''; neu.url = ''; }
-    else if (type !== 'divider') neu.text = '';
+    else if (type !== 'divider' && type !== 'slot') neu.text = '';
     doc.blocks.push(neu);
     zeichneBloecke();
     aktualisiere();
