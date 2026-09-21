@@ -1,14 +1,18 @@
 /**
- * Cloudflare Pages Function — Contact Form via Resend
+ * Cloudflare Pages Function — Kontaktformular
  *
- * Accepts POST from the contact form on the homepage and forwards
- * the message to eike@brenneisen.info using the Resend API.
+ * Nimmt das Formular auf der Startseite entgegen und schickt die Nachricht
+ * weiter. Der Versand läuft über functions/_mail.js: Cloudflare Email Service
+ * mit Resend als Rückfallebene — die nötigen Variablen stehen dort im Kopf.
  *
- * Required environment variables (configured in Cloudflare Pages):
- *   RESEND_API_KEY  — API key from https://resend.com
- *   RESEND_FROM     — Verified sender address, e.g. "kontakt@brenntelmediadesign.com"
- *                     (falls back to "onboarding@resend.dev" if unset)
+ * Als Antwortadresse steht die Adresse der anfragenden Person in der Mail.
+ * Ein Klick auf „Antworten“ im Mailprogramm geht damit direkt an sie.
+ *
+ * Optional:
+ *   MAIL_TO  — abweichendes Zielpostfach (Standard: eike@brenneisen.info)
  */
+
+import { sendMail } from './_mail.js';
 
 const ALLOWED_ORIGINS = [
   'https://brenntel.pages.dev',
@@ -101,11 +105,8 @@ export async function onRequest(context) {
     return jsonResponse({ error: 'Input too long' }, 400, cors);
   }
 
-  if (!env.RESEND_API_KEY) {
-    return jsonResponse({ error: 'Mail service not configured' }, 500, cors);
-  }
-
-  const from = env.RESEND_FROM || 'Kontaktformular <onboarding@resend.dev>';
+  const from = env.MAIL_FROM || env.RESEND_FROM || 'brenntel mediadesign <kontakt@brenntelmediadesign.com>';
+  const recipient = env.MAIL_TO || RECIPIENT;
   const mailSubject = subject
     ? `Kontaktformular: ${subject}`
     : `Kontaktformular: Nachricht von ${name}`;
@@ -125,47 +126,27 @@ export async function onRequest(context) {
     `<p><strong>Nachricht:</strong></p>` +
     `<p style="white-space:pre-wrap">${escapeHtml(message)}</p>`;
 
-  try {
-    const resendRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from,
-        to: [RECIPIENT],
-        reply_to: email,
-        subject: mailSubject,
-        text: textBody,
-        html: htmlBody,
-      }),
-    });
+  const result = await sendMail(env, {
+    from,
+    to: recipient,
+    replyTo: email,
+    subject: mailSubject,
+    text: textBody,
+    html: htmlBody,
+  });
 
-    const resendBodyText = await resendRes.text();
-    let resendBody;
-    try { resendBody = JSON.parse(resendBodyText); } catch (_) { resendBody = resendBodyText; }
-
-    if (!resendRes.ok) {
-      return jsonResponse(
-        {
-          error: 'Mail delivery failed',
-          status: resendRes.status,
-          detail: resendBody,
-          from,
-          to: RECIPIENT,
-        },
-        502,
-        cors
-      );
-    }
-
+  if (!result.ok) {
+    const status = result.provider === 'keiner' ? 500 : 502;
     return jsonResponse(
-      { ok: true, resend: resendBody, from, to: RECIPIENT },
-      200,
+      { error: 'Mail delivery failed', provider: result.provider, detail: result.error },
+      status,
       cors
     );
-  } catch (err) {
-    return jsonResponse({ error: 'Upstream request failed', detail: err.message }, 502, cors);
   }
+
+  return jsonResponse(
+    { ok: true, provider: result.provider, id: result.id, from, to: recipient },
+    200,
+    cors
+  );
 }

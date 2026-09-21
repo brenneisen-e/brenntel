@@ -1,16 +1,17 @@
 /**
- * Cloudflare Pages Function — Dokumentversand via Resend
+ * Cloudflare Pages Function — Dokumentversand
  *
  * Nimmt vom Rechnungsersteller (/rechnung) oder einer KVA-Seite eine fertig
  * gerenderte PDF entgegen und verschickt sie als Anhang an die angegebene
  * Adresse. meta.kind = 'kva' schaltet die Beschriftung auf Kostenvoranschlag.
  *
- * Einzige nötige Environment-Variable (Cloudflare Pages → Settings →
- * Environment variables, als "Secret"):
- *   RESEND_API_KEY  — API-Key von https://resend.com
+ * Der Versand läuft über functions/_mail.js: Cloudflare Email Service mit
+ * Resend als Rückfallebene — welche Variablen dafür nötig sind, steht dort
+ * im Kopf. Cloudflare nimmt nur Nachrichten bis 5 MiB an; größere Anhänge
+ * gehen deshalb automatisch über Resend, sofern eingerichtet.
  *
- * Absender, BCC und Empfänger kommen aus dem Formular, nicht aus der
- * Konfiguration.
+ * Absender, CC, BCC, Antwortadresse und Empfänger kommen aus dem Formular,
+ * nicht aus der Konfiguration.
  *
  * Missbrauchsschutz ohne weitere Konfiguration: Anfragen werden nur mit
  * einem Origin-Header aus ALLOWED_ORIGINS angenommen, und als Absender
@@ -18,6 +19,8 @@
  * Skripte draußen; wer den Header selbst setzt, kommt daran vorbei —
  * für echte Zugangskontrolle müsste Cloudflare Access vor /rechnung.
  */
+
+import { sendMail } from './_mail.js';
 
 const ALLOWED_ORIGINS = [
   'https://brenntel.pages.dev',
@@ -221,10 +224,6 @@ export async function onRequest(context) {
   if (!isAllowedOrigin(origin)) {
     return jsonResponse({ error: 'Nicht berechtigt' }, 403, cors);
   }
-  if (!env.RESEND_API_KEY) {
-    return jsonResponse({ error: 'Mail service not configured' }, 500, cors);
-  }
-
   let payload;
   try {
     payload = await request.json();
@@ -297,41 +296,26 @@ export async function onRequest(context) {
     (textSummary ? '\n\n--\n' + textSummary : '') +
     '\n\nAnhang: ' + filename;
 
-  const mail = {
+  const result = await sendMail(env, {
     from,
-    to: [to],
+    to,
+    cc,
+    bcc,
+    replyTo: replyTo && isValidEmail(replyTo) ? replyTo : undefined,
     subject,
     text: plainText,
     html: htmlBody,
-    attachments: [{ filename, content: pdfBase64 }],
-  };
-  if (cc.length) mail.cc = cc;
-  if (bcc) mail.bcc = [bcc];
-  if (replyTo && isValidEmail(replyTo)) mail.reply_to = replyTo;
+    attachments: [{ filename, contentBase64: pdfBase64, type: 'application/pdf' }],
+  });
 
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(mail),
-    });
-
-    const raw = await res.text();
-    let body;
-    try { body = JSON.parse(raw); } catch (_) { body = raw; }
-
-    if (!res.ok) {
-      return jsonResponse(
-        { error: 'Versand fehlgeschlagen', status: res.status, detail: body },
-        502,
-        cors
-      );
-    }
-    return jsonResponse({ ok: true, id: body && body.id, to }, 200, cors);
-  } catch (err) {
-    return jsonResponse({ error: 'Upstream request failed', detail: err.message }, 502, cors);
+  if (!result.ok) {
+    const status = result.provider === 'keiner' ? 500 : 502;
+    return jsonResponse(
+      { error: 'Versand fehlgeschlagen', provider: result.provider, detail: result.error },
+      status,
+      cors
+    );
   }
+
+  return jsonResponse({ ok: true, provider: result.provider, id: result.id, to }, 200, cors);
 }

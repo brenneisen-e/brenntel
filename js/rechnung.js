@@ -379,7 +379,7 @@
   }
 
   /* ----------------------------------------
-     Versand per E-Mail (Resend über /invoice-mail)
+     Versand per E-Mail (Cloudflare Email Service über /invoice-mail)
      ---------------------------------------- */
   function setSendStatus(text, cls) {
     var el = $('re-send-status');

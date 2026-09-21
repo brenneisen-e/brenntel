@@ -20,7 +20,7 @@
   }
 
   /* ----------------------------------------
-     Versand per E-Mail (Resend über /invoice-mail)
+     Versand per E-Mail (Cloudflare Email Service über /invoice-mail)
      ---------------------------------------- */
   var sendBtn   = document.getElementById('ks-send-btn');
   var sendState = document.getElementById('ks-send-status');
