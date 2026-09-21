@@ -16,3 +16,8 @@
 /api        /API   301
 /Api        /API   301
 /api.html   /API   301
+
+# Case-insensitive redirects for /mailgen (am Handy schreibt die Autokorrektur gern groß)
+/Mailgen        /mailgen   301
+/MailGen        /mailgen   301
+/mailgen.html   /mailgen   301

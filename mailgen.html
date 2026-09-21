@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mail-Generator — brenntel. mediadesign</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=20260921a">
+  <link rel="stylesheet" href="css/mailgen.css?v=20260921a">
+</head>
+<body class="mg-body">
+
+  <!-- ======== Header ======== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
+      <nav class="nav-desktop" aria-label="Navigation">
+        <a href="index.html">Startseite</a>
+        <a href="rechnung.html">Rechnung</a>
+        <a href="kva.html">KVA</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======== Zugang ========
+       Wie beim Rechnungsersteller: clientseitiger Sichtschutz, keine echte
+       Sicherheit. Was wirklich schützenswert ist — die gespeicherten Vorlagen —
+       hängt am Token der API, nicht an diesem Feld. -->
+  <section class="mg-entry" id="mg-entry">
+    <div class="mg-entry-content">
+      <div class="mg-entry-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 7l-10 7L2 7"/>
+        </svg>
+      </div>
+      <h1 class="mg-entry-title">Mail-Generator</h1>
+      <p class="mg-entry-sub">Internes Werkzeug — bitte Zugangscode eingeben.</p>
+      <form class="mg-code-form" id="mg-code-form" autocomplete="off">
+        <input type="password" id="mg-code-input" class="mg-code-input" placeholder="Zugangscode"
+               maxlength="20" spellcheck="false" autocomplete="off" aria-label="Zugangscode">
+        <button type="submit" class="mg-btn mg-btn-primary">Öffnen</button>
+      </form>
+      <p class="mg-error" id="mg-error" aria-live="polite">Ungültiger Code.</p>
+    </div>
+  </section>
+
+  <!-- ======== App ======== -->
+  <main class="mg-app" id="mg-app" hidden>
+
+    <div class="mg-head">
+      <div>
+        <h1>Mail schreiben</h1>
+        <p id="mg-head-sub">Im brenntel-Layout — als .eml sichern oder als Vorlage in der Mail-App nutzen.</p>
+      </div>
+      <!-- Am Handy sind Bearbeiten und Vorschau zwei Ansichten, am großen
+           Bildschirm stehen sie nebeneinander und die Umschaltung entfällt. -->
+      <div class="mg-tabs" role="tablist" aria-label="Ansicht">
+        <button type="button" class="mg-tab is-active" id="mg-tab-edit" role="tab" aria-selected="true">Bearbeiten</button>
+        <button type="button" class="mg-tab" id="mg-tab-preview" role="tab" aria-selected="false">Vorschau</button>
+      </div>
+    </div>
+
+    <div class="mg-layout">
+
+      <!-- ======== Editor ======== -->
+      <section class="mg-editor" id="mg-editor" aria-label="Inhalt">
+
+        <div class="mg-panel">
+          <h2 class="mg-panel-title">Kopf</h2>
+          <div class="mg-panel-body">
+            <label class="mg-field">
+              <span>Betreff</span>
+              <input type="text" id="mg-subject" maxlength="300" placeholder="Angebot für Ihre Website">
+            </label>
+            <label class="mg-field">
+              <span>Vorschautext</span>
+              <input type="text" id="mg-preheader" maxlength="200"
+                     placeholder="Die Zeile, die im Postfach neben dem Betreff steht">
+              <small>Bleibt in der Mail unsichtbar. Ohne ihn zeigt die Übersicht die erste Zeile des Layouts.</small>
+            </label>
+          </div>
+        </div>
+
+        <div class="mg-panel">
+          <h2 class="mg-panel-title">Inhalt</h2>
+          <div class="mg-panel-body">
+            <div id="mg-blocks" class="mg-blocks"></div>
+            <div class="mg-add" role="group" aria-label="Baustein hinzufügen">
+              <button type="button" class="mg-btn mg-btn-ghost" data-add="text">Absatz</button>
+              <button type="button" class="mg-btn mg-btn-ghost" data-add="heading">Überschrift</button>
+              <button type="button" class="mg-btn mg-btn-ghost" data-add="list">Liste</button>
+              <button type="button" class="mg-btn mg-btn-ghost" data-add="note">Hinweis</button>
+              <button type="button" class="mg-btn mg-btn-ghost" data-add="button">Knopf</button>
+              <button type="button" class="mg-btn mg-btn-ghost" data-add="divider">Trenner</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mg-panel">
+          <h2 class="mg-panel-title">Fußzeile</h2>
+          <div class="mg-panel-body">
+            <label class="mg-field">
+              <span>Eine Zeile je Eintrag</span>
+              <textarea id="mg-footer" rows="4"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="mg-panel">
+          <h2 class="mg-panel-title">Vorlagen für die Mail-App</h2>
+          <div class="mg-panel-body">
+            <p class="mg-note">
+              Gespeicherte Vorlagen erscheinen in der Mail-App im Verfassen-Fenster unter
+              „Vorlage“ und werden dort in den Rumpf eingesetzt — bei einer Antwort über
+              dem Zitat. Die Kopfzeilen der Antwort setzt weiterhin die App.
+            </p>
+            <label class="mg-field">
+              <span>Name dieser Vorlage</span>
+              <input type="text" id="mg-tpl-name" maxlength="120" placeholder="z. B. Angebot Feuerwehr">
+            </label>
+            <label class="mg-field">
+              <span>Zugangstoken (MAILGEN_TOKEN)</span>
+              <input type="password" id="mg-token" autocomplete="off" spellcheck="false"
+                     placeholder="wird nur in diesem Browser gemerkt">
+            </label>
+            <div class="mg-row">
+              <button type="button" class="mg-btn mg-btn-primary" id="mg-tpl-save">Vorlage sichern</button>
+              <button type="button" class="mg-btn mg-btn-ghost" id="mg-tpl-load">Vorlagen laden</button>
+            </div>
+            <div id="mg-tpl-list" class="mg-tpl-list" hidden></div>
+            <p class="mg-status" id="mg-tpl-status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <!-- Nicht in die feste Leiste unten: Am Handy kostet ein dritter Knopf
+             dort eine ganze Zeile, und „Leeren" ist der seltenste von allen. -->
+        <div class="mg-row mg-row-end">
+          <button type="button" class="mg-btn mg-btn-ghost" id="mg-new">Entwurf leeren</button>
+        </div>
+
+      </section>
+
+      <!-- ======== Vorschau ======== -->
+      <section class="mg-preview" id="mg-preview" aria-label="Vorschau">
+        <!-- iframe, damit die Mail-Styles nicht auf die Seite durchschlagen und
+             die Vorschau so breit gerechnet wird wie beim Empfänger. -->
+        <iframe id="mg-frame" title="Vorschau der Mail" sandbox=""></iframe>
+      </section>
+
+    </div>
+
+    <div class="mg-actions">
+      <button type="button" class="mg-btn mg-btn-primary" id="mg-eml">.eml herunterladen</button>
+      <button type="button" class="mg-btn mg-btn-ghost" id="mg-copy">HTML kopieren</button>
+      <span class="mg-status" id="mg-status" aria-live="polite"></span>
+    </div>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign GbR</p>
+      <div class="footer-links">
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/shared.js?v=20260921a"></script>
+  <script type="module" src="js/mailgen.js?v=20260921a"></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+/* ========================================
+   Mail-Generator
+   Handy zuerst: eine Spalte, Bearbeiten und Vorschau als zwei Ansichten.
+   Ab 900 px stehen sie nebeneinander und die Umschaltung verschwindet.
+   ======================================== */
+
+.mg-body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ---------- Zugang ---------- */
+.mg-entry {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 40px;
+}
+
+.mg-entry.hidden { display: none; }
+
+.mg-entry-content {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.mg-entry-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 18px;
+  color: var(--color-accent);
+}
+
+.mg-entry-icon svg { width: 100%; height: 100%; }
+
+.mg-entry-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.mg-entry-sub {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin: 0 0 22px;
+}
+
+.mg-code-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mg-code-input {
+  padding: 13px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  text-align: center;
+}
+
+.mg-code-input.error { border-color: #d03a2f; }
+
+.mg-error {
+  margin: 12px 0 0;
+  color: #d03a2f;
+  font-size: 0.85rem;
+  visibility: hidden;
+}
+
+.mg-error.visible { visibility: visible; }
+
+/* ---------- Rahmen ---------- */
+.mg-app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 92px 16px 120px;
+}
+
+.mg-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.mg-head h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+}
+
+.mg-head p {
+  margin: 0;
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+  max-width: 52ch;
+}
+
+/* ---------- Ansichtswechsel ---------- */
+.mg-tabs {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+}
+
+.mg-tab {
+  border: 0;
+  background: none;
+  color: var(--color-text-light);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.mg-tab.is-active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* ---------- Aufteilung ---------- */
+.mg-layout { display: block; }
+
+/* Am Handy zeigt immer nur eine der beiden Seiten. */
+.mg-layout.show-preview .mg-editor { display: none; }
+.mg-layout:not(.show-preview) .mg-preview { display: none; }
+
+.mg-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mg-panel {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.mg-panel-title {
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mg-panel-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mg-note {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--color-text-light);
+}
+
+/* ---------- Felder ---------- */
+.mg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mg-field > span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.mg-field small {
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--color-text-light);
+}
+
+.mg-field input,
+.mg-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-warm);
+  color: var(--color-text);
+  font: inherit;
+  /* 16px, sonst zoomt iOS beim Hineintippen in das Feld. */
+  font-size: 16px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.mg-field input:focus,
+.mg-field textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* ---------- Bausteine ---------- */
+.mg-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mg-block {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg-warm);
+  padding: 12px;
+}
+
+.mg-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mg-block-kind {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+}
+
+.mg-block-tools {
+  display: flex;
+  gap: 2px;
+}
+
+/* 40 px Ziel: kleiner trifft am Handy niemand zuverlässig. */
+.mg-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+}
+
+.mg-icon-btn:hover { background: var(--color-bg-alt); color: var(--color-text); }
+.mg-icon-btn svg { width: 18px; height: 18px; }
+.mg-icon-btn[disabled] { opacity: 0.3; cursor: default; }
+
+.mg-block textarea,
+.mg-block input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.mg-block input + input { margin-top: 8px; }
+
+.mg-block-empty {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-text-light);
+}
+
+.mg-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Knöpfe ---------- */
+.mg-btn {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.mg-btn-primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.mg-btn-primary:hover { background: var(--color-accent-hover); }
+
+.mg-btn-ghost {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.mg-btn-ghost:hover { background: var(--color-bg-alt); }
+
+.mg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mg-row-end { justify-content: flex-end; }
+
+/* ---------- Vorlagenliste ---------- */
+.mg-tpl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mg-tpl-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-warm);
+}
+
+.mg-tpl-item strong {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.mg-tpl-item small {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--color-text-light);
+}
+
+.mg-status {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-text-light);
+  min-height: 1.2em;
+}
+
+.mg-status.is-error { color: #d03a2f; }
+.mg-status.is-ok { color: #1f7a4d; }
+
+/* ---------- Vorschau ---------- */
+.mg-preview {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f5ecdb;
+  min-height: 60vh;
+}
+
+.mg-preview iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 60vh;
+  border: 0;
+}
+
+/* ---------- Aktionsleiste ----------
+   Am Handy fest am unteren Rand: Der Editor ist lang, und „herunterladen"
+   soll nicht am Ende einer Scrollstrecke liegen. */
+.mg-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: var(--color-header-bg-scrolled);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--color-border);
+}
+
+.mg-actions .mg-status { flex-basis: 100%; }
+
+@media (min-width: 900px) {
+  .mg-tabs { display: none; }
+
+  .mg-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* Nebeneinander gilt die Umschaltung nicht mehr. */
+  .mg-layout.show-preview .mg-editor,
+  .mg-layout:not(.show-preview) .mg-preview { display: block; }
+
+  .mg-layout .mg-editor { display: flex; }
+
+  .mg-preview {
+    position: sticky;
+    top: 92px;
+    height: calc(100vh - 220px);
+  }
+
+  .mg-actions {
+    position: static;
+    background: none;
+    backdrop-filter: none;
+    border: 0;
+    padding: 20px 0 0;
+  }
+
+  .mg-actions .mg-status { flex-basis: auto; }
+}
