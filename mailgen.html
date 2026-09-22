@@ -53,7 +53,7 @@
 
     <div class="mg-head">
       <div>
-        <h1>Mail schreiben</h1>
+        <h1 id="mg-head-title">Mail schreiben</h1>
         <p id="mg-head-sub">Im brenntel-Layout — als .eml sichern oder als Vorlage in der Mail-App nutzen.</p>
       </div>
       <!-- Am Handy sind Bearbeiten und Vorschau zwei Ansichten, am großen
@@ -69,7 +69,48 @@
       <!-- ======== Editor ======== -->
       <section class="mg-editor" id="mg-editor" aria-label="Inhalt">
 
-        <div class="mg-panel">
+        <!-- Eine ganze Mail im Layout ist der seltenere Fall. Meistens soll nur
+             die Signatur im eigenen Design unter einer normal getippten Mail
+             stehen — deshalb steht die Wahl ganz oben. -->
+        <div class="mg-tabs mg-tabs-wide" role="tablist" aria-label="Was gebaut wird">
+          <button type="button" class="mg-tab is-active" id="mg-kind-mail" role="tab" aria-selected="true">Ganze Mail</button>
+          <button type="button" class="mg-tab" id="mg-kind-signature" role="tab" aria-selected="false">Nur Signatur</button>
+        </div>
+
+        <div class="mg-panel mg-signature-only" hidden>
+          <h2 class="mg-panel-title">Signatur</h2>
+          <div class="mg-panel-body">
+            <p class="mg-note">
+              Steht unter einer ganz normal getippten Mail. In der Mail-App wählst du sie
+              unter Einstellungen → Darstellung; das HTML daneben passt auch in Thunderbird
+              oder Gmail als Signatur.
+            </p>
+            <label class="mg-field"><span>Name</span>
+              <input type="text" id="sig-name" maxlength="120" placeholder="Eike Brenneisen"></label>
+            <label class="mg-field"><span>Rolle</span>
+              <input type="text" id="sig-role" maxlength="120" placeholder="Geschäftsführer"></label>
+            <label class="mg-field"><span>Firma</span>
+              <input type="text" id="sig-company" maxlength="160"></label>
+            <label class="mg-field"><span>Straße</span>
+              <input type="text" id="sig-street" maxlength="160"></label>
+            <label class="mg-field"><span>PLZ und Ort</span>
+              <input type="text" id="sig-city" maxlength="160"></label>
+            <label class="mg-field"><span>Telefon</span>
+              <input type="text" id="sig-phone" maxlength="60"></label>
+            <label class="mg-field"><span>E-Mail</span>
+              <input type="email" id="sig-email" maxlength="160"></label>
+            <label class="mg-field"><span>Website</span>
+              <input type="text" id="sig-web" maxlength="160" placeholder="brenntelmediadesign.com"></label>
+            <label class="mg-field"><span>Zusatzzeile</span>
+              <input type="text" id="sig-extra" maxlength="200" placeholder="Steuernummer, Registereintrag …"></label>
+            <label class="mg-check">
+              <input type="checkbox" id="sig-wordmark" checked>
+              <span>Schriftzug „brenntel. mediadesign“ zeigen</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="mg-panel mg-mail-only">
           <h2 class="mg-panel-title">Kopf</h2>
           <div class="mg-panel-body">
             <label class="mg-field">
@@ -85,7 +126,7 @@
           </div>
         </div>
 
-        <div class="mg-panel">
+        <div class="mg-panel mg-mail-only">
           <h2 class="mg-panel-title">Inhalt</h2>
           <div class="mg-panel-body">
             <div id="mg-blocks" class="mg-blocks"></div>
@@ -101,7 +142,7 @@
           </div>
         </div>
 
-        <div class="mg-panel">
+        <div class="mg-panel mg-mail-only">
           <h2 class="mg-panel-title">Fußzeile</h2>
           <div class="mg-panel-body">
             <label class="mg-field">
@@ -112,7 +153,7 @@
         </div>
 
         <div class="mg-panel">
-          <h2 class="mg-panel-title">Vorlagen für die Mail-App</h2>
+          <h2 class="mg-panel-title">In der Mail-App ablegen</h2>
           <div class="mg-panel-body">
             <p class="mg-note">
               Gespeicherte Vorlagen erscheinen in der Mail-App im Verfassen-Fenster unter
@@ -123,7 +164,7 @@
               weiterhin die App.
             </p>
             <label class="mg-field">
-              <span>Name dieser Vorlage</span>
+              <span id="mg-tpl-name-label">Name dieser Vorlage</span>
               <input type="text" id="mg-tpl-name" maxlength="120" placeholder="z. B. Angebot Feuerwehr">
             </label>
             <label class="mg-field">
@@ -132,7 +173,7 @@
                      placeholder="wird nur in diesem Browser gemerkt">
             </label>
             <div class="mg-row">
-              <button type="button" class="mg-btn mg-btn-primary" id="mg-tpl-save">Vorlage sichern</button>
+              <button type="button" class="mg-btn mg-btn-primary" id="mg-tpl-save">Sichern</button>
               <button type="button" class="mg-btn mg-btn-ghost" id="mg-tpl-load">Vorlagen laden</button>
             </div>
             <div id="mg-tpl-list" class="mg-tpl-list" hidden></div>
@@ -159,6 +200,7 @@
 
     <div class="mg-actions">
       <button type="button" class="mg-btn mg-btn-primary" id="mg-eml">.eml herunterladen</button>
+      <span id="mg-eml-hint" class="mg-status" hidden></span>
       <button type="button" class="mg-btn mg-btn-ghost" id="mg-copy">HTML kopieren</button>
       <span class="mg-status" id="mg-status" aria-live="polite"></span>
     </div>

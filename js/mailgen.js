@@ -6,7 +6,13 @@
    was als Vorlage gespeichert wird — es gibt keinen zweiten Renderer, der
    davon abweichen könnte.
    ======================================== */
-import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
+import {
+  renderMailHtml,
+  renderMailText,
+  renderSignatureHtml,
+  renderSignatureText,
+  buildEml,
+} from './mail-layout.js';
 
 (function () {
   'use strict';
@@ -25,6 +31,8 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
   var $ = function (id) { return document.getElementById(id); };
 
   var LEER = {
+    // 'mail' = ganze Mail im Layout, 'signature' = nur der Block darunter.
+    kind: 'mail',
     subject: '',
     preheader: '',
     blocks: [{ type: 'text', text: '' }],
@@ -33,7 +41,22 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
       'Schirmerstr. 18 · 50823 Köln',
       'kontakt@brenntelmediadesign.com · +49 171 5518420',
     ],
+    signature: {
+      name: '',
+      role: '',
+      company: 'brenntel mediadesign GbR',
+      street: 'Schirmerstr. 18',
+      city: '50823 Köln',
+      phone: '+49 171 5518420',
+      email: 'kontakt@brenntelmediadesign.com',
+      web: 'brenntelmediadesign.com',
+      extra: '',
+      wordmark: true,
+    },
   };
+
+  // Feld-Id im Formular → Schlüssel im Signaturobjekt
+  var SIG_FELDER = ['name', 'role', 'company', 'street', 'city', 'phone', 'email', 'web', 'extra'];
 
   var BEZEICHNUNG = {
     text: 'Absatz',
@@ -59,8 +82,18 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     init();
   }
 
+  // Nur der Speicherzugriff gehört in den Fang: Lag unlock() mit drin, starb
+  // jeder Fehler beim Aufbau lautlos, und die Seite stand halb fertig da —
+  // Felder gefüllt, Umschalter auf der falschen Art, keine Zeile im Protokoll.
+  //
+  // Aufgerufen wird unlock() erst am ENDE dieser Datei, nicht hier: Die
+  // Bausteine unten stehen in `var`-Deklarationen, und die sind beim Lesen
+  // dieser Zeile zwar bekannt, aber noch leer. Wer mit gemerktem Zugang neu
+  // lud, baute die Seite deshalb gegen ein undefined auf (ICON) — beim ersten
+  // Besuch fiel das nie auf, weil dort erst das Formular den Aufbau auslöst.
+  var freigeschaltet = false;
   try {
-    if (sessionStorage.getItem(UNLOCK_KEY) === 'yes') unlock();
+    freigeschaltet = sessionStorage.getItem(UNLOCK_KEY) === 'yes';
   } catch (_) { /* Privater Modus: dann eben mit Code */ }
 
   $('mg-code-form').addEventListener('submit', function (e) {
@@ -84,17 +117,31 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
       var roh = localStorage.getItem(DRAFT_KEY);
       if (!roh) return JSON.parse(JSON.stringify(LEER));
       var gelesen = JSON.parse(roh);
-      return {
-        subject: String(gelesen.subject || ''),
-        preheader: String(gelesen.preheader || ''),
-        blocks: Array.isArray(gelesen.blocks) && gelesen.blocks.length
-          ? gelesen.blocks
-          : JSON.parse(JSON.stringify(LEER.blocks)),
-        footer: Array.isArray(gelesen.footer) ? gelesen.footer : LEER.footer.slice(),
-      };
+      return normalisiere(gelesen);
     } catch (_) {
       return JSON.parse(JSON.stringify(LEER));
     }
+  }
+
+  /** Alles, was von außen kommt — Entwurf wie gespeicherte Vorlage — auf Form bringen. */
+  function normalisiere(gelesen) {
+    var g = gelesen || {};
+    var sig = (g.signature && typeof g.signature === 'object') ? g.signature : {};
+    var signature = JSON.parse(JSON.stringify(LEER.signature));
+    SIG_FELDER.forEach(function (feld) {
+      if (typeof sig[feld] === 'string') signature[feld] = sig[feld];
+    });
+    signature.wordmark = sig.wordmark !== false;
+    return {
+      kind: g.kind === 'signature' ? 'signature' : 'mail',
+      subject: String(g.subject || ''),
+      preheader: String(g.preheader || ''),
+      blocks: Array.isArray(g.blocks) && g.blocks.length
+        ? g.blocks
+        : JSON.parse(JSON.stringify(LEER.blocks)),
+      footer: Array.isArray(g.footer) ? g.footer : LEER.footer.slice(),
+      signature: signature,
+    };
   }
 
   function sichereEntwurf() {
@@ -241,9 +288,66 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     };
   }
 
+  function istSignatur() {
+    return doc.kind === 'signature';
+  }
+
+  /** Das HTML, das gespeichert und kopiert wird — ganze Mail oder nur der Block. */
+  function ausgabeHtml() {
+    return istSignatur() ? renderSignatureHtml(doc.signature) : renderMailHtml(aktuellesDoc());
+  }
+
+  function ausgabeText() {
+    return istSignatur() ? renderSignatureText(doc.signature) : renderMailText(aktuellesDoc());
+  }
+
+  /**
+   * Die Signatur wird unter Beispieltext gezeigt, nicht allein: Wie sie wirkt,
+   * entscheidet sich am Abstand zum Text darüber, und den sieht man nur, wenn
+   * Text da ist.
+   */
+  function vorschauHtml() {
+    if (!istSignatur()) return renderMailHtml(aktuellesDoc());
+    var absatz = 'font:400 15px/1.7 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Helvetica,Arial,sans-serif;color:#14100c';
+    return '<!DOCTYPE html><html lang="de"><head><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
+      '<body style="margin:0;padding:22px 18px;background:#ffffff">' +
+      '<p style="' + absatz + '">Sehr geehrter Herr Dorow,</p>' +
+      '<p style="' + absatz + '">so sieht eine ganz normal getippte Mail aus. ' +
+      'Nur der Block darunter kommt aus dem Generator.</p>' +
+      '<p style="' + absatz + '">Mit freundlichen Grüßen</p>' +
+      renderSignatureHtml(doc.signature) +
+      '</body></html>';
+  }
+
   function aktualisiere() {
-    $('mg-frame').srcdoc = renderMailHtml(aktuellesDoc());
+    $('mg-frame').srcdoc = vorschauHtml();
     sichereEntwurf();
+  }
+
+  /** Panels, Knöpfe und Beschriftungen auf die gewählte Art einstellen. */
+  function zeigeArt() {
+    var signatur = istSignatur();
+    document.querySelectorAll('.mg-mail-only').forEach(function (el) { el.hidden = signatur; });
+    document.querySelectorAll('.mg-signature-only').forEach(function (el) { el.hidden = !signatur; });
+
+    $('mg-kind-mail').classList.toggle('is-active', !signatur);
+    $('mg-kind-mail').setAttribute('aria-selected', String(!signatur));
+    $('mg-kind-signature').classList.toggle('is-active', signatur);
+    $('mg-kind-signature').setAttribute('aria-selected', String(signatur));
+
+    // Eine .eml mit nichts als einer Signatur darin wäre eine leere Mail.
+    $('mg-eml').hidden = signatur;
+    var hinweis = $('mg-eml-hint');
+    hinweis.hidden = !signatur;
+    hinweis.textContent = signatur ? 'Signaturen werden gesichert oder kopiert, nicht als .eml geladen.' : '';
+
+    $('mg-tpl-name-label').textContent = signatur ? 'Name dieser Signatur' : 'Name dieser Vorlage';
+    $('mg-tpl-name').placeholder = signatur ? 'z. B. Signatur Eike' : 'z. B. Angebot Feuerwehr';
+    $('mg-head-title').textContent = signatur ? 'Signatur bauen' : 'Mail schreiben';
+    $('mg-head-sub').textContent = signatur
+      ? 'Nur der Block unter deiner Mail — im brenntel-Design, den Text tippst du normal.'
+      : 'Im brenntel-Layout — als .eml sichern oder als Vorlage in der Mail-App nutzen.';
   }
 
   function melde(text, art) {
@@ -281,10 +385,12 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
   }
 
   async function kopiereHtml() {
-    var html = renderMailHtml(aktuellesDoc());
+    var html = ausgabeHtml();
     try {
       await navigator.clipboard.writeText(html);
-      melde('HTML in der Zwischenablage.', 'ok');
+      melde(istSignatur()
+        ? 'Signatur-HTML in der Zwischenablage — passt auch in Thunderbird oder Gmail.'
+        : 'HTML in der Zwischenablage.', 'ok');
     } catch (_) {
       melde('Kopieren hat der Browser abgelehnt — .eml herunterladen geht immer.', 'error');
     }
@@ -352,7 +458,7 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
       var name = document.createElement('strong');
       name.textContent = v.name;
       var wann = document.createElement('small');
-      wann.textContent = v.subject || '—';
+      wann.textContent = v.kind === 'signature' ? 'Signatur' : (v.subject || 'Vorlage');
       links.appendChild(name);
       links.appendChild(wann);
       zeile.appendChild(links);
@@ -364,14 +470,11 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
       oeffnen.disabled = !v.doc;
       oeffnen.title = v.doc ? 'Diese Vorlage bearbeiten' : 'Diese Vorlage enthält keine Bausteine';
       oeffnen.addEventListener('click', function () {
-        doc = {
-          subject: String(v.doc.subject || ''),
-          preheader: String(v.doc.preheader || ''),
-          blocks: Array.isArray(v.doc.blocks) && v.doc.blocks.length
-            ? v.doc.blocks
-            : JSON.parse(JSON.stringify(LEER.blocks)),
-          footer: Array.isArray(v.doc.footer) ? v.doc.footer : LEER.footer.slice(),
-        };
+        // Ein gespeicherter Eintrag kann älter sein als jedes Feld, das er
+        // haben müsste — normalisiere() füllt auf, statt undefined zu liefern.
+        var gelesen = normalisiere(v.doc);
+        gelesen.kind = v.kind === 'signature' ? 'signature' : gelesen.kind;
+        doc = gelesen;
         $('mg-tpl-name').value = v.name;
         fuelleFelder();
         meldeVorlage('„' + v.name + '“ geöffnet.', 'ok');
@@ -398,10 +501,12 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     var d = aktuellesDoc();
     var eintrag = {
       name: name,
-      subject: d.subject,
-      html: renderMailHtml(d),
-      text: renderMailText(d),
-      doc: d,
+      kind: doc.kind,
+      subject: istSignatur() ? '' : d.subject,
+      html: ausgabeHtml(),
+      text: ausgabeText(),
+      // Die Bausteine bzw. Felder, damit sich eine Vorlage wieder aufmachen lässt.
+      doc: istSignatur() ? { kind: 'signature', signature: doc.signature } : d,
     };
     var gleiche = vorhanden.filter(function (v) { return v.name === name; })[0];
     if (gleiche) eintrag.id = gleiche.id;
@@ -420,7 +525,12 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     $('mg-subject').value = doc.subject;
     $('mg-preheader').value = doc.preheader;
     $('mg-footer').value = (doc.footer || []).join('\n');
+    SIG_FELDER.forEach(function (feld) {
+      $('sig-' + feld).value = doc.signature[feld] || '';
+    });
+    $('sig-wordmark').checked = doc.signature.wordmark !== false;
     zeichneBloecke();
+    zeigeArt();
     aktualisiere();
   }
 
@@ -450,6 +560,26 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
       b.addEventListener('click', function () { ergaenze(b.getAttribute('data-add')); });
     });
 
+    SIG_FELDER.forEach(function (feld) {
+      $('sig-' + feld).addEventListener('input', function (e) {
+        doc.signature[feld] = e.target.value;
+        aktualisiere();
+      });
+    });
+    $('sig-wordmark').addEventListener('change', function (e) {
+      doc.signature.wordmark = e.target.checked;
+      aktualisiere();
+    });
+
+    function setzeArt(art) {
+      if (doc.kind === art) return;
+      doc.kind = art;
+      zeigeArt();
+      aktualisiere();
+    }
+    $('mg-kind-mail').addEventListener('click', function () { setzeArt('mail'); });
+    $('mg-kind-signature').addEventListener('click', function () { setzeArt('signature'); });
+
     var layout = document.querySelector('.mg-layout');
     function zeige(vorschau) {
       layout.classList.toggle('show-preview', vorschau);
@@ -465,7 +595,11 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     $('mg-copy').addEventListener('click', kopiereHtml);
     $('mg-new').addEventListener('click', function () {
       if (!window.confirm('Alles leeren? Der aktuelle Entwurf ist danach weg.')) return;
+      var art = doc.kind;
       doc = JSON.parse(JSON.stringify(LEER));
+      // Die Art bleibt: Wer eine Signatur baut, will beim Leeren eine leere
+      // Signatur, nicht plötzlich das Mail-Formular.
+      doc.kind = art;
       $('mg-tpl-name').value = '';
       fuelleFelder();
     });
@@ -473,4 +607,7 @@ import { renderMailHtml, renderMailText, buildEml } from './mail-layout.js';
     $('mg-tpl-save').addEventListener('click', sichereVorlage);
     $('mg-tpl-load').addEventListener('click', function () { ladeVorlagen(false); });
   }
+
+  // Erst jetzt: Alles oben ist belegt, der Aufbau findet vor, was er braucht.
+  if (freigeschaltet) unlock();
 })();

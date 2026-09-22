@@ -131,6 +131,32 @@
   color: #fff;
 }
 
+/* Breiter Umschalter über dem Editor: Er wählt, WAS gebaut wird, nicht wie
+   es angezeigt wird — deshalb über die volle Breite und nicht in der Kopfzeile. */
+.mg-tabs-wide {
+  display: flex;
+  width: 100%;
+}
+
+.mg-tabs-wide .mg-tab { flex: 1; }
+
+/* Ausgeblendete Panels je nach Art. */
+[hidden] { display: none !important; }
+
+.mg-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.mg-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-accent);
+}
+
 /* ---------- Aufteilung ---------- */
 .mg-layout { display: block; }
 
@@ -410,7 +436,9 @@
 .mg-actions .mg-status { flex-basis: 100%; }
 
 @media (min-width: 900px) {
-  .mg-tabs { display: none; }
+  /* Nur die Ansichtswahl entfällt nebeneinander — die Wahl, was gebaut wird,
+     bleibt. */
+  .mg-head .mg-tabs { display: none; }
 
   .mg-layout {
     display: grid;

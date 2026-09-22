@@ -218,6 +218,101 @@ export function renderMailText(doc) {
 }
 
 /* ----------------------------------------
+   Signatur — der kleine Bruder des Layouts
+
+   Kein ganzes Dokument, sondern ein Fragment: Eine Signatur wird in eine
+   fremde Mail eingesetzt, und ein zweites <html> darin macht aus der
+   Nachricht Müll. Deshalb auch keine Karte, kein Seitenhintergrund, kein
+   Vorschautext — nur der Block selbst.
+   ---------------------------------------- */
+
+/** Eine Zeile der Signatur; leere Teile fallen weg, statt Trenner zu hinterlassen. */
+function sigZeile(teile, stil) {
+  const inhalt = teile.filter(Boolean).join(' · ');
+  return inhalt ? `<div style="${stil}">${inhalt}</div>` : '';
+}
+
+function mailtoLink(adresse) {
+  const wert = String(adresse || '').trim();
+  if (!wert) return '';
+  return `<a href="mailto:${escapeHtml(wert)}" style="color:${FARBE.leise};` +
+    `text-decoration:none">${escapeHtml(wert)}</a>`;
+}
+
+function webLink(roh) {
+  const wert = String(roh || '').trim();
+  if (!wert) return '';
+  // „https://" nur vor eine Adresse OHNE Schema setzen. Sonst würde aus
+  // „javascript:…" ein „https://javascript:…", das die Prüfung passiert —
+  // kaputt statt gefährlich, aber es hätte hier nichts zu suchen.
+  const hatSchema = /^[a-z][a-z0-9+.-]*:/i.test(wert);
+  const ziel = hatSchema ? safeUrl(wert) : safeUrl('https://' + wert);
+  if (!ziel) return '';
+  // Angezeigt wird die Adresse ohne Protokoll — „https://" liest niemand mit.
+  const sichtbar = wert.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+  return `<a href="${escapeHtml(ziel)}" style="color:${FARBE.akzent};` +
+    `text-decoration:none">${escapeHtml(sichtbar)}</a>`;
+}
+
+/**
+ * sig = { name, role, company, street, city, phone, email, web, extra, wordmark }
+ * wordmark = false lässt den Schriftzug weg, etwa wenn die Mail ihn schon trägt.
+ */
+export function renderSignatureHtml(sig) {
+  const s = sig || {};
+  const schriftzug = s.wordmark === false ? '' :
+    `<div style="font:800 15px ${FONT};letter-spacing:-0.02em;color:${FARBE.text};` +
+    `padding-bottom:6px">brenntel<span style="color:${FARBE.akzent}">.</span> ` +
+    `<span style="font-weight:300;color:${FARBE.leise}">mediadesign</span></div>`;
+
+  const name = String(s.name || '').trim();
+  const rolle = String(s.role || '').trim();
+  const kopfzeile = name
+    ? `<div style="font:600 14px/1.5 ${FONT};color:${FARBE.text}">${escapeHtml(name)}` +
+      (rolle ? `<span style="font-weight:400;color:${FARBE.leise}"> · ${escapeHtml(rolle)}</span>` : '') +
+      `</div>`
+    : '';
+
+  const leise = `font:400 12px/1.7 ${FONT};color:${FARBE.leise}`;
+  const zeilen =
+    sigZeile([escapeHtml(String(s.company || '').trim())], leise) +
+    sigZeile([
+      escapeHtml(String(s.street || '').trim()),
+      escapeHtml(String(s.city || '').trim()),
+    ], leise) +
+    sigZeile([
+      escapeHtml(String(s.phone || '').trim()),
+      mailtoLink(s.email),
+    ], leise) +
+    sigZeile([webLink(s.web)], leise) +
+    sigZeile([escapeHtml(String(s.extra || '').trim())],
+      `font:400 11px/1.6 ${FONT};color:${FARBE.fuss};padding-top:4px`);
+
+  // Die Akzentlinie trennt die Signatur vom Text darüber — schmal gehalten,
+  // damit sie in einem Antwortverlauf nicht wie ein Seitenrahmen wirkt.
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" ` +
+    `style="border-collapse:collapse;margin-top:18px"><tr><td style="padding-top:12px;` +
+    `border-top:2px solid ${FARBE.akzent};min-width:240px">` +
+    schriftzug + kopfzeile + zeilen +
+    `</td></tr></table>`;
+}
+
+/** Klartextfassung derselben Signatur. */
+export function renderSignatureText(sig) {
+  const s = sig || {};
+  const zeilen = [
+    s.wordmark === false ? '' : 'brenntel. mediadesign',
+    [s.name, s.role].map((x) => String(x || '').trim()).filter(Boolean).join(' · '),
+    String(s.company || '').trim(),
+    [s.street, s.city].map((x) => String(x || '').trim()).filter(Boolean).join(' · '),
+    [s.phone, s.email].map((x) => String(x || '').trim()).filter(Boolean).join(' · '),
+    String(s.web || '').trim(),
+    String(s.extra || '').trim(),
+  ].filter(Boolean);
+  return zeilen.length ? '--\n' + zeilen.join('\n') : '';
+}
+
+/* ----------------------------------------
    .eml — dieselbe Mail als Datei
    Für Archiv, Weitergabe und zum Öffnen im Mailprogramm am Rechner
    (Thunderbird: „Als neue Nachricht bearbeiten"). NICHT als Antwort

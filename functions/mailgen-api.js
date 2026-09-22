@@ -62,6 +62,9 @@ function sanitize(eintrag) {
   return {
     id: str(eintrag.id, 64) || crypto.randomUUID(),
     name,
+    // 'signature' = nur der Block unter einer Mail, sonst eine ganze Vorlage.
+    // Unbekanntes wird zu 'mail', damit die App nie raten muss.
+    kind: eintrag && eintrag.kind === 'signature' ? 'signature' : 'mail',
     subject: str(eintrag.subject, 300),
     html,
     text: str(eintrag.text, 100 * 1024),
