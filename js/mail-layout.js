@@ -15,6 +15,23 @@
 
 const FONT = "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
 
+/**
+ * Schriftangaben ausgeschrieben, nie als Kurzform `font: 400 15px/1.7 …`.
+ *
+ * Outlook rendert mit der Word-Maschine, und die kennt die font-Kurzform nicht:
+ * Sie verwirft die ganze Regel und setzt Standardgröße samt Standardzeilenhöhe.
+ * Dieselbe Mail sah auf dem Handy richtig aus und in Outlook auseinandergezogen
+ * — ohne dass an der Mail etwas falsch gewesen wäre.
+ *
+ * Die Zeilenhöhe steht in px statt als Faktor, weil Word Faktoren eigenwillig
+ * rundet, und `mso-line-height-rule:exactly` davor hält Outlook daran fest.
+ */
+function schrift(groesse, zeile, gewicht, farbe) {
+  return `mso-line-height-rule:exactly;font-family:${FONT};font-size:${groesse}px;` +
+    (zeile ? `line-height:${zeile}px;` : '') +
+    `font-weight:${gewicht};color:${farbe}`;
+}
+
 const FARBE = {
   seite: '#f5ecdb',
   karte: '#ffffff',
@@ -59,7 +76,7 @@ function absaetze(text, stil) {
     .join('');
 }
 
-const STIL_ABSATZ = `margin:0 0 16px;font:400 15px/1.7 ${FONT};color:${FARBE.text}`;
+const STIL_ABSATZ = `margin:0 0 16px;${schrift(15, 26, 400, FARBE.text)}`;
 
 /**
  * Platzhalter für den in der Mail-App getippten Text.
@@ -73,8 +90,8 @@ export const BODY_SLOT = '<!--brenntel:body-->';
 function blockHtml(block) {
   switch (block && block.type) {
     case 'heading':
-      return `<h2 style="margin:26px 0 10px;font:700 19px/1.4 ${FONT};` +
-        `color:${FARBE.text};letter-spacing:-0.01em">${escapeHtml(block.text)}</h2>`;
+      return `<h2 style="margin:26px 0 10px;${schrift(19, 27, 700, FARBE.text)};` +
+        `letter-spacing:-0.01em">${escapeHtml(block.text)}</h2>`;
 
     case 'text':
       return absaetze(block.text, STIL_ABSATZ);
@@ -86,8 +103,8 @@ function blockHtml(block) {
         .map((p) => `<li style="margin:0 0 8px">${escapeHtml(p)}</li>`)
         .join('');
       if (!punkte) return '';
-      return `<ul style="margin:0 0 16px;padding-left:20px;font:400 15px/1.7 ${FONT};` +
-        `color:${FARBE.text}">${punkte}</ul>`;
+      return `<ul style="margin:0 0 16px;padding-left:20px;` +
+        `${schrift(15, 26, 400, FARBE.text)}">${punkte}</ul>`;
     }
 
     case 'button': {
@@ -98,8 +115,9 @@ function blockHtml(block) {
       return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" ` +
         `style="margin:6px 0 20px"><tr><td bgcolor="${FARBE.akzent}" ` +
         `style="border-radius:10px"><a href="${escapeHtml(ziel)}" ` +
-        `style="display:inline-block;padding:12px 24px;font:600 15px ${FONT};` +
-        `color:#ffffff;text-decoration:none">${escapeHtml(block.text)}</a></td></tr></table>`;
+        `style="display:inline-block;padding:12px 24px;` +
+        `${schrift(15, 0, 600, '#ffffff')};text-decoration:none">` +
+        `${escapeHtml(block.text)}</a></td></tr></table>`;
     }
 
     case 'note':
@@ -107,7 +125,7 @@ function blockHtml(block) {
       return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" ` +
         `style="background:${FARBE.kastenFlaeche};border:1px solid ${FARBE.kastenRand};` +
         `border-radius:12px;margin:0 0 18px"><tr><td style="padding:16px 20px">` +
-        absaetze(block.text, `margin:0;font:400 15px/1.7 ${FONT};color:${FARBE.text}`) +
+        absaetze(block.text, `margin:0;${schrift(15, 26, 400, FARBE.text)}`) +
         `</td></tr></table>`;
 
     case 'divider':
@@ -139,7 +157,7 @@ function fussHtml(zeilen) {
   const inhalt = (zeilen || [])
     .map((z) => String(z).trim())
     .filter(Boolean)
-    .map((z) => `<div style="font:400 11px/1.6 ${FONT};color:${FARBE.fuss}">${escapeHtml(z)}</div>`)
+    .map((z) => `<div style="${schrift(11, 18, 400, FARBE.fuss)}">${escapeHtml(z)}</div>`)
     .join('');
   if (!inhalt) return '';
   return `<tr><td style="padding:26px 36px 30px"><div style="border-top:1px solid ` +
@@ -173,7 +191,7 @@ ${preheaderHtml(d.preheader)}
       background:${FARBE.akzent};background:linear-gradient(90deg,${FARBE.akzent},#f5a623 55%,${FARBE.akzent});">&nbsp;</td></tr>
 
   <tr><td style="padding:30px 36px 0;">
-    <div style="font:800 21px ${FONT};letter-spacing:-0.03em;color:${FARBE.text};">
+    <div style="${schrift(21, 28, 800, FARBE.text)};letter-spacing:-0.03em;">
       brenntel<span style="color:${FARBE.akzent};">.</span>
       <span style="font-weight:300;color:${FARBE.leise};">mediadesign</span>
     </div>
@@ -261,19 +279,19 @@ function webLink(roh) {
 export function renderSignatureHtml(sig) {
   const s = sig || {};
   const schriftzug = s.wordmark === false ? '' :
-    `<div style="font:800 15px ${FONT};letter-spacing:-0.02em;color:${FARBE.text};` +
+    `<div style="${schrift(15, 22, 800, FARBE.text)};letter-spacing:-0.02em;` +
     `padding-bottom:6px">brenntel<span style="color:${FARBE.akzent}">.</span> ` +
     `<span style="font-weight:300;color:${FARBE.leise}">mediadesign</span></div>`;
 
   const name = String(s.name || '').trim();
   const rolle = String(s.role || '').trim();
   const kopfzeile = name
-    ? `<div style="font:600 14px/1.5 ${FONT};color:${FARBE.text}">${escapeHtml(name)}` +
+    ? `<div style="${schrift(14, 21, 600, FARBE.text)}">${escapeHtml(name)}` +
       (rolle ? `<span style="font-weight:400;color:${FARBE.leise}"> · ${escapeHtml(rolle)}</span>` : '') +
       `</div>`
     : '';
 
-  const leise = `font:400 12px/1.7 ${FONT};color:${FARBE.leise}`;
+  const leise = schrift(12, 20, 400, FARBE.leise);
   const zeilen =
     sigZeile([escapeHtml(String(s.company || '').trim())], leise) +
     sigZeile([
@@ -286,7 +304,7 @@ export function renderSignatureHtml(sig) {
     ], leise) +
     sigZeile([webLink(s.web)], leise) +
     sigZeile([escapeHtml(String(s.extra || '').trim())],
-      `font:400 11px/1.6 ${FONT};color:${FARBE.fuss};padding-top:4px`);
+      `${schrift(11, 18, 400, FARBE.fuss)};padding-top:4px`);
 
   // Die Akzentlinie trennt die Signatur vom Text darüber — schmal gehalten,
   // damit sie in einem Antwortverlauf nicht wie ein Seitenrahmen wirkt.
