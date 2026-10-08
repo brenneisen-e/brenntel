@@ -53,6 +53,9 @@
 .ks-intro p { margin: 0 0 0.75rem; }
 .ks-intro p:last-child { margin-bottom: 0; }
 
+/* Einleitung innerhalb eines Abschnitts, etwa beim Datenschutz */
+.ks-intro-section { margin: 0 0 0.5rem; font-size: 12px; line-height: 1.55; }
+
 /* ---------- Abschnitte ---------- */
 .ks-section { margin-top: 2.5rem; }
 
@@ -195,6 +198,11 @@
 .ks-role-no { color: var(--muted); }
 
 .ks-roles tr { break-inside: avoid; page-break-inside: avoid; }
+
+/* Blöcke, die in Druck und PDF nicht auseinandergerissen werden sollen:
+   Überschrift mit ihrem ersten Inhalt, kurze Tabellen */
+.ks-keep,
+.ks-roles { break-inside: avoid; page-break-inside: avoid; }
 
 .ks-roles-rules { margin-top: 1rem; }
 
@@ -392,7 +400,9 @@
 .re-sheet.pdf-capture .ks-condition,
 .re-sheet.pdf-capture .re-doc-sums,
 .re-sheet.pdf-capture .re-doc-closing,
-.re-sheet.pdf-capture .re-item-row { page-break-inside: avoid; }
+.re-sheet.pdf-capture .re-item-row,
+.re-sheet.pdf-capture .ks-keep,
+.re-sheet.pdf-capture .ks-roles { page-break-inside: avoid; }
 
 .re-sheet.pdf-capture .re-doc-addr-row { margin: 40px 0 48px; }
 .re-sheet.pdf-capture .re-doc-titlebar { margin-bottom: 40px; }

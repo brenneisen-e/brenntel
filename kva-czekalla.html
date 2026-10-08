@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/rechnung.css">
-  <link rel="stylesheet" href="css/kva-sheet.css?v=20261008a">
+  <link rel="stylesheet" href="css/kva-sheet.css?v=20261008c">
 </head>
 <body class="re-body ks-body">
 
@@ -87,7 +87,7 @@ anbei wie angekündigt unser Angebot für eure App „Czekalla @ work“.
 
 Es baut auf deinem Konzept auf und enthält alle Punkte eurer Prioritäten 1 bis 6 sowie Fotos, Notizen und Dokumente je Baustelle. Da ihr Geo Capture nicht weiter nutzen wollt, übernimmt die App die komplette Zeiterfassung, inklusive Monatsexport für eure Lohnabrechnung. Der Go-Live ist für Ende November 2026 geplant, danach betreue ich euch einen Monat lang intensiv.
 
-Website und Markendesign haben wir als Folgethemen mit aufgenommen. Dazu machen Malte und ich euch gern ein eigenes Angebot.
+Außerdem enthält das Angebot ein Datenschutzkonzept mit Vorlagen für eure Unterlagen. Als optionale Folgethemen nach Abschluss des Projekts haben wir eine Markenauffrischung und eine neue Website aufgenommen. Dazu machen Malte und ich euch gern ein eigenes Angebot.
 
 Wenn du Fragen hast oder wir etwas anpassen sollen, melde dich jederzeit.
 
@@ -167,7 +167,7 @@ Eike</textarea>
             <h3 class="ks-h3">Zeiterfassung und Baustellenzuordnung</h3>
             <ul class="re-item-details ks-list">
               <li>Beim Öffnen erkennt die App per GPS, auf welcher Baustelle sich der Mitarbeiter befindet. Einstempeln und Baustellenwechsel erfolgen mit einem Fingertipp</li>
-              <li>Auf Android-Geräten automatisches Ausstempeln beim Verlassen der Baustelle, auf iPhones Ausstempeln per Fingertipp</li>
+              <li>Auf Android-Geräten automatisches Ausstempeln beim Verlassen der Baustelle, freiwillig je Mitarbeiter (siehe Punkt 4). Auf iPhones Ausstempeln per Fingertipp</li>
               <li>Gespeichert werden Mitarbeiter, Baustelle, Datum, Beginn, Ende, Arbeitszeit und Pausen. Pausen werden automatisch nach den Vorgaben des Arbeitszeitgesetzes abgezogen</li>
               <li>Stempeln auch ohne Netz, etwa im Keller. Die Zeit wird übertragen, sobald wieder Netz da ist</li>
               <li>Erinnerung per Nachricht bei vergessenem Ausstempeln, im Büro auf einen Blick sichtbar, wer noch eingestempelt ist</li>
@@ -233,7 +233,7 @@ Eike</textarea>
         </section>
 
         <!-- ======== 2. Im Alltag ======== -->
-        <section class="ks-section">
+        <section class="ks-section ks-keep">
           <h2 class="ks-h2"><span class="ks-h2-num">2</span> So funktioniert die App im Alltag</h2>
 
           <div class="ks-pages">
@@ -266,6 +266,7 @@ Eike</textarea>
 
         <!-- ======== 3. Rollen und Berechtigungen ======== -->
         <section class="ks-section">
+          <div class="ks-keep">
           <h2 class="ks-h2"><span class="ks-h2-num">3</span> Rollen und Berechtigungen</h2>
 
           <div class="ks-pages ks-pages-2">
@@ -277,6 +278,8 @@ Eike</textarea>
               <strong>Büro</strong>
               <p>4 Zugänge mit vollem Zugriff. Das Büro verwaltet Mitarbeiter und Baustellen, korrigiert Zeiten, bucht Zusatzstunden und wertet aus.</p>
             </div>
+          </div>
+
           </div>
 
           <table class="ks-roles">
@@ -351,9 +354,57 @@ Eike</textarea>
           </ul>
         </section>
 
-        <!-- ======== 4. Kalkulation ======== -->
+        <!-- ======== 4. Datenschutz ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">4</span> Datenschutz</h2>
+
+          <div class="ks-intro ks-intro-section">
+            <p>Die App wird nach dem Grundsatz „Datenschutz durch Technikgestaltung“ (Art. 25 DSGVO) gebaut: Sie erhebt nur, was für Zeiterfassung und Stundenkontrolle nötig ist. Verantwortlich im Sinne der DSGVO bleibt ihr als Arbeitgeber, wir unterstützen euch mit den nötigen Unterlagen.</p>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Standort nur beim Stempeln</h3>
+            <ul class="re-item-details ks-list">
+              <li>Der Standort wird nur im Moment des Ein- und Ausstempelns abgefragt. Gespeichert wird die erkannte Baustelle, keine Koordinaten. Es entstehen keine Bewegungsprofile</li>
+              <li>Auf Android-Geräten prüft die App im Hintergrund nur, ob der Mitarbeiter den Bereich seiner Baustelle verlässt, und das nur, solange er eingestempelt ist. Außerhalb der Arbeitszeit gibt es keine Standortabfrage</li>
+              <li>Das automatische Ausstempeln schaltet jeder Mitarbeiter selbst ein und kann jederzeit zum Stempeln per Fingertipp wechseln</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Speicherort und Sicherheit</h3>
+            <ul class="re-item-details ks-list">
+              <li>Datenbank und Speicher für Fotos und Dokumente werden bei Cloudflare fest auf das Gebiet der EU festgelegt (Jurisdiction EU)</li>
+              <li>Cloudflare arbeitet als Auftragsverarbeiter mit den EU-Standardvertragsklauseln und ist unter dem EU-US Data Privacy Framework zertifiziert</li>
+              <li>Verschlüsselte Übertragung, persönliche Benutzerkonten, Zugriff nach dem Rollenkonzept unter Punkt 3, Protokollierung aller Änderungen durch das Büro</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Löschkonzept</h3>
+            <ul class="re-item-details ks-list">
+              <li>Daten werden nach festen Fristen automatisch gelöscht, die wir gemeinsam mit euch festlegen</li>
+              <li>Arbeitszeitnachweise bleiben mindestens zwei Jahre erhalten (§ 16 Abs. 2 ArbZG), lohnrelevante Auswertungen nach den gesetzlichen Aufbewahrungsfristen</li>
+              <li>Zugänge ausgeschiedener Mitarbeiter werden gesperrt, ihre Zeiten bleiben bis zum Ablauf der Fristen erhalten</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Datenschutz&#8209;Paket</h3>
+            <ul class="re-item-details ks-list">
+              <li>Vorlage für die Information eurer Mitarbeiter nach Art. 13 DSGVO</li>
+              <li>Vorlage für den Eintrag in euer Verzeichnis von Verarbeitungstätigkeiten (Art. 30 DSGVO)</li>
+              <li>Dokumentierte Interessenabwägung zur Nutzung des Standorts</li>
+              <li>Dokumentierte Prüfung, ob eine Datenschutz-Folgenabschätzung erforderlich ist</li>
+              <li>Vertrag zur Auftragsverarbeitung zwischen euch und uns sowie Hinweise zum Vertrag mit Cloudflare</li>
+            </ul>
+          </div>
+          <p class="ks-note ks-note-after">Die Vorlagen ersetzen keine Rechtsberatung. Eine abschließende Prüfung durch einen Datenschutzberater, etwa über die Handwerkskammer, empfehlen wir vor dem Go-Live. Besteht ein Betriebsrat, ist er vor der Einführung zu beteiligen (§ 87 Abs. 1 Nr. 6 BetrVG).</p>
+        </section>
+
+        <!-- ======== 5. Kalkulation ======== -->
         <section class="ks-section ks-section-calc">
-          <h2 class="ks-h2"><span class="ks-h2-num">4</span> Kalkulation</h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">5</span> Kalkulation</h2>
 
           <div class="re-items-head" aria-hidden="true">
             <span>Pos.</span>
@@ -462,6 +513,7 @@ Eike</textarea>
                 <ul class="re-item-details">
                   <li>Cloudflare-Konto auf euren Namen, Benutzerkonten</li>
                   <li>Testlauf mit einer Kolonne, Einrichtung der Geräte, Einweisung des Büros</li>
+                  <li>Datenschutz-Paket mit Vorlagen (Punkt 4)</li>
                 </ul>
               </div>
               <div class="re-item-price">
@@ -503,9 +555,9 @@ Eike</textarea>
           </div>
         </section>
 
-        <!-- ======== 5. Betrieb ======== -->
+        <!-- ======== 6. Betrieb ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">5</span> Betrieb nach der Betreuungsphase <span class="ks-h2-note">zur Wahl · nicht im Festpreis</span></h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Betrieb nach der Betreuungsphase <span class="ks-h2-note">zur Wahl · nicht im Festpreis</span></h2>
 
           <div class="re-doc-payment ks-payment">
             <div class="ks-pay-steps">
@@ -537,6 +589,7 @@ Eike</textarea>
             </div>
           </dl>
 
+          <div class="ks-keep">
           <h3 class="ks-h3 ks-costs-title">Kostenschätzung Cloudflare</h3>
           <table class="ks-costs">
             <tbody>
@@ -569,11 +622,12 @@ Eike</textarea>
             </tfoot>
           </table>
           <p class="ks-note ks-note-after">Cloudflare rechnet monatlich in US-Dollar ab. In Option A zahlt ihr diese Kosten direkt an Cloudflare, in Option B sind sie in der Pauschale enthalten.</p>
+          </div>
         </section>
 
-        <!-- ======== 6. Zeitplan ======== -->
+        <!-- ======== 7. Zeitplan ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Zeitplan</h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Zeitplan</h2>
 
           <dl class="ks-conditions">
             <div class="ks-condition">
@@ -596,22 +650,26 @@ Eike</textarea>
               <dt>Ende November 2026</dt>
               <dd>Go-Live im ganzen Betrieb mit Einrichtung der Geräte, anschließend ein Monat intensive Betreuung bis Ende Dezember 2026.</dd>
             </div>
+            <div class="ks-condition">
+              <dt>ab Januar 2027</dt>
+              <dd>Optional nach Abschluss des Projekts: Markenauffrischung und neue Website (Punkt 8).</dd>
+            </div>
           </dl>
           <p class="ks-note ks-note-after">Bei späterer Beauftragung oder späterer Bereitstellung der Unterlagen verschiebt sich der Go-Live entsprechend.</p>
         </section>
 
-        <!-- ======== 7. Folgethemen ======== -->
-        <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Folgethemen und Erweiterungen <span class="ks-h2-note">nicht im Festpreis · auf Wunsch gesondertes Angebot</span></h2>
+        <!-- ======== 8. Folgethemen ======== -->
+        <section class="ks-section ks-keep">
+          <h2 class="ks-h2"><span class="ks-h2-num">8</span> Optionale Folgethemen <span class="ks-h2-note">nicht im Festpreis · auf Wunsch gesondertes Angebot</span></h2>
 
           <div class="ks-pages">
             <div class="ks-page">
-              <strong>Markendesign</strong>
-              <p>Ein einheitlicher Markenauftritt für Czekalla, abgestimmt auf das Design der App. Gemeinsam mit Malte.</p>
+              <strong>Markenauffrischung</strong>
+              <p>Nach Abschluss des App-Projekts: Auffrischung des Markenauftritts von Czekalla, abgestimmt auf das Design der App. Gemeinsam mit Malte.</p>
             </div>
             <div class="ks-page">
               <strong>Website</strong>
-              <p>Neue Homepage mit Anfrage- und Buchungstool, Social Media sowie SEO und GEO, damit euch neue Kunden bei Google und in KI-Suchen finden. Gemeinsam mit Malte.</p>
+              <p>Nach Abschluss des App-Projekts: neue Homepage mit Anfrage- und Buchungstool, Social Media sowie SEO und GEO, damit euch neue Kunden bei Google und in KI-Suchen finden. Gemeinsam mit Malte.</p>
             </div>
             <div class="ks-page">
               <strong>iPhone-App im App Store</strong>
@@ -624,9 +682,10 @@ Eike</textarea>
           </div>
         </section>
 
-        <!-- ======== 8. Konditionen ======== -->
+        <!-- ======== 9. Konditionen ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">8</span> Konditionen</h2>
+          <div class="ks-keep">
+          <h2 class="ks-h2"><span class="ks-h2-num">9</span> Konditionen</h2>
 
           <div class="re-doc-payment ks-payment">
             <span class="re-doc-label">Zahlungsmodalitäten</span>
@@ -647,6 +706,7 @@ Eike</textarea>
               </div>
             </div>
           </div>
+          </div>
 
           <dl class="ks-conditions">
             <div class="ks-condition">
@@ -655,7 +715,7 @@ Eike</textarea>
             </div>
             <div class="ks-condition">
               <dt>Festpreis</dt>
-              <dd>Der Festpreis umfasst den unter den Punkten 1 bis 3 beschriebenen Leistungsumfang. Zusätzliche Wünsche, die darüber hinausgehen, setzen wir nach Absprache um und berechnen sie gesondert.</dd>
+              <dd>Der Festpreis umfasst den unter den Punkten 1 bis 4 beschriebenen Leistungsumfang. Zusätzliche Wünsche, die darüber hinausgehen, setzen wir nach Absprache um und berechnen sie gesondert.</dd>
             </div>
             <div class="ks-condition">
               <dt>Abnahme</dt>
@@ -663,11 +723,11 @@ Eike</textarea>
             </div>
             <div class="ks-condition">
               <dt>Mitwirkung</dt>
-              <dd>Ihr stellt Logo und Farben, die Mitarbeiter- und Baustellendaten sowie einen festen Ansprechpartner im Büro bereit und sorgt dafür, dass die Mitarbeiter ein Smartphone mit aktuellem iOS oder Android nutzen können.</dd>
+              <dd>Ihr stellt Logo und Farben, die Mitarbeiter- und Baustellendaten sowie einen festen Ansprechpartner im Büro bereit und sorgt dafür, dass die Mitarbeiter ein Smartphone mit aktuellem iOS oder Android nutzen können. Die Nutzung privater Smartphones ist für die Mitarbeiter freiwillig, wer kein eigenes Gerät nutzen möchte, erhält ein Diensthandy.</dd>
             </div>
             <div class="ks-condition">
               <dt>Standort und Datenschutz</dt>
-              <dd>Der Standort wird nur zum Stempeln und zur Baustellenerkennung genutzt, nicht für Bewegungsprofile. Die Information eurer Mitarbeiter über die Zeiterfassung und Standortnutzung liegt bei euch, wir liefern dafür einen Textvorschlag. Für den Zugriff auf eure Daten in Entwicklung und Betrieb schließen wir einen Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO.</dd>
+              <dd>Verantwortlich im Sinne der DSGVO seid ihr als Arbeitgeber, einschließlich der Information eurer Mitarbeiter vor dem Start. Wir setzen die unter Punkt 4 beschriebenen Maßnahmen um und liefern das Datenschutz-Paket. Für den Zugriff auf eure Daten in Entwicklung und Betreuung schließen wir einen Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO.</dd>
             </div>
             <div class="ks-condition">
               <dt>Nutzungsrechte</dt>
@@ -676,6 +736,7 @@ Eike</textarea>
           </dl>
         </section>
 
+        <div class="ks-keep">
         <div class="re-doc-closing">
           <p>Wir freuen uns auf die Zusammenarbeit und stehen für Rückfragen jederzeit zur Verfügung.</p>
           <p class="re-doc-signoff">Beste Grüße</p>
@@ -690,6 +751,7 @@ Eike</textarea>
           <span>Steuernummer: 217/5815/2041</span>
           <span>kontakt@brenntelmediadesign.com · +49 171 5518420</span>
         </footer>
+        </div>
 
       </article>
     </section>
