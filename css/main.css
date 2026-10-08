@@ -1724,6 +1724,20 @@ ul.chat-msg-list li::before {
   animation: workLivePulse 1.8s ease-in-out infinite;
 }
 
+/* Projekte in Arbeit: Badge in Akzentfarbe statt Grün */
+.work-live.is-wip {
+  color: var(--color-accent);
+  background: rgba(232, 114, 12, 0.1);
+}
+
+.work-live.is-wip .work-live-dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 6px rgba(232, 114, 12, 0.6);
+}
+
+/* Karte ohne Link: kein Zeiger, kein Overlay */
+.work-card-static { cursor: default; }
+
 @keyframes workLivePulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.85); }
@@ -1948,14 +1962,18 @@ ul.chat-msg-list li::before {
     font-size: 0.55rem;
     padding: 2px 6px;
   }
+  /* Tags unter den Text, damit lange Namen wie „Schornsteintechnik“ Platz haben */
   .work-info {
+    flex-direction: column;
+    gap: 0.65rem;
     padding: 1rem 1.1rem;
   }
   .work-info-text h3 {
     font-size: 1rem;
   }
   .work-tags {
-    max-width: 55%;
+    max-width: none;
+    justify-content: flex-start;
   }
   .work-tags span {
     font-size: 0.6rem;
