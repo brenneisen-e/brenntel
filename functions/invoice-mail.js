@@ -3,7 +3,8 @@
  *
  * Nimmt vom Rechnungsersteller (/rechnung) oder einer KVA-Seite eine fertig
  * gerenderte PDF entgegen und verschickt sie als Anhang an die angegebene
- * Adresse. meta.kind = 'kva' schaltet die Beschriftung auf Kostenvoranschlag.
+ * Adresse. meta.kind = 'kva' schaltet die Beschriftung auf Kostenvoranschlag,
+ * meta.kind = 'angebot' auf Angebot.
  *
  * Der Versand läuft über functions/_mail.js: Cloudflare Email Service mit
  * Resend als Rückfallebene — welche Variablen dafür nötig sind, steht dort
@@ -115,6 +116,15 @@ function labelsFor(meta) {
       total: 'Gesamtbetrag',
       due: 'Gültig bis',
       fallback: 'Im Anhang finden Sie unseren Kostenvoranschlag.',
+    };
+  }
+  if (meta.kind === 'angebot') {
+    return {
+      title: 'Angebot',
+      number: 'Referenz',
+      total: 'Festpreis',
+      due: 'Gültig bis',
+      fallback: 'Im Anhang findest du unser Angebot.',
     };
   }
   return {

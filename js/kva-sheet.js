@@ -13,6 +13,9 @@
   if (!sheet) return;
 
   var reference = (document.querySelector('.re-doc-meta dd') || {}).textContent || 'KVA';
+  // Dokumentart steuert die Beschriftung in Mail und Statusmeldung (Standard: Kostenvoranschlag)
+  var docKind   = sheet.getAttribute('data-kind') || 'kva';
+  var docLabel  = sheet.getAttribute('data-label') || 'Kostenvoranschlag';
   var filename  = reference.trim().replace(/[^\w.-]+/g, '_') + '_brenntel.pdf';
 
   if (printBtn) {
@@ -168,7 +171,7 @@
               pdfBase64: pdfBase64,
               replyTo: 'kontakt@brenntelmediadesign.com',
               meta: {
-                kind: 'kva',
+                kind: docKind,
                 number: reference.trim(),
                 total: total ? total.textContent.trim() : '',
                 dueDate: metaText('Gültig bis'),
@@ -193,7 +196,7 @@
           });
         })
         .then(function () {
-          setSendStatus('Kostenvoranschlag wurde an ' + to + (ccList.length ? ' (CC: ' + ccList.join(', ') + ')' : '') + ' gesendet.', 'ok');
+          setSendStatus(docLabel + ' wurde an ' + to + (ccList.length ? ' (CC: ' + ccList.join(', ') + ')' : '') + ' gesendet.', 'ok');
         })
         .catch(function (err) {
           setSendStatus('Versand fehlgeschlagen: ' + (err && err.message ? err.message : err), 'err');

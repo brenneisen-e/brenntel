@@ -9,7 +9,8 @@
      ---------------------------------------- */
   var VALID_CODES = {
     'KVA-AF-2602': 'kva.html',
-    'KVA-FA-2609': 'kva-feuerwehr.html'
+    'KVA-FA-2609': 'kva-feuerwehr.html',
+    'KVA-CZ-2610': 'kva-czekalla.html'
   };
   var THIS_PAGE = 'kva.html';
 

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angebot KVA-CZ-2610 — brenntel. mediadesign</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/rechnung.css">
+  <link rel="stylesheet" href="css/kva-sheet.css">
+</head>
+<body class="re-body ks-body">
+
+  <!-- ======== Header ======== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
+      <nav class="nav-desktop" aria-label="Navigation">
+        <a href="index.html">Startseite</a>
+      </nav>
+      <div class="header-mobile-actions">
+        <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <nav class="nav-mobile" aria-label="Mobile Navigation">
+      <div class="nav-mobile-inner">
+        <a href="index.html">
+          <span>Startseite</span>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
+  </header>
+
+  <main class="re-app ks-app" id="ks-app">
+
+    <div class="re-toolbar ks-toolbar">
+      <div class="re-toolbar-title">
+        <h1>Angebot</h1>
+        <p>Czekalla Malereifachbetrieb · App „Czekalla @ work“ · Referenz KVA-CZ-2610</p>
+      </div>
+      <div class="re-toolbar-actions">
+        <button type="button" class="re-btn re-btn-ghost" id="ks-print-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>
+          Drucken
+        </button>
+        <button type="button" class="re-btn re-btn-primary" id="ks-pdf-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Als PDF speichern
+        </button>
+      </div>
+    </div>
+
+    <details class="re-panel ks-mail" id="ks-mail">
+      <summary>Per E-Mail senden <span class="re-panel-hint">PDF wird angehängt</span></summary>
+      <div class="re-panel-body">
+        <div class="re-field-row">
+          <label class="re-field"><span>Empfänger</span>
+            <input type="email" id="ks-mail-to" value="czekalla@malereifachbetrieb.de" autocomplete="off">
+          </label>
+          <label class="re-field"><span>CC (optional)</span>
+            <input type="text" id="ks-mail-cc" value="" placeholder="name@domain.de, weitere@domain.de" autocomplete="off">
+          </label>
+        </div>
+        <div class="re-field-row">
+          <label class="re-field"><span>Absender</span>
+            <input type="text" id="ks-mail-from" value="brenntel mediadesign &lt;kontakt@brenntelmediadesign.com&gt;" autocomplete="off">
+          </label>
+          <label class="re-field"><span>BCC (Kopie an uns)</span>
+            <input type="email" id="ks-mail-bcc" value="kontakt@brenntelmediadesign.com" autocomplete="off">
+          </label>
+        </div>
+        <label class="re-field"><span>Betreff</span>
+          <input type="text" id="ks-mail-subject" value="Angebot (KVA-CZ-2610) – App „Czekalla @ work“" autocomplete="off">
+        </label>
+        <label class="re-field"><span>Nachricht</span>
+          <textarea id="ks-mail-text" rows="12">Hallo Elmar,
+
+anbei wie angekündigt unser Angebot für eure App „Czekalla @ work“.
+
+Es baut auf deinem Konzept auf und enthält alle Punkte eurer Prioritäten 1 bis 6 sowie Fotos, Notizen und Dokumente je Baustelle. Da ihr Geo Capture nicht weiter nutzen wollt, übernimmt die App die komplette Zeiterfassung, inklusive Monatsexport für eure Lohnabrechnung. Der Go-Live ist für Ende November 2026 geplant, danach betreue ich euch einen Monat lang intensiv.
+
+Website und Markendesign haben wir als Folgethemen mit aufgenommen. Dazu machen Malte und ich euch gern ein eigenes Angebot.
+
+Wenn du Fragen hast oder wir etwas anpassen sollen, melde dich jederzeit.
+
+Viele Grüße
+Eike</textarea>
+        </label>
+        <button type="button" class="re-btn re-btn-primary re-send-btn" id="ks-send-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <span>Angebot als PDF senden</span>
+        </button>
+        <p class="re-send-status" id="ks-send-status" aria-live="polite"></p>
+      </div>
+    </details>
+
+    <section class="re-preview ks-preview" aria-label="Angebot">
+      <article class="re-sheet ks-sheet" id="ks-sheet" data-kind="angebot" data-label="Angebot">
+        <span class="re-sheet-bar" aria-hidden="true"></span>
+
+        <header class="re-doc-head">
+          <div class="re-doc-brand">brenntel<span>.</span> <em>mediadesign</em></div>
+          <p class="re-doc-sender-line">Brenntel Mediadesign GbR · Schirmerstr. 18 · 50823 Köln</p>
+        </header>
+
+        <div class="re-doc-addr-row">
+          <div class="re-doc-recipient-wrap">
+            <span class="re-doc-label">Angebot für</span>
+            <div class="re-doc-recipient">
+              <p class="re-doc-r-name">Czekalla Malereifachbetrieb</p>
+              <p>z. Hd. Elmar Czekalla</p>
+              <p>Lehmbergstraße 25</p>
+              <p>25548 Kellinghusen</p>
+            </div>
+          </div>
+          <dl class="re-doc-meta">
+            <dt>Referenz</dt><dd>KVA-CZ-2610</dd>
+            <dt>Datum</dt><dd>08.10.2026</dd>
+            <dt>Gültig bis</dt><dd>31.10.2026</dd>
+            <dt>Steuernummer</dt><dd>217/5815/2041</dd>
+          </dl>
+        </div>
+
+        <div class="re-doc-titlebar">
+          <div class="re-doc-titlebar-left">
+            <span class="re-doc-label">Angebot · KVA-CZ-2610</span>
+            <h1 class="re-doc-title ks-title">App „Czekalla @&nbsp;work“<br>für euren Malereibetrieb</h1>
+            <p class="ks-subtitle">Zeiterfassung, Stundenbudget je Baustelle und Büro-Dashboard</p>
+          </div>
+          <div class="re-doc-badge">
+            <span class="re-doc-label">Festpreis</span>
+            <strong>9.500,00 €</strong>
+          </div>
+        </div>
+
+        <div class="ks-intro">
+          <p>Hallo Elmar,</p>
+          <p>vielen Dank für dein ausführliches Konzept. Gerne bieten wir euch hiermit die Entwicklung eurer App „Czekalla @ work“ an. Sie zeigt euch im Büro und euren Mitarbeitern auf der Baustelle jederzeit, wie jede Baustelle mit den Stunden steht, und übernimmt künftig die komplette Zeiterfassung, sodass Geo Capture entfallen kann.</p>
+          <p>Für die Mitarbeiter bleibt es so einfach wie gewünscht: Baustelle öffnen, einstempeln, arbeiten, ausstempeln. Das Angebot umfasst alle Punkte eurer Prioritäten 1 bis 6 sowie Fotos, Notizen und Dokumente je Baustelle, schlüsselfertig bis zum Go-Live Ende November 2026 und mit einem Monat intensiver Betreuung danach.</p>
+        </div>
+
+        <!-- ======== 1. Leistungsumfang ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">1</span> Leistungsumfang</h2>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Web&#8209;App und Android&#8209;App</h3>
+            <ul class="re-item-details ks-list">
+              <li>Eine Web-App für iPhone, Android und den Büro-PC, installiert als Symbol auf dem Startbildschirm, ohne App Store und ohne Store-Gebühren</li>
+              <li>Zusätzlich eine Android-App, die ohne Play Store direkt auf dem Handy installiert wird und den Standort auch im Hintergrund abfragen kann</li>
+              <li>Updates stehen sofort auf allen Geräten zur Verfügung, ohne Neuinstallation</li>
+              <li>Betrieb auf einem eigenen Cloudflare-Konto auf euren Namen, Speicherung der Daten in der EU</li>
+              <li>Gestaltung im Czekalla-Design auf Basis eures Logos und eurer Farben, mit großen, gut erkennbaren Buttons für den Einsatz auf der Baustelle</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Zeiterfassung und Baustellenzuordnung</h3>
+            <ul class="re-item-details ks-list">
+              <li>Beim Öffnen erkennt die App per GPS, auf welcher Baustelle sich der Mitarbeiter befindet. Einstempeln und Baustellenwechsel erfolgen mit einem Fingertipp</li>
+              <li>Auf Android-Geräten automatisches Ausstempeln beim Verlassen der Baustelle, auf iPhones Ausstempeln per Fingertipp</li>
+              <li>Gespeichert werden Mitarbeiter, Baustelle, Datum, Beginn, Ende, Arbeitszeit und Pausen. Pausen werden automatisch nach den Vorgaben des Arbeitszeitgesetzes abgezogen</li>
+              <li>Stempeln auch ohne Netz, etwa im Keller. Die Zeit wird übertragen, sobald wieder Netz da ist</li>
+              <li>Erinnerung per Nachricht bei vergessenem Ausstempeln, im Büro auf einen Blick sichtbar, wer noch eingestempelt ist</li>
+              <li>Monatsübersicht der Arbeitszeiten je Mitarbeiter als Export (Excel/CSV) für eure Lohnabrechnung</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Faktor und effektive Stunden</h3>
+            <ul class="re-item-details ks-list">
+              <li>Faktor im Mitarbeiterprofil, zum Beispiel Geselle 1,0 und Azubi 0,5, festgelegt durch das Büro und für Mitarbeiter nicht änderbar</li>
+              <li>Automatische Verrechnung: effektive Stunden = Arbeitszeit × Faktor</li>
+              <li>Der Faktor wird mit Gültigkeitsdatum gespeichert. Wird ein Azubi zum Gesellen, bleiben seine bisherigen Stunden korrekt gewichtet</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Stundenbudget je Baustelle</h3>
+            <ul class="re-item-details ks-list">
+              <li>Je Baustelle Name, Nummer, Auftraggeber, Soll-Stunden und weitere Informationen</li>
+              <li>Laufende Anzeige von Soll-Stunden, effektiven Ist-Stunden, genehmigten Zusatzstunden, aktuellem Budget, Reststunden und Status</li>
+              <li>Der Mitarbeiter sieht beim Öffnen seiner Baustelle sofort, wie viele Stunden noch verfügbar sind oder wie hoch die Überschreitung ist. Die Anzeige aktualisiert sich nach jeder Zeiterfassung</li>
+              <li>Statusampel mit Schwellen, die ihr selbst festlegt, zum Beispiel Gelb ab 85 % verbrauchter Stunden</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Zusatzstunden und Stundenlohnzettel</h3>
+            <ul class="re-item-details ks-list">
+              <li>Das Büro bucht genehmigte Zusatzstunden manuell auf eine Baustelle, das Budget und die Anzeige beim Mitarbeiter passen sich sofort an</li>
+              <li>Ursprüngliches Soll, Zusatzstunden, tatsächliche Arbeitsstunden und aktuelles Budget werden getrennt gespeichert, die geleisteten Stunden bleiben unverändert</li>
+              <li>Nachweis je Buchung als Foto, PDF oder Scan des unterschriebenen Stundenlohnzettels, mit Datum der Genehmigung, Anzahl der Stunden, Baustelle und Name der Person, die den Eintrag vorgenommen hat</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Büro: Dashboard, Verwaltung und Auswertungen</h3>
+            <ul class="re-item-details ks-list">
+              <li>Startseite mit allen Baustellen: Soll, Ist, Zusatzstunden, Rest und Status als Ampel, kritische Baustellen oben</li>
+              <li>Rollen und Berechtigungen für ca. 30 Mitarbeiter und 4 Büro-Zugänge. Das Büro hat vollen Zugriff, Mitarbeiter erfassen nur ihre eigenen Zeiten</li>
+              <li>Mitarbeiter, Faktoren, Baustellen und Soll-Stunden anlegen und ändern, Arbeitszeiten kontrollieren und korrigieren</li>
+              <li>Korrekturen werden mit Begründung gespeichert, der ursprüngliche Eintrag bleibt nachvollziehbar, auch für Lohnabrechnung und mögliche Prüfungen</li>
+              <li>Auswertungen nach Tag, Woche und Monat, je Baustelle und Mitarbeiter, Soll-Ist-Vergleich, Zusatzstunden sowie Über- und Unterschreitungen</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Baustellenakte</h3>
+            <ul class="re-item-details ks-list">
+              <li>Fotos, Notizen und Dokumente zu jeder Baustelle, direkt vom Handy aus hochgeladen und im Büro abrufbar</li>
+            </ul>
+          </div>
+
+          <div class="ks-service">
+            <h3 class="ks-h3">Einführung und Betreuung</h3>
+            <ul class="re-item-details ks-list">
+              <li>Einrichtung des Cloudflare-Kontos und aller Benutzerkonten</li>
+              <li>Testlauf mit einer Kolonne, danach Einführung im ganzen Betrieb</li>
+              <li>Einrichtung der Geräte gemeinsam mit euren Mitarbeitern, etwa eine Minute pro Gerät, sowie Einweisung des Büros</li>
+              <li>Ein Monat intensive Betreuung nach dem Go-Live: Fragen, Feinschliff und Fehlerbehebung</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ======== 2. Im Alltag ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">2</span> So funktioniert die App im Alltag</h2>
+
+          <div class="ks-pages">
+            <div class="ks-page">
+              <strong>Morgens auf der Baustelle</strong>
+              <p>App öffnen, die Baustelle ist per GPS bereits erkannt, ein Fingertipp auf „Einstempeln“.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Stunden auf einen Blick</strong>
+              <p>Baustelle Musterstraße: Soll 500 Std., verbraucht 430 Std., noch verfügbar 70 Std. Status: im Plan.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Abends</strong>
+              <p>Ausstempeln per Fingertipp, auf Android auch automatisch. Wer es vergisst, bekommt eine Erinnerung.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Faktor</strong>
+              <p>8 Arbeitsstunden eines Azubis × 0,5 ergeben 4 effektive Stunden auf der Baustelle.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Zusatzstunden</strong>
+              <p>Soll 500, verbraucht 525. Mit einem Stundenlohnzettel über 35 Std. steigt das Budget auf 535, Rest 10 Std.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Im Büro</strong>
+              <p>Alle Baustellen in einer Übersicht, kritische oben. Sofort sichtbar, wo Handlungsbedarf besteht.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======== 3. Kalkulation ======== -->
+        <section class="ks-section ks-section-calc">
+          <h2 class="ks-h2"><span class="ks-h2-num">3</span> Kalkulation</h2>
+
+          <div class="re-items-head" aria-hidden="true">
+            <span>Pos.</span>
+            <span>Leistungsbereich</span>
+            <span>Betrag</span>
+          </div>
+
+          <div class="re-doc-items">
+
+            <div class="re-item-row">
+              <span class="re-item-index">01</span>
+              <div>
+                <h3 class="re-item-title">Konzeption und Design</h3>
+                <ul class="re-item-details">
+                  <li>Abläufe für Mitarbeiter und Büro, Bildschirmentwürfe</li>
+                  <li>Gestaltung im Czekalla-Design, Abstimmung und Freigabe</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">1.000,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">02</span>
+              <div>
+                <h3 class="re-item-title">Zeiterfassung und Baustellenzuordnung</h3>
+                <ul class="re-item-details">
+                  <li>Ein- und Ausstempeln mit GPS-Baustellenerkennung und Baustellenwechsel</li>
+                  <li>Pausenabzug, Stempeln ohne Netz, Erinnerung bei vergessenem Ausstempeln</li>
+                  <li>Monatsexport für die Lohnabrechnung</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">2.400,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">03</span>
+              <div>
+                <h3 class="re-item-title">Faktor, Stundenbudget und Zusatzstunden</h3>
+                <ul class="re-item-details">
+                  <li>Faktorberechnung mit Gültigkeitsdatum, effektive Stunden</li>
+                  <li>Soll-, Ist- und Reststunden je Baustelle mit Ampel, Anzeige beim Mitarbeiter</li>
+                  <li>Zusatzstunden mit Nachweis zum Stundenlohnzettel</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">1.800,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">04</span>
+              <div>
+                <h3 class="re-item-title">Büro: Dashboard, Verwaltung und Auswertungen</h3>
+                <ul class="re-item-details">
+                  <li>Dashboard aller Baustellen, Rollen und Berechtigungen</li>
+                  <li>Verwaltung von Mitarbeitern und Baustellen, Korrekturen mit Begründung</li>
+                  <li>Auswertungen nach Zeitraum, Baustelle und Mitarbeiter</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">1.500,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">05</span>
+              <div>
+                <h3 class="re-item-title">Baustellenakte</h3>
+                <ul class="re-item-details">
+                  <li>Fotos, Notizen und Dokumente je Baustelle</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">600,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">06</span>
+              <div>
+                <h3 class="re-item-title">Android&#8209;App</h3>
+                <ul class="re-item-details">
+                  <li>Installation ohne Play Store</li>
+                  <li>Standortabfrage im Hintergrund, automatisches Ausstempeln beim Verlassen der Baustelle</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">1.000,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">07</span>
+              <div>
+                <h3 class="re-item-title">Einrichtung, Testlauf und Einführung</h3>
+                <ul class="re-item-details">
+                  <li>Cloudflare-Konto auf euren Namen, Benutzerkonten</li>
+                  <li>Testlauf mit einer Kolonne, Einrichtung der Geräte, Einweisung des Büros</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">Pauschal</span>
+                <span class="re-item-amount">700,00 €</span>
+              </div>
+            </div>
+
+            <div class="re-item-row">
+              <span class="re-item-index">08</span>
+              <div>
+                <h3 class="re-item-title">Betreuung nach dem Go&#8209;Live</h3>
+                <ul class="re-item-details">
+                  <li>Intensive Betreuung im ersten Monat: Fragen, Feinschliff, Fehlerbehebung</li>
+                </ul>
+              </div>
+              <div class="re-item-price">
+                <span class="re-item-qty">1&nbsp;Monat Pauschale</span>
+                <span class="re-item-amount">500,00 €</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="re-doc-sums">
+            <div class="re-doc-sumrow">
+              <span>Entwicklung und Einführung (Pos. 01–07)</span>
+              <span>9.000,00 €</span>
+            </div>
+            <div class="re-doc-sumrow">
+              <span>Betreuung nach dem Go-Live (Pos. 08)</span>
+              <span>500,00 €</span>
+            </div>
+            <div class="re-doc-sumrow re-doc-total">
+              <span>Festpreis</span>
+              <span>9.500,00 €</span>
+            </div>
+            <p class="re-doc-kleinhinweis">Gemäß § 19 UStG (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet und ausgewiesen.</p>
+          </div>
+        </section>
+
+        <!-- ======== 4. Betrieb ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">4</span> Betrieb nach der Betreuungsphase <span class="ks-h2-note">zur Wahl · nicht im Festpreis</span></h2>
+
+          <div class="re-doc-payment ks-payment">
+            <div class="ks-pay-steps">
+              <div class="ks-pay-step">
+                <span class="ks-pay-num">A</span>
+                <div>
+                  <strong>Betrieb durch uns</strong>
+                  <p>5,00 € pro Nutzer und Monat</p>
+                </div>
+              </div>
+              <div class="ks-pay-step">
+                <span class="ks-pay-num">B</span>
+                <div>
+                  <strong>Betrieb durch euch</strong>
+                  <p>nur die Cloudflare&#8209;Kosten</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <dl class="ks-conditions">
+            <div class="ks-condition">
+              <dt>Option A</dt>
+              <dd>Wir übernehmen Betrieb, Überwachung, Backups und Updates und sind bei Fragen und Störungen euer Ansprechpartner. Bei 34 Nutzern sind das 170,00 € im Monat. Abgerechnet werden die aktiven Nutzer. Die Kosten für das Cloudflare-Konto tragt ihr direkt, sie liegen bei wenigen Euro im Monat.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Option B</dt>
+              <dd>Ihr betreibt die App selbst auf eurem Cloudflare-Konto und zahlt dafür nur wenige Euro im Monat direkt an Cloudflare. Die Einrichtung ist im Festpreis enthalten (Pos. 07). Danach übernehmt ihr den laufenden Betrieb, Unterstützung durch uns erfolgt nach Absprache und Aufwand.</dd>
+            </div>
+          </dl>
+        </section>
+
+        <!-- ======== 5. Zeitplan ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">5</span> Zeitplan</h2>
+
+          <dl class="ks-conditions">
+            <div class="ks-condition">
+              <dt>bis 16.10.2026</dt>
+              <dd>Auftrag und gemeinsamer Start. Ihr stellt Logo, Farben, die Mitarbeiterliste mit Rolle und Faktor sowie die Baustellenliste mit Soll-Stunden und Adressen bereit.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>bis 30.10.2026</dt>
+              <dd>Konzeption und Design, Freigabe der Entwürfe durch euch.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>bis 13.11.2026</dt>
+              <dd>Entwicklung von Web-App, Android-App und Büro-Bereich.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>16.–27.11.2026</dt>
+              <dd>Testlauf mit einer Kolonne, Feinschliff anhand der Rückmeldungen.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Ende November 2026</dt>
+              <dd>Go-Live im ganzen Betrieb mit Einrichtung der Geräte, anschließend ein Monat intensive Betreuung bis Ende Dezember 2026.</dd>
+            </div>
+          </dl>
+          <p class="ks-note ks-note-after">Bei späterer Beauftragung oder späterer Bereitstellung der Unterlagen verschiebt sich der Go-Live entsprechend.</p>
+        </section>
+
+        <!-- ======== 6. Folgethemen ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Folgethemen und Erweiterungen <span class="ks-h2-note">nicht im Festpreis · auf Wunsch gesondertes Angebot</span></h2>
+
+          <div class="ks-pages">
+            <div class="ks-page">
+              <strong>Markendesign</strong>
+              <p>Ein einheitlicher Markenauftritt für Czekalla, abgestimmt auf das Design der App. Gemeinsam mit Malte.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Website</strong>
+              <p>Neue Homepage mit Anfrage- und Buchungstool, Social Media sowie SEO und GEO, damit euch neue Kunden bei Google und in KI-Suchen finden. Gemeinsam mit Malte.</p>
+            </div>
+            <div class="ks-page">
+              <strong>iPhone-App im App Store</strong>
+              <p>Eigene iPhone-App, damit auch auf iPhones automatisch beim Verlassen der Baustelle ausgestempelt wird.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Abwesenheiten und Zeitkonten</strong>
+              <p>Urlaub, Krankmeldungen, Überstundenkonten und eine direkte DATEV-Übergabe, falls ihr diese Funktionen aus Geo Capture weiter braucht.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======== 7. Konditionen ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Konditionen</h2>
+
+          <div class="re-doc-payment ks-payment">
+            <span class="re-doc-label">Zahlungsmodalitäten</span>
+            <div class="ks-pay-steps">
+              <div class="ks-pay-step">
+                <span class="ks-pay-num">1</span>
+                <div>
+                  <strong>50 % Anzahlung bei Auftragserteilung</strong>
+                  <p>4.750,00 €</p>
+                </div>
+              </div>
+              <div class="ks-pay-step">
+                <span class="ks-pay-num">2</span>
+                <div>
+                  <strong>50 % Restzahlung nach dem Go-Live</strong>
+                  <p>4.750,00 €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <dl class="ks-conditions">
+            <div class="ks-condition">
+              <dt>Gültigkeit</dt>
+              <dd>An dieses Angebot halten wir uns bis zum 31.10.2026 gebunden.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Festpreis</dt>
+              <dd>Der Festpreis umfasst den unter Punkt 1 beschriebenen Leistungsumfang. Zusätzliche Wünsche, die darüber hinausgehen, setzen wir nach Absprache um und berechnen sie gesondert.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Abnahme</dt>
+              <dd>Die Abnahme erfolgt nach dem Testlauf mit der Kolonne, vor dem Go-Live im ganzen Betrieb.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Mitwirkung</dt>
+              <dd>Ihr stellt Logo und Farben, die Mitarbeiter- und Baustellendaten sowie einen festen Ansprechpartner im Büro bereit und sorgt dafür, dass die Mitarbeiter ein Smartphone mit aktuellem iOS oder Android nutzen können.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Standort und Datenschutz</dt>
+              <dd>Der Standort wird nur zum Stempeln und zur Baustellenerkennung genutzt, nicht für Bewegungsprofile. Die Information eurer Mitarbeiter über die Zeiterfassung und Standortnutzung liegt bei euch, wir liefern dafür einen Textvorschlag. Für den Zugriff auf eure Daten in Entwicklung und Betrieb schließen wir einen Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO.</dd>
+            </div>
+            <div class="ks-condition">
+              <dt>Nutzungsrechte</dt>
+              <dd>Ihr erhaltet an der App ein zeitlich unbeschränktes Nutzungsrecht für euren Betrieb. Die App und alle Daten liegen auf eurem eigenen Konto.</dd>
+            </div>
+          </dl>
+        </section>
+
+        <div class="re-doc-closing">
+          <p>Wir freuen uns auf die Zusammenarbeit und stehen für Rückfragen jederzeit zur Verfügung.</p>
+          <p class="re-doc-signoff">Viele Grüße</p>
+          <p class="re-doc-names">Eike von brenntel Mediadesign</p>
+        </div>
+
+        <p class="ks-legal">Alle Preise verstehen sich in Euro. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Entfällt die Kleinunternehmerregelung, wird auf danach erbrachte Leistungen, etwa den laufenden Betrieb nach Option A, zusätzlich die gesetzliche Umsatzsteuer berechnet.</p>
+
+        <footer class="re-doc-foot">
+          <span>Brenntel Mediadesign GbR</span>
+          <span>Schirmerstr. 18 · 50823 Köln</span>
+          <span>Steuernummer: 217/5815/2041</span>
+          <span>kontakt@brenntelmediadesign.com · +49 171 5518420</span>
+        </footer>
+
+      </article>
+    </section>
+  </main>
+
+  <!-- ======== Footer ======== -->
+  <footer class="site-footer re-site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign GbR</p>
+      <div class="footer-links">
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/vendor/html2pdf.bundle.min.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/kva-sheet.js"></script>
+</body>
+</html>
