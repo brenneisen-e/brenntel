@@ -141,6 +141,103 @@
   color: var(--muted);
 }
 
+/* ---------- Rollen und Berechtigungen ---------- */
+.ks-roles {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ks-roles th {
+  padding: 0 0 0.45rem;
+  border-bottom: 1px solid var(--ink);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+}
+
+.ks-roles td {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+  line-height: 1.45;
+  vertical-align: top;
+}
+
+.ks-roles th:not(:first-child),
+.ks-roles td:not(:first-child) {
+  width: 110px;
+  text-align: center;
+}
+
+/* Häkchen aus zwei Rahmenkanten statt SVG: html2canvas zeichnet
+   Inline-SVG in der PDF nicht mit */
+.ks-check {
+  display: inline-block;
+  width: 5px;
+  height: 10px;
+  border: solid var(--accent);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: 1px;
+}
+
+.ks-roles small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.ks-role-no { color: var(--muted); }
+
+.ks-roles tr { break-inside: avoid; page-break-inside: avoid; }
+
+.ks-roles-rules { margin-top: 1rem; }
+
+/* ---------- Kostenschätzung Betrieb ---------- */
+.ks-costs-title { margin: 1.5rem 0 0; }
+
+.ks-costs {
+  width: 100%;
+  margin-top: 0.6rem;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ks-costs td {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+  line-height: 1.45;
+  vertical-align: top;
+}
+
+.ks-costs td:last-child {
+  width: 120px;
+  padding-left: 1rem;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ks-costs small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.ks-costs tfoot td {
+  border-bottom: 0;
+  border-top: 1px solid var(--ink);
+  font-weight: 700;
+}
+
+.ks-costs tr { break-inside: avoid; page-break-inside: avoid; }
+
 /* ---------- Kalkulation ---------- */
 .ks-section-calc .re-items-head { margin-top: -0.25rem; }
 
@@ -318,5 +415,8 @@
   }
 
   .re-sheet:not(.pdf-capture) .ks-title { font-size: 1.35rem; }
+
+  .re-sheet:not(.pdf-capture) .ks-roles th:not(:first-child),
+  .re-sheet:not(.pdf-capture) .ks-roles td:not(:first-child) { width: 76px; }
   .re-sheet:not(.pdf-capture) .re-doc-titlebar { flex-wrap: wrap; }
 }

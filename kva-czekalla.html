@@ -206,7 +206,7 @@ Eike</textarea>
             <h3 class="ks-h3">Büro: Dashboard, Verwaltung und Auswertungen</h3>
             <ul class="re-item-details ks-list">
               <li>Startseite mit allen Baustellen: Soll, Ist, Zusatzstunden, Rest und Status als Ampel, kritische Baustellen oben</li>
-              <li>Rollen und Berechtigungen für ca. 30 Mitarbeiter und 4 Büro-Zugänge. Das Büro hat vollen Zugriff, Mitarbeiter erfassen nur ihre eigenen Zeiten</li>
+              <li>Rollen und Berechtigungen für ca. 30 Mitarbeiter und 4 Büro-Zugänge nach dem Konzept unter Punkt 3</li>
               <li>Mitarbeiter, Faktoren, Baustellen und Soll-Stunden anlegen und ändern, Arbeitszeiten kontrollieren und korrigieren</li>
               <li>Korrekturen werden mit Begründung gespeichert, der ursprüngliche Eintrag bleibt nachvollziehbar, auch für Lohnabrechnung und mögliche Prüfungen</li>
               <li>Auswertungen nach Tag, Woche und Monat, je Baustelle und Mitarbeiter, Soll-Ist-Vergleich, Zusatzstunden sowie Über- und Unterschreitungen</li>
@@ -263,9 +263,96 @@ Eike</textarea>
           </div>
         </section>
 
-        <!-- ======== 3. Kalkulation ======== -->
+        <!-- ======== 3. Rollen und Berechtigungen ======== -->
+        <section class="ks-section">
+          <h2 class="ks-h2"><span class="ks-h2-num">3</span> Rollen und Berechtigungen</h2>
+
+          <div class="ks-pages ks-pages-2">
+            <div class="ks-page">
+              <strong>Baustelle</strong>
+              <p>Ca. 30 Mitarbeiter, Gesellen und Azubis. Sie stempeln, sehen den Stundenstand ihrer Baustelle und ergänzen Fotos und Notizen.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Büro</strong>
+              <p>4 Zugänge mit vollem Zugriff. Das Büro verwaltet Mitarbeiter und Baustellen, korrigiert Zeiten, bucht Zusatzstunden und wertet aus.</p>
+            </div>
+          </div>
+
+          <table class="ks-roles">
+            <thead>
+              <tr>
+                <th scope="col">Funktion</th>
+                <th scope="col">Baustelle</th>
+                <th scope="col">Büro</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ein- und Ausstempeln, Baustelle wechseln</td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span><small>eigene Zeiten</small></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span><small>eigene Zeiten</small></td>
+              </tr>
+              <tr>
+                <td>Eigene Arbeitszeiten und Stunden ansehen</td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+              <tr>
+                <td>Stundenstand der Baustelle: Soll, verbraucht, verfügbar</td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span><small>eigene Baustelle</small></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span><small>alle Baustellen</small></td>
+              </tr>
+              <tr>
+                <td>Fotos, Notizen und Dokumente zur Baustelle hinzufügen</td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+              <tr>
+                <td>Arbeitszeiten aller Mitarbeiter einsehen und korrigieren</td>
+                <td><span class="ks-role-no" aria-label="nein">–</span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span><small>mit Begründung</small></td>
+              </tr>
+              <tr>
+                <td>Mitarbeiter, Rollen und Faktoren verwalten</td>
+                <td><span class="ks-role-no" aria-label="nein">–</span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+              <tr>
+                <td>Baustellen anlegen, Soll-Stunden festlegen und ändern</td>
+                <td><span class="ks-role-no" aria-label="nein">–</span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+              <tr>
+                <td>Zusatzstunden buchen und Stundenlohnzettel hinterlegen</td>
+                <td><span class="ks-role-no" aria-label="nein">–</span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+              <tr>
+                <td>Dashboard, Auswertungen und Lohnexport</td>
+                <td><span class="ks-role-no" aria-label="nein">–</span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+              <tr>
+                <td>Ampelschwellen und Einstellungen festlegen</td>
+                <td><span class="ks-role-no" aria-label="nein">–</span></td>
+                <td><span class="ks-check" role="img" aria-label="ja"></span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ul class="re-item-details ks-list ks-roles-rules">
+            <li>Jeder Mitarbeiter und jeder Büro-Zugang erhält ein eigenes, persönliches Benutzerkonto. Auf dem Handy bleibt man angemeldet, damit das Stempeln schnell geht</li>
+            <li>Mitarbeiter sehen nur ihre eigenen Zeiten. Stunden und Daten von Kollegen sind für sie nicht sichtbar, auf Baustellenebene sehen sie nur die Summen</li>
+            <li>Faktoren, Soll-Stunden und Stundenbudgets kann ausschließlich das Büro ändern</li>
+            <li>Jede Änderung durch das Büro wird mit Zeitpunkt, Person und Begründung protokolliert</li>
+            <li>Scheidet ein Mitarbeiter aus, wird sein Zugang gesperrt. Seine Zeiten bleiben für Auswertungen und Lohnabrechnung erhalten</li>
+            <li>Weitere Rollen, etwa für Vorarbeiter mit Blick auf ihre Kolonne, lassen sich später ergänzen</li>
+          </ul>
+        </section>
+
+        <!-- ======== 4. Kalkulation ======== -->
         <section class="ks-section ks-section-calc">
-          <h2 class="ks-h2"><span class="ks-h2-num">3</span> Kalkulation</h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">4</span> Kalkulation</h2>
 
           <div class="re-items-head" aria-hidden="true">
             <span>Pos.</span>
@@ -327,7 +414,7 @@ Eike</textarea>
               <div>
                 <h3 class="re-item-title">Büro: Dashboard, Verwaltung und Auswertungen</h3>
                 <ul class="re-item-details">
-                  <li>Dashboard aller Baustellen, Rollen und Berechtigungen</li>
+                  <li>Dashboard aller Baustellen, Rollen- und Berechtigungskonzept für Büro und Baustelle</li>
                   <li>Verwaltung von Mitarbeitern und Baustellen, Korrekturen mit Begründung</li>
                   <li>Auswertungen nach Zeitraum, Baustelle und Mitarbeiter</li>
                 </ul>
@@ -415,24 +502,24 @@ Eike</textarea>
           </div>
         </section>
 
-        <!-- ======== 4. Betrieb ======== -->
+        <!-- ======== 5. Betrieb ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">4</span> Betrieb nach der Betreuungsphase <span class="ks-h2-note">zur Wahl · nicht im Festpreis</span></h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">5</span> Betrieb nach der Betreuungsphase <span class="ks-h2-note">zur Wahl · nicht im Festpreis</span></h2>
 
           <div class="re-doc-payment ks-payment">
             <div class="ks-pay-steps">
               <div class="ks-pay-step">
                 <span class="ks-pay-num">A</span>
                 <div>
-                  <strong>Hosting bei euch, Betreuung durch uns</strong>
-                  <p>150,00 € pro Monat inkl. Cloudflare</p>
+                  <strong>Eigenes Hosting, Betrieb durch euch</strong>
+                  <p>ca. 5–10 € pro Monat an Cloudflare</p>
                 </div>
               </div>
               <div class="ks-pay-step">
                 <span class="ks-pay-num">B</span>
                 <div>
-                  <strong>Hosting und Betrieb durch euch</strong>
-                  <p>ca. 5–10 € pro Monat an Cloudflare</p>
+                  <strong>Betreuung des Backends durch uns</strong>
+                  <p>150,00 € pro Monat inkl. Cloudflare</p>
                 </div>
               </div>
             </div>
@@ -441,18 +528,51 @@ Eike</textarea>
           <dl class="ks-conditions">
             <div class="ks-condition">
               <dt>Option A</dt>
-              <dd>Die App läuft auf eurem eigenen Cloudflare-Konto, wir betreuen das Backend: Überwachung, Backups, Sicherheits- und Funktionsupdates, Anpassungen an neue iOS-, Android- und Browserversionen sowie Hilfe bei Fragen und Störungen. Die Pauschale enthält alle Cloudflare-Kosten für Server, Datenbank und den Speicher für Fotos und Dokumente, voraussichtlich 5 bis 10 € im Monat. Diese Kosten rechnen wir direkt mit Cloudflare ab, ihr habt keine weiteren laufenden Kosten. Die Pauschale beginnt nach der Betreuungsphase, also ab Januar 2027.</dd>
+              <dd>Ihr hostet und betreibt die App selbst auf eurem eigenen Cloudflare-Konto und zahlt die Kosten direkt an Cloudflare, voraussichtlich 5 bis 10 € im Monat (Kostenschätzung unten). Die Einrichtung ist im Festpreis enthalten (Pos. 07). Danach übernehmt ihr den laufenden Betrieb, Unterstützung durch uns erfolgt nach Absprache und Aufwand.</dd>
             </div>
             <div class="ks-condition">
               <dt>Option B</dt>
-              <dd>Ihr betreibt die App selbst auf eurem Cloudflare-Konto und zahlt dafür voraussichtlich 5 bis 10 € im Monat direkt an Cloudflare. Die Einrichtung ist im Festpreis enthalten (Pos. 07). Danach übernehmt ihr den laufenden Betrieb, Unterstützung durch uns erfolgt nach Absprache und Aufwand.</dd>
+              <dd>Die App läuft weiter auf eurem Cloudflare-Konto, wir betreuen das Backend: Überwachung, Backups, Sicherheits- und Funktionsupdates, Anpassungen an neue iOS-, Android- und Browserversionen sowie Hilfe bei Fragen und Störungen. Die Pauschale enthält alle Cloudflare-Kosten, diese rechnen wir direkt mit Cloudflare ab. Ihr habt keine weiteren laufenden Kosten. Die Pauschale beginnt nach der Betreuungsphase, also ab Januar 2027.</dd>
             </div>
           </dl>
+
+          <h3 class="ks-h3 ks-costs-title">Kostenschätzung Cloudflare</h3>
+          <table class="ks-costs">
+            <tbody>
+              <tr>
+                <td>Server, Schnittstellen und Datenbank<small>Cloudflare Workers und D1, Bezahltarif 5 US-$ im Monat</small></td>
+                <td>ca. 4,50 €</td>
+              </tr>
+              <tr>
+                <td>Speicher für Fotos, Dokumente und Stundenlohnzettel<small>Cloudflare R2, die ersten 10 GB kostenlos, darüber ca. 0,015 US-$ je GB</small></td>
+                <td>0–2 €</td>
+              </tr>
+              <tr>
+                <td>Backups und Wiederherstellung der Datenbank für 30 Tage</td>
+                <td>enthalten</td>
+              </tr>
+              <tr>
+                <td>Push-Nachrichten, SSL-Verschlüsselung und Schutz vor Angriffen</td>
+                <td>kostenlos</td>
+              </tr>
+              <tr>
+                <td>Adresse der App<small>als Subdomain eurer bestehenden Domain, z. B. app.eure-domain.de</small></td>
+                <td>kostenlos</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>Voraussichtlich gesamt, inkl. Puffer für Wechselkurs und Wachstum</td>
+                <td>5–10 € / Monat</td>
+              </tr>
+            </tfoot>
+          </table>
+          <p class="ks-note ks-note-after">Cloudflare rechnet monatlich in US-Dollar ab. In Option A zahlt ihr diese Kosten direkt an Cloudflare, in Option B sind sie in der Pauschale enthalten.</p>
         </section>
 
-        <!-- ======== 5. Zeitplan ======== -->
+        <!-- ======== 6. Zeitplan ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">5</span> Zeitplan</h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Zeitplan</h2>
 
           <dl class="ks-conditions">
             <div class="ks-condition">
@@ -479,9 +599,9 @@ Eike</textarea>
           <p class="ks-note ks-note-after">Bei späterer Beauftragung oder späterer Bereitstellung der Unterlagen verschiebt sich der Go-Live entsprechend.</p>
         </section>
 
-        <!-- ======== 6. Folgethemen ======== -->
+        <!-- ======== 7. Folgethemen ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Folgethemen und Erweiterungen <span class="ks-h2-note">nicht im Festpreis · auf Wunsch gesondertes Angebot</span></h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Folgethemen und Erweiterungen <span class="ks-h2-note">nicht im Festpreis · auf Wunsch gesondertes Angebot</span></h2>
 
           <div class="ks-pages">
             <div class="ks-page">
@@ -503,9 +623,9 @@ Eike</textarea>
           </div>
         </section>
 
-        <!-- ======== 7. Konditionen ======== -->
+        <!-- ======== 8. Konditionen ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Konditionen</h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">8</span> Konditionen</h2>
 
           <div class="re-doc-payment ks-payment">
             <span class="re-doc-label">Zahlungsmodalitäten</span>
@@ -534,7 +654,7 @@ Eike</textarea>
             </div>
             <div class="ks-condition">
               <dt>Festpreis</dt>
-              <dd>Der Festpreis umfasst den unter Punkt 1 beschriebenen Leistungsumfang. Zusätzliche Wünsche, die darüber hinausgehen, setzen wir nach Absprache um und berechnen sie gesondert.</dd>
+              <dd>Der Festpreis umfasst den unter den Punkten 1 bis 3 beschriebenen Leistungsumfang. Zusätzliche Wünsche, die darüber hinausgehen, setzen wir nach Absprache um und berechnen sie gesondert.</dd>
             </div>
             <div class="ks-condition">
               <dt>Abnahme</dt>
@@ -561,7 +681,7 @@ Eike</textarea>
           <p class="re-doc-names">Eike von brenntel Mediadesign</p>
         </div>
 
-        <p class="ks-legal">Alle Preise verstehen sich in Euro. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Entfällt die Kleinunternehmerregelung, wird auf danach erbrachte Leistungen, etwa die Betreuung nach Option A, zusätzlich die gesetzliche Umsatzsteuer berechnet.</p>
+        <p class="ks-legal">Alle Preise verstehen sich in Euro. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Entfällt die Kleinunternehmerregelung, wird auf danach erbrachte Leistungen, etwa die Betreuung nach Option B, zusätzlich die gesetzliche Umsatzsteuer berechnet.</p>
 
         <footer class="re-doc-foot">
           <span>Brenntel Mediadesign GbR</span>
