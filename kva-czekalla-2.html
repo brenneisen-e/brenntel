@@ -12,6 +12,128 @@
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/rechnung.css">
   <link rel="stylesheet" href="css/kva-sheet.css?v=20261008c">
+  <style>
+    /* ---------- Architektur, Datenbank, Schnittstellen (nur dieses Angebot) ----------
+       Diagramme bewusst aus HTML und CSS statt SVG: html2canvas übernimmt Inline-SVG
+       nicht in die PDF. */
+    .ks-arch { display: grid; gap: 0; }
+    .ks-arch-label {
+      font-size: 8.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+      margin: 0 0 0.4rem;
+    }
+    .ks-arch-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    .ks-arch-row-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .ks-node {
+      padding: 0.6rem 0.75rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper);
+    }
+    .ks-node strong { display: block; font-size: 11.5px; font-weight: 700; line-height: 1.35; }
+    .ks-node span { display: block; margin-top: 0.15rem; font-size: 10.5px; line-height: 1.45; color: var(--muted); }
+    .ks-node-dark { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .ks-node-dark span { color: rgba(255, 255, 255, 0.72); }
+    .ks-flow {
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.45rem 0;
+      font-size: 10px; color: var(--muted); text-align: center;
+    }
+    /* Pfeil: Linie mit Spitze aus Rahmenkanten */
+    .ks-arrow { position: relative; width: 2px; height: 22px; background: var(--accent); flex-shrink: 0; }
+    .ks-arrow::after {
+      content: ""; position: absolute; left: -4px; bottom: -2px; width: 0; height: 0;
+      border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--accent);
+    }
+    .ks-arrow-both::before {
+      content: ""; position: absolute; left: -4px; top: -2px; width: 0; height: 0;
+      border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 7px solid var(--accent);
+    }
+    .ks-cloud {
+      padding: 0.8rem; border: 1.5px dashed var(--accent); border-radius: 12px; background: var(--tint);
+      display: grid; gap: 0.5rem;
+    }
+    .ks-cloud .ks-arch-label { color: var(--accent); margin: 0; }
+    .ks-modules { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.45rem; }
+    .ks-chip {
+      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 10px; line-height: 1.5;
+      background: rgba(255, 255, 255, 0.12); color: #fff; white-space: nowrap;
+    }
+    .ks-chip-new { background: var(--accent); }
+    .ks-chip-light { background: var(--paper); color: var(--ink); border: 1px solid var(--rule); }
+    .ks-chip-light.ks-chip-new { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .ks-points { margin: 1rem 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem 1.5rem; }
+    .ks-points li { position: relative; padding-left: 0.9rem; font-size: 11.5px; line-height: 1.5; }
+    .ks-points li::before {
+      content: ""; position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+    }
+    .ks-points strong { font-weight: 700; }
+    .ks-sub { margin: 1.4rem 0 0.6rem; font-size: 12.5px; font-weight: 700; }
+    .ks-page-new { background: var(--paper); border: 1.5px solid var(--accent); }
+    .ks-tag {
+      display: inline-block; margin-left: 0.35rem; padding: 0 0.4rem; border-radius: 999px; background: var(--accent);
+      color: #fff; font-size: 8.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1px;
+    }
+
+    /* Datenmodell: Mitarbeiter und Baustelle, dazwischen ihre Verbindungen */
+    .ks-er { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr); column-gap: 26px; row-gap: 0.45rem; }
+    .ks-er-entity {
+      grid-row: 1 / 5; display: flex; flex-direction: column; justify-content: center; gap: 0.25rem;
+      padding: 0.7rem; border-radius: 10px; background: var(--ink); color: #fff;
+    }
+    .ks-er-entity strong { font-size: 13px; font-weight: 800; }
+    .ks-er-entity span { font-size: 10px; line-height: 1.45; color: rgba(255, 255, 255, 0.72); }
+    .ks-er-entity em { font-style: normal; color: #ffb36b; }
+    .ks-er-rel {
+      position: relative; padding: 0.45rem 0.6rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper);
+      text-align: center;
+    }
+    .ks-er-rel strong { display: block; font-size: 11px; font-weight: 700; }
+    .ks-er-rel span { display: block; font-size: 9.5px; line-height: 1.4; color: var(--muted); }
+    .ks-er-rel .ks-tag { display: inline-block; color: #fff; line-height: 1.5; }
+    .ks-er-rel::before,
+    .ks-er-rel::after { content: ""; position: absolute; top: 50%; width: 26px; border-top: 1.5px solid var(--ink); }
+    .ks-er-rel::before { left: -27px; }
+    .ks-er-rel::after { right: -27px; }
+    .ks-er-rel.ks-er-new { border: 1.5px solid var(--accent); }
+    .ks-er-rel.ks-er-new::before,
+    .ks-er-rel.ks-er-new::after { border-top: 1.5px dashed var(--accent); }
+
+    .ks-db { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-top: 1rem; }
+    .ks-db-group { padding: 0.65rem 0.75rem; border: 1px solid var(--rule); border-radius: 8px; }
+    .ks-db-group-new { border: 1.5px solid var(--accent); background: var(--tint); }
+    .ks-db-group strong { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 11.5px; font-weight: 700; }
+    .ks-db-group strong small { font-size: 10px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+    .ks-db-group .ks-modules { margin-top: 0.4rem; gap: 0.25rem; }
+    .ks-db-group .ks-chip { font-size: 9.5px; padding: 0.05rem 0.45rem; }
+
+    .ks-answer {
+      margin: 0 0 1rem; padding: 0.7rem 0.9rem; border-left: 3px solid var(--accent); background: var(--tint);
+      font-size: 12px; line-height: 1.55; border-radius: 0 8px 8px 0;
+    }
+    .ks-answer strong { font-weight: 700; }
+    .ks-costs td.ks-cost-ok { color: var(--ink); }
+
+    /* Im Grid verschiebt der Abstandshalter von html2pdf die Nachbarn: Grids
+       (Punkte, Tabellengruppen, Bausteine) als Ganzes mit .ks-keep umbrechen */
+    .re-sheet.pdf-capture .ks-cloud,
+    .re-sheet.pdf-capture .ks-er,
+    .re-sheet.pdf-capture .ks-answer { page-break-inside: avoid; }
+
+    @media print {
+      .ks-cloud, .ks-er, .ks-answer { break-inside: avoid; page-break-inside: avoid; }
+      .ks-cloud, .ks-node-dark, .ks-chip, .ks-er-entity, .ks-db-group-new, .ks-tag, .ks-answer, .ks-arrow {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .re-sheet:not(.pdf-capture) .ks-arch-row,
+      .re-sheet:not(.pdf-capture) .ks-db,
+      .re-sheet:not(.pdf-capture) .ks-points { grid-template-columns: 1fr; }
+      .re-sheet:not(.pdf-capture) .ks-arch-row-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .re-sheet:not(.pdf-capture) .ks-er { column-gap: 14px; }
+      .re-sheet:not(.pdf-capture) .ks-er-rel::before { left: -15px; width: 14px; }
+      .re-sheet:not(.pdf-capture) .ks-er-rel::after { right: -15px; width: 14px; }
+      .re-sheet:not(.pdf-capture) .ks-er-entity { padding: 0.55rem; }
+      .re-sheet:not(.pdf-capture) .ks-er-entity strong { font-size: 11.5px; }
+    }
+  </style>
 </head>
 <body class="re-body ks-body">
 
@@ -88,6 +210,8 @@ wie besprochen haben wir deine Wünsche zur Personalplanung bepreist: Wochenplan
 Damit du gut auswählen kannst, haben wir das Angebot neu gegliedert: Die Plattform mit Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live bildet das Fundament. Darauf setzen die Funktionen auf, die du wie aus einem Katalog wählst. Die Funktionen aus unserem ersten Angebot kosten zusammen mit der Plattform wie vereinbart 9.500 €. Die Personalplanung kommt mit 2.000 € dazu, zusammen also 11.500 €.
 
 Einiges, das wir seit dem ersten Angebot zusätzlich gebaut haben, etwa Aufgaben, den Chat mit dem Büro und Hinweise an die Mitarbeiter, ist ohne Aufpreis enthalten.
+
+Dazu findest du im Angebot jetzt die Systemarchitektur, das Datenmodell und die laufenden Kosten. Kurz vorweg: Schnittstellen musst du keine einrichten, alles läuft in eurem Cloudflare-Konto, für etwa 5–10 € im Monat.
 
 Am 30.10. gehen wir das gern gemeinsam durch, und du kannst bis dahin festlegen, was in die erste Version kommt.
 
@@ -410,9 +534,301 @@ Eike</textarea>
           </div>
         </section>
 
-        <!-- ======== 6. Zeitplan ======== -->
+        <!-- ======== 6. Systemarchitektur ======== -->
         <section class="ks-section">
-          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Zeitplan</h2>
+          <div class="ks-keep">
+          <h2 class="ks-h2"><span class="ks-h2-num">6</span> Systemarchitektur <span class="ks-h2-note">alles in einem Cloudflare&#8209;Konto</span></h2>
+          <p class="ks-note">Die App läuft komplett bei Cloudflare: Server, Datenbank, Dateien und E&#8209;Mail&#8209;Versand. Es gibt keinen eigenen Server, den jemand warten oder absichern muss.</p>
+          <div class="ks-arch">
+            <p class="ks-arch-label">Geräte</p>
+            <div class="ks-arch-row">
+              <div class="ks-node">
+                <strong>Mitarbeiter: Android&#8209;App</strong>
+                <span>Stempeln, Fotos, Aufgaben, Chat; Fingerabdruck&#8209;Sperre und Mitteilungen</span>
+              </div>
+              <div class="ks-node">
+                <strong>Mitarbeiter: Browser am Handy</strong>
+                <span>dieselbe App als Web&#8209;App, auch für iPhones, ohne App&#8209;Store</span>
+              </div>
+              <div class="ks-node">
+                <strong>Büro: Browser am PC</strong>
+                <span>Übersicht, Baustellen, Zeiten, Auswertungen, Planung</span>
+              </div>
+            </div>
+            <div class="ks-flow"><span class="ks-arrow ks-arrow-both" aria-hidden="true"></span><span>verschlüsselt (HTTPS), jedes Gerät mit eigener Anmeldung</span></div>
+            <div class="ks-cloud">
+              <p class="ks-arch-label">Cloudflare · euer Konto · Daten in der EU</p>
+              <div class="ks-node ks-node-dark">
+                <strong>App&#8209;Server (Cloudflare Worker)</strong>
+                <span>liefert die App aus und prüft bei jeder Anfrage, wer was sehen und ändern darf</span>
+                <div class="ks-modules">
+                  <span class="ks-chip">Anmeldung und Rollen</span>
+                  <span class="ks-chip">Stempeln und Pausen</span>
+                  <span class="ks-chip">Budget, Faktor, Ampel</span>
+                  <span class="ks-chip">Auswertungen und Exporte</span>
+                  <span class="ks-chip">Baustellenakte</span>
+                  <span class="ks-chip">Aufgaben, Chat, Hinweise</span>
+                  <span class="ks-chip ks-chip-new">Personalplanung (neu)</span>
+                </div>
+              </div>
+              <div class="ks-arch-row ks-arch-row-4">
+                <div class="ks-node">
+                  <strong>Datenbank (D1)</strong>
+                  <span>Zeiten, Baustellen, Mitarbeiter, Planung</span>
+                </div>
+                <div class="ks-node">
+                  <strong>Dateispeicher (R2)</strong>
+                  <span>Fotos, Dokumente, wöchentliche Backups</span>
+                </div>
+                <div class="ks-node">
+                  <strong>Automatik</strong>
+                  <span>Prüfungen, Erinnerungen, Löschfristen, Selbsttest</span>
+                </div>
+                <div class="ks-node">
+                  <strong>E&#8209;Mail&#8209;Versand</strong>
+                  <span>Einladungen und „Passwort vergessen“</span>
+                </div>
+              </div>
+            </div>
+            <div class="ks-flow"><span class="ks-arrow" aria-hidden="true"></span><span>öffentliche Dienste, ohne Vertrag und ohne Kosten</span></div>
+            <div class="ks-arch-row">
+              <div class="ks-node">
+                <strong>Push&#8209;Dienste der Handys</strong>
+                <span>Google, Apple, Mozilla stellen Mitteilungen zu, der Inhalt ist verschlüsselt</span>
+              </div>
+              <div class="ks-node">
+                <strong>Karten (basemap.de)</strong>
+                <span>amtliche Karte des Bundesamts für Kartographie, Server in Deutschland</span>
+              </div>
+              <div class="ks-node">
+                <strong>Adresssuche (OpenStreetMap)</strong>
+                <span>nur beim Anlegen einer Baustelle im Büro, nie mit Personendaten</span>
+              </div>
+            </div>
+          </div>
+          </div>
+          <ul class="ks-points ks-keep">
+            <li><strong>Standort bleibt auf dem Handy.</strong> Das Gerät vergleicht selbst, ob es an der Baustelle ist. Der Server bekommt nur „erkannt“ oder „abweichend“, nie Koordinaten.</li>
+            <li><strong>Stempeln auch ohne Netz.</strong> Stempel warten auf dem Handy und werden übertragen, sobald wieder Empfang da ist.</li>
+            <li><strong>Rechte prüft der Server.</strong> Mitarbeiter sehen nie Faktoren oder Stunden von Kollegen, auch nicht über Umwege.</li>
+            <li><strong>Geprüfte Updates.</strong> Jede Änderung durchläuft vor der Veröffentlichung über 1.800 automatische Tests und geht dann ohne Ausfallzeit live.</li>
+          </ul>
+
+          <div class="ks-keep">
+          <h3 class="ks-sub">Bausteine der App</h3>
+          <div class="ks-pages">
+            <div class="ks-page">
+              <strong>Mitarbeiter&#8209;App</strong>
+              <p>Startseite mit Baustelle und Woche, Stempeln, Meine Zeiten, Akte, Aufgaben, Chat, Hinweise.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Android&#8209;App</strong>
+              <p>Hülle um die Mitarbeiter&#8209;App mit Fingerabdruck, Mitteilungen und Updates direkt aus der App.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Büro&#8209;Oberfläche</strong>
+              <p>Übersicht, Baustellen, Mitarbeiter, Zeiten und Korrekturen, Auswertungen mit Excel und PDF.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Fachlogik</strong>
+              <p>Pausen nach Arbeitszeitgesetz, Faktor, Budget und Ampel: einmal geschrieben, gleich in App und Server.</p>
+            </div>
+            <div class="ks-page">
+              <strong>Automatik</strong>
+              <p>Alle 15&nbsp;Minuten offene Einträge prüfen und erinnern, nachts Löschfristen, sonntags Backup.</p>
+            </div>
+            <div class="ks-page ks-page-new">
+              <strong>Personalplanung <span class="ks-tag">neu</span></strong>
+              <p>Wochenplan, Urlaub und Krankmeldungen nutzen dieselben Mitarbeiter, Baustellen und Mitteilungen.</p>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        <!-- ======== 7. Datenbank ======== -->
+        <section class="ks-section">
+          <div class="ks-keep">
+          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Datenbank <span class="ks-h2-note">32 Tabellen heute, 3 neue</span></h2>
+          <p class="ks-note">Im Mittelpunkt stehen Mitarbeiter und Baustellen. Alles andere hängt an ihnen oder verbindet beide. Die Personalplanung kommt als eigene Verbindung dazu, bestehende Daten bleiben unverändert.</p>
+          <div class="ks-er">
+            <div class="ks-er-entity" style="grid-column: 1;">
+              <strong>Mitarbeiter</strong>
+              <span>Stammdaten, Rolle, Soll&#8209;Stunden, Geräte</span>
+              <span><em>neu:</em> Urlaubskonto, Abwesenheiten</span>
+            </div>
+            <div class="ks-er-rel" style="grid-column: 2; grid-row: 1;">
+              <strong>Zuweisung</strong>
+              <span>wer auf welcher Baustelle stempeln darf</span>
+            </div>
+            <div class="ks-er-rel" style="grid-column: 2; grid-row: 2;">
+              <strong>Zeiteintrag</strong>
+              <span>von–bis, Pause, Standortstatus</span>
+            </div>
+            <div class="ks-er-rel" style="grid-column: 2; grid-row: 3;">
+              <strong>Aufgabe, Foto, Notiz</strong>
+              <span>mit Raum und Beschreibung</span>
+            </div>
+            <div class="ks-er-rel ks-er-new" style="grid-column: 2; grid-row: 4;">
+              <strong>Wochenplan <span class="ks-tag">neu</span></strong>
+              <span>wer an welchem Tag wo eingeplant ist</span>
+            </div>
+            <div class="ks-er-entity" style="grid-column: 3;">
+              <strong>Baustelle</strong>
+              <span>Adresse, Zeitraum, Budget, Faktor, Status</span>
+              <span>Räume, Akte</span>
+            </div>
+          </div>
+          </div>
+
+          <div class="ks-db ks-keep">
+            <div class="ks-db-group">
+              <strong>Personen und Zugang <small>7 Tabellen</small></strong>
+              <div class="ks-modules">
+                <span class="ks-chip ks-chip-light">Mitarbeiter und Büro</span>
+                <span class="ks-chip ks-chip-light">Geräte</span>
+                <span class="ks-chip ks-chip-light">Sitzungen</span>
+                <span class="ks-chip ks-chip-light">Einladungen</span>
+                <span class="ks-chip ks-chip-light">Passwort&#8209;Links</span>
+                <span class="ks-chip ks-chip-light">Anmeldeversuche</span>
+                <span class="ks-chip ks-chip-light">Geräte&#8209;Übergabe</span>
+              </div>
+            </div>
+            <div class="ks-db-group">
+              <strong>Baustellen <small>6 Tabellen</small></strong>
+              <div class="ks-modules">
+                <span class="ks-chip ks-chip-light">Baustellen</span>
+                <span class="ks-chip ks-chip-light">Zuweisungen</span>
+                <span class="ks-chip ks-chip-light">Räume</span>
+                <span class="ks-chip ks-chip-light">Soll&#8209;Änderungen</span>
+                <span class="ks-chip ks-chip-light">Faktoren</span>
+                <span class="ks-chip ks-chip-light">Zusatzstunden</span>
+              </div>
+            </div>
+            <div class="ks-db-group">
+              <strong>Zeiterfassung <small>6 Tabellen</small></strong>
+              <div class="ks-modules">
+                <span class="ks-chip ks-chip-light">Zeiteinträge</span>
+                <span class="ks-chip ks-chip-light">Stempel&#8209;Ereignisse</span>
+                <span class="ks-chip ks-chip-light">Korrekturen</span>
+                <span class="ks-chip ks-chip-light">Tageswerte</span>
+                <span class="ks-chip ks-chip-light">Eintragswerte</span>
+                <span class="ks-chip ks-chip-light">Monatsabschlüsse</span>
+              </div>
+            </div>
+            <div class="ks-db-group">
+              <strong>Kommunikation <small>7 Tabellen</small></strong>
+              <div class="ks-modules">
+                <span class="ks-chip ks-chip-light">Hinweise</span>
+                <span class="ks-chip ks-chip-light">Empfänger</span>
+                <span class="ks-chip ks-chip-light">Gesehen&#8209;Vermerke</span>
+                <span class="ks-chip ks-chip-light">Aufgaben</span>
+                <span class="ks-chip ks-chip-light">Aufgaben&#8209;Empfänger</span>
+                <span class="ks-chip ks-chip-light">Chats</span>
+                <span class="ks-chip ks-chip-light">Nachrichten</span>
+              </div>
+            </div>
+            <div class="ks-db-group">
+              <strong>Akte und System <small>6 Tabellen</small></strong>
+              <div class="ks-modules">
+                <span class="ks-chip ks-chip-light">Dateien</span>
+                <span class="ks-chip ks-chip-light">Notizen</span>
+                <span class="ks-chip ks-chip-light">Einstellungen</span>
+                <span class="ks-chip ks-chip-light">Protokoll</span>
+                <span class="ks-chip ks-chip-light">Schlüssel</span>
+                <span class="ks-chip ks-chip-light">Entwicklungsnotizen</span>
+              </div>
+            </div>
+            <div class="ks-db-group ks-db-group-new">
+              <strong>Personalplanung <small>3 neue Tabellen</small></strong>
+              <div class="ks-modules">
+                <span class="ks-chip ks-chip-light ks-chip-new">Wochenplan</span>
+                <span class="ks-chip ks-chip-light ks-chip-new">Abwesenheiten</span>
+                <span class="ks-chip ks-chip-light ks-chip-new">Urlaubskonten</span>
+              </div>
+            </div>
+          </div>
+          <ul class="ks-points ks-keep">
+            <li><strong>Nichts wird einfach gelöscht.</strong> Buchungen werden storniert, jede Änderung des Büros steht mit Begründung im Protokoll.</li>
+            <li><strong>Krankmeldungen ohne Diagnose.</strong> Gespeichert werden nur Zeitraum und ob ein Nachweis vorliegt.</li>
+            <li><strong>Doppelt gesichert.</strong> Die Datenbank lässt sich 30 Tage zurückspulen, dazu jede Woche ein Backup im Dateispeicher.</li>
+            <li><strong>Löschfristen automatisch.</strong> Abgelaufene Daten entfernt der nächtliche Löschlauf nach dem Löschkonzept.</li>
+          </ul>
+        </section>
+
+        <!-- ======== 8. Schnittstellen und Betriebskosten ======== -->
+        <section class="ks-section">
+          <div class="ks-keep">
+          <h2 class="ks-h2"><span class="ks-h2-num">8</span> Schnittstellen und Betriebskosten</h2>
+          <p class="ks-answer"><strong>Kurz gesagt: Ihr müsst keine Schnittstelle einrichten oder bezahlen.</strong> Alles, was die App braucht, läuft in eurem Cloudflare&#8209;Konto oder über öffentliche Dienste ohne Vertrag. Auch die Personalplanung braucht keine weitere Anbindung.</p>
+          <table class="ks-costs">
+            <tbody>
+              <tr>
+                <td>Lohnabrechnung<small>Lohnübersicht je Monat als Excel&#8209;Datei, netto ohne Faktor, zum Weiterleiten ans Lohnbüro. Braucht euer Lohnbüro ein bestimmtes Format, etwa für DATEV, klären wir das am 30.10.</small></td>
+                <td>Datei&#8209;Export</td>
+              </tr>
+              <tr>
+                <td>E&#8209;Mail&#8209;Versand<small>Cloudflare Email Service. Einmalig zwei Einträge in den DNS&#8209;Einstellungen eurer Domain, das richten wir mit ein.</small></td>
+                <td>enthalten</td>
+              </tr>
+              <tr>
+                <td>Mitteilungen aufs Handy<small>über die Push&#8209;Dienste von Google und Apple, ohne Konto und ohne Vertrag</small></td>
+                <td>kostenlos</td>
+              </tr>
+              <tr>
+                <td>Karten und Adresssuche<small>basemap.de und OpenStreetMap, mit Quellenangabe in der App</small></td>
+                <td>kostenlos</td>
+              </tr>
+              <tr>
+                <td>Handwerker- oder Kalkulationssoftware<small>Baustellen und Budgets legt das Büro direkt in der App an. Falls ihr Baustellen aus einer anderen Software übernehmen wollt, sprechen wir darüber.</small></td>
+                <td>nicht nötig</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+
+          <div class="ks-keep">
+          <h3 class="ks-h3 ks-costs-title">Laufende Kosten</h3>
+          <table class="ks-costs">
+            <tbody>
+              <tr>
+                <td>Server, Datenbank und Automatik<small>Cloudflare Workers mit D1, Bezahltarif 5 US&#8209;$ im Monat</small></td>
+                <td>ca. 4,50 €</td>
+              </tr>
+              <tr>
+                <td>Speicher für Fotos, Dokumente und Backups<small>Cloudflare R2, die ersten 10 GB kostenlos, darüber ca. 0,015 US&#8209;$ je GB</small></td>
+                <td>0–2 €</td>
+              </tr>
+              <tr>
+                <td>E&#8209;Mails<small>3.000 E&#8209;Mails im Monat im Bezahltarif enthalten, gebraucht werden wenige Dutzend</small></td>
+                <td>enthalten</td>
+              </tr>
+              <tr>
+                <td>Mitteilungen, Karten, Adresssuche, SSL&#8209;Verschlüsselung, Schutz vor Angriffen</td>
+                <td>kostenlos</td>
+              </tr>
+              <tr>
+                <td>Lizenzen je Mitarbeiter, Gerät oder Baustelle<small>Die App gehört euch, es gibt kein Abo je Nutzer.</small></td>
+                <td>keine</td>
+              </tr>
+              <tr>
+                <td>Personalplanung<small>gleiche Infrastruktur, nur wenige zusätzliche Einträge in der Datenbank</small></td>
+                <td>keine Mehrkosten</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>Voraussichtlich gesamt, inkl. Puffer für Wechselkurs und Wachstum</td>
+                <td>5–10 € / Monat</td>
+              </tr>
+            </tfoot>
+          </table>
+          <p class="ks-note ks-note-after">Cloudflare rechnet monatlich in US&#8209;Dollar ab. In Option A zahlt ihr diese Kosten direkt an Cloudflare, in Option B sind sie in der Betreuungspauschale enthalten (Abschnitt 10). Ein Kostenalarm im Cloudflare&#8209;Konto meldet sich, falls die Kosten einmal ungewöhnlich steigen.</p>
+          </div>
+        </section>
+
+        <!-- ======== 9. Zeitplan ======== -->
+        <section class="ks-section ks-keep">
+          <h2 class="ks-h2"><span class="ks-h2-num">9</span> Zeitplan</h2>
           <dl class="ks-conditions">
             <div class="ks-condition">
               <dt>30.10.2026</dt>
@@ -433,10 +849,10 @@ Eike</textarea>
           </dl>
         </section>
 
-        <!-- ======== 7. Konditionen ======== -->
+        <!-- ======== 10. Konditionen ======== -->
         <section class="ks-section">
           <div class="ks-keep">
-          <h2 class="ks-h2"><span class="ks-h2-num">7</span> Konditionen</h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">10</span> Konditionen</h2>
           <div class="re-doc-payment ks-payment">
             <span class="re-doc-label">Zahlungsmodalitäten</span>
             <div class="ks-pay-steps">
@@ -464,7 +880,7 @@ Eike</textarea>
             </div>
             <div class="ks-condition">
               <dt>Betrieb</dt>
-              <dd>Unverändert zum ersten Angebot: Option A eigenes Hosting für ca. 5–10&nbsp;€ im Monat an Cloudflare, Option B Betreuung des Backends durch uns für 150,00&nbsp;€ im Monat inkl. Cloudflare. Die Personalplanung ändert daran nichts.</dd>
+              <dd>Unverändert zum ersten Angebot: Option A eigenes Hosting für ca. 5–10&nbsp;€ im Monat an Cloudflare, Option B Betreuung des Backends durch uns für 150,00&nbsp;€ im Monat inkl. Cloudflare. Die Personalplanung ändert daran nichts. Aufstellung der laufenden Kosten in Abschnitt 8.</dd>
             </div>
             <div class="ks-condition">
               <dt>Gültigkeit</dt>
