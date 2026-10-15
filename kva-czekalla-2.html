@@ -108,6 +108,13 @@
     }
     .ks-answer strong { font-weight: 700; }
     .ks-costs td.ks-cost-ok { color: var(--ink); }
+    .ks-calc-sums { width: min(440px, 100%); }
+    .ks-sum-hours { font-size: inherit; white-space: nowrap; }
+    @media (max-width: 700px) {
+      .re-sheet:not(.pdf-capture) .ks-sum-hours { display: block; font-size: 11px; }
+      .re-sheet:not(.pdf-capture) .ks-sum-dot { display: none; }
+    }
+    .ks-hours { display: block; margin-top: 0.1rem; font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
     /* Im Grid verschiebt der Abstandshalter von html2pdf die Nachbarn: Grids
        (Punkte, Tabellengruppen, Bausteine) als Ganzes mit .ks-keep umbrechen */
@@ -301,6 +308,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">6.500,00 €</span>
+                <span class="ks-hours">ca. 76,5&nbsp;Std.</span>
               </div>
             </div>
           </div>
@@ -331,6 +339,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">1.150,00 €</span>
+                <span class="ks-hours">ca. 13,5&nbsp;Std.</span>
               </div>
             </div>
           </div>
@@ -348,6 +357,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">900,00 €</span>
+                <span class="ks-hours">ca. 10,5&nbsp;Std.</span>
               </div>
             </div>
             <div class="re-item-row">
@@ -362,6 +372,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">500,00 €</span>
+                <span class="ks-hours">ca. 6&nbsp;Std.</span>
               </div>
             </div>
             <div class="re-item-row">
@@ -375,6 +386,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">450,00 €</span>
+                <span class="ks-hours">ca. 5,5&nbsp;Std.</span>
               </div>
             </div>
           </div>
@@ -402,6 +414,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">900,00 €</span>
+                <span class="ks-hours">ca. 10,5&nbsp;Std.</span>
               </div>
             </div>
           </div>
@@ -419,6 +432,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">500,00 €</span>
+                <span class="ks-hours">ca. 6&nbsp;Std.</span>
               </div>
             </div>
             <div class="re-item-row">
@@ -433,6 +447,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">250,00 €</span>
+                <span class="ks-hours">ca. 3&nbsp;Std.</span>
               </div>
             </div>
             <div class="re-item-row">
@@ -447,6 +462,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">150,00 €</span>
+                <span class="ks-hours">ca. 2&nbsp;Std.</span>
               </div>
             </div>
             <div class="re-item-row">
@@ -461,6 +477,7 @@ Eike</textarea>
               <div class="re-item-price">
                 <span class="re-item-qty">Pauschal</span>
                 <span class="re-item-amount">200,00 €</span>
+                <span class="ks-hours">ca. 2,5&nbsp;Std.</span>
               </div>
             </div>
           </div>
@@ -470,13 +487,13 @@ Eike</textarea>
         <!-- ======== 4. Kalkulation ======== -->
         <section class="ks-section ks-keep">
           <h2 class="ks-h2"><span class="ks-h2-num">4</span> Kalkulation</h2>
-          <div class="re-doc-sums">
+          <div class="re-doc-sums ks-calc-sums">
             <div class="re-doc-sumrow">
-              <span>Plattform (Pos. 00)</span>
+              <span>Plattform (Pos. 00) <small class="ks-sum-hours"><span class="ks-sum-dot">· </span>ca. 76,5&nbsp;Std.</small></span>
               <span>6.500,00 €</span>
             </div>
             <div class="re-doc-sumrow">
-              <span>Kernfunktionen (Pos. A–D)</span>
+              <span>Kernfunktionen (Pos. A–D) <small class="ks-sum-hours"><span class="ks-sum-dot">· </span>ca. 35,5&nbsp;Std.</small></span>
               <span>3.000,00 €</span>
             </div>
             <div class="re-doc-sumrow">
@@ -484,13 +501,18 @@ Eike</textarea>
               <span>9.500,00 €</span>
             </div>
             <div class="re-doc-sumrow">
-              <span>Personalplanung (Pos. E–I)</span>
+              <span>Personalplanung (Pos. E–I) <small class="ks-sum-hours"><span class="ks-sum-dot">· </span>ca. 24&nbsp;Std.</small></span>
               <span>2.000,00 €</span>
+            </div>
+            <div class="re-doc-sumrow">
+              <span>Aufwand bei 85&nbsp;€ je&nbsp;Stunde</span>
+              <span>ca. 136&nbsp;Std.</span>
             </div>
             <div class="re-doc-sumrow re-doc-total">
               <span>Gesamtpreis</span>
               <span>11.500,00 €</span>
             </div>
+            <p class="re-doc-kleinhinweis">Stunden zum Satz von 85,00&nbsp;€, auf halbe Stunden gerundet. Es&nbsp;gelten&nbsp;die&nbsp;Pauschalpreise.</p>
             <p class="re-doc-kleinhinweis">Gemäß § 19 UStG (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet und ausgewiesen.</p>
           </div>
         </section>
