@@ -128,6 +128,20 @@
     .ks-sub-row:first-child { border-top: 0; }
     .ks-sub-row dt { font-size: 11.5px; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
     .ks-sub-row dd { margin: 0; font-size: 11.5px; line-height: 1.5; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .ks-run { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 1rem; align-items: baseline; margin-top: 0.6rem; padding: 0.7rem 1rem; border: 1px solid var(--rule); border-radius: 10px; }
+    .ks-run .re-doc-label { margin: 0; }
+    .ks-run p { margin: 0; font-size: 11.5px; line-height: 1.55; text-wrap: pretty; }
+    .ks-run strong { font-weight: 700; }
+    .re-sheet.pdf-capture .ks-run { page-break-inside: avoid; }
+    @media (max-width: 700px) { .re-sheet:not(.pdf-capture) .ks-run { grid-template-columns: 1fr; gap: 0.3rem; } }
+    /* Handy: Teilaufwände unter Titel und Betrag über die volle Breite */
+    @media (max-width: 700px) {
+      .re-sheet:not(.pdf-capture) .ks-row-sub > div:not(.re-item-price) { display: contents; }
+      .re-sheet:not(.pdf-capture) .ks-row-sub .re-item-index { grid-column: 1; grid-row: 1; }
+      .re-sheet:not(.pdf-capture) .ks-row-sub .re-item-title { grid-column: 2; grid-row: 1; }
+      .re-sheet:not(.pdf-capture) .ks-row-sub .re-item-price { grid-column: 3; grid-row: 1; }
+      .re-sheet:not(.pdf-capture) .ks-row-sub .ks-sub-list { grid-column: 2 / 4; grid-row: 2; margin-top: -0.4rem; }
+    }
     .ks-intro-closing { margin-top: 0.4rem; }
     .ks-calc-sums { width: min(440px, 100%); }
     .ks-sum-hours { font-size: inherit; white-space: nowrap; }
@@ -318,6 +332,10 @@ Eike</textarea>
               </ul>
             </div>
           </div>
+          <div class="ks-run">
+            <span class="re-doc-label">Laufende Kosten</span>
+            <p><strong>ca. 5–10&nbsp;€ im Monat</strong> an Cloudflare für Server, Datenbank und Speicher, ohne Lizenzkosten je Mitarbeiter oder Gerät. Wahlweise betreuen wir den Betrieb für 150&nbsp;€ im Monat, Cloudflare inklusive (Abschnitt&nbsp;8 und&nbsp;10).</p>
+          </div>
           <div class="re-doc-closing ks-intro-closing">
             <p class="re-doc-signoff">Liebe Grüße</p>
             <p class="re-doc-names">Eike und Irena</p>
@@ -334,7 +352,7 @@ Eike</textarea>
             <span>Betrag</span>
           </div>
           <div class="re-doc-items">
-            <div class="re-item-row">
+            <div class="re-item-row ks-row-sub">
               <span class="re-item-index">00</span>
               <div>
                 <h3 class="re-item-title">Architektur: Infrastruktur, Backend, Android&#8209;App und Einführung</h3>
@@ -370,7 +388,7 @@ Eike</textarea>
             <span>Betrag</span>
           </div>
           <div class="re-doc-items">
-            <div class="re-item-row">
+            <div class="re-item-row ks-row-sub">
               <span class="re-item-index">A</span>
               <div>
                 <h3 class="re-item-title">Zeiterfassung mit Büro&#8209;Auswertung</h3>
