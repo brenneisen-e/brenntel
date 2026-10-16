@@ -123,6 +123,11 @@
     .re-sheet.pdf-capture .ks-split { page-break-inside: avoid; }
     @media print { .ks-split { break-inside: avoid; page-break-inside: avoid; } .ks-split-card-main { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
     @media (max-width: 700px) { .re-sheet:not(.pdf-capture) .ks-split { grid-template-columns: 1fr; } }
+    .ks-sub-list { margin: 0.45rem 0 0; display: grid; gap: 0; }
+    .ks-sub-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: 0.3rem 0; border-top: 1px dotted var(--rule); }
+    .ks-sub-row:first-child { border-top: 0; }
+    .ks-sub-row dt { font-size: 11.5px; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
+    .ks-sub-row dd { margin: 0; font-size: 11.5px; line-height: 1.5; white-space: nowrap; font-variant-numeric: tabular-nums; }
     .ks-intro-closing { margin-top: 0.4rem; }
     .ks-calc-sums { width: min(440px, 100%); }
     .ks-sum-hours { font-size: inherit; white-space: nowrap; }
@@ -305,8 +310,8 @@ Eike</textarea>
               <span class="re-doc-label">Module · auswählbar</span>
               <strong class="ks-split-amount">5.000,00 €</strong>
               <ul class="ks-split-list">
-                <li><span><b>A</b>Zeiterfassung</span><span>1.100 €</span></li>
-                <li><span><b>B</b>Büro mit Stundenbudget und Exporten</span><span>1.400 €</span></li>
+                <li><span><b>A</b>Zeiterfassung mit Büro&#8209;Auswertung</span><span>1.700 €</span></li>
+                <li><span><b>B</b>Baustellen&#8209;Controlling</span><span>800 €</span></li>
                 <li><span><b>C</b>Baustellenakte</span><span>500 €</span></li>
                 <li><span><b>D</b>Wochen- und Einsatzplanung</span><span>900 €</span></li>
                 <li><span><b>E</b>Urlaub und Krankmeldungen</span><span>1.100 €</span></li>
@@ -333,16 +338,16 @@ Eike</textarea>
               <span class="re-item-index">00</span>
               <div>
                 <h3 class="re-item-title">Architektur: Infrastruktur, Backend, Android&#8209;App und Einführung</h3>
-                <ul class="re-item-details">
-                  <li>Konzeption und Gestaltung im Czekalla-Design, Abstimmung und Freigabe</li>
-                  <li>Infrastruktur auf eurem Cloudflare-Konto: Server, Datenbank und Dateispeicher in der EU, verschlüsselte Übertragung</li>
-                  <li>Backend mit Schnittstellen, Benutzerkonten, Rollen und Berechtigungen, Protokoll aller Änderungen durch das Büro</li>
-                  <li>Web-App für iPhone, Android und Büro-PC mit sofortigen Updates, Büro-Grundgerüst mit Verwaltung von Mitarbeitern und Baustellen</li>
-                  <li>Android-App ohne Play Store: Standortprüfung, automatisches Ausstempeln beim Verlassen der Baustelle, Mitteilungen aufs Handy</li>
-                  <li>Automatismen: Erinnerungen und Push-Nachrichten, nächtliche Prüfungen, Backups, automatische Löschung nach Fristen</li>
-                  <li>Testing und Qualitätssicherung, Datenschutz-Paket mit Vorlagen</li>
-                  <li>Einrichtung, Testlauf mit einer Kolonne, Go-Live im ganzen Betrieb und ein Monat intensive Betreuung</li>
-                </ul>
+                <dl class="ks-sub-list">
+                  <div class="ks-sub-row"><dt>Konzeption und Gestaltung im Czekalla-Design, Abstimmung und Freigabe</dt><dd>10&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Infrastruktur auf eurem Cloudflare-Konto: Server, Datenbank und Dateispeicher in der EU, verschlüsselte Übertragung, automatische Veröffentlichung</dt><dd>6&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Backend: Benutzerkonten, Anmeldung, Rollen und Berechtigungen, Protokoll aller Änderungen durch das Büro</dt><dd>14&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Web-App für iPhone, Android und Büro-PC, Büro-Grundgerüst mit Verwaltung von Mitarbeitern und Baustellen</dt><dd>16&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Android-App ohne Play Store: Fingerabdruck-Sperre, Mitteilungen aufs Handy, Updates direkt aus der App</dt><dd>10&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Automatismen: Erinnerungen und Push-Nachrichten, nächtliche Prüfungen, Backups, Löschung nach Fristen</dt><dd>6,5&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Testing und Qualitätssicherung, Datenschutz-Paket mit Vorlagen</dt><dd>6&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Einführung: Testlauf mit einer Kolonne, Go-Live im ganzen Betrieb, ein Monat intensive Betreuung</dt><dd>8&nbsp;Std.</dd></div>
+                </dl>
               </div>
               <div class="re-item-price">
                 <span class="re-item-qty">76,5&nbsp;Std. × 85&nbsp;€</span>
@@ -368,15 +373,19 @@ Eike</textarea>
             <div class="re-item-row">
               <span class="re-item-index">A</span>
               <div>
-                <h3 class="re-item-title">Zeiterfassung und Baustellenzuordnung</h3>
-                <ul class="re-item-details">
-                  <li>Ein- und Ausstempeln mit GPS-Baustellenerkennung, Baustellenwechsel, Pausenabzug nach Arbeitszeitgesetz</li>
-                  <li>Stempeln ohne Netz, Erinnerung bei vergessenem Ausstempeln, eigene Zeiten je Woche und Monat in der App</li>
-                </ul>
+                <h3 class="re-item-title">Zeiterfassung mit Büro&#8209;Auswertung</h3>
+                <dl class="ks-sub-list">
+                  <div class="ks-sub-row"><dt>Stempeln in der App: Ein- und Ausstempeln, Baustellenwechsel, GPS-Baustellenerkennung, automatisches Ausstempeln beim Verlassen</dt><dd>5&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Pausen nach Arbeitszeitgesetz, Stempeln ohne Netz, Erinnerung bei vergessenem Ausstempeln</dt><dd>4&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Meine Zeiten in der App: Woche und Monat, Tage als Kacheln</dt><dd>2&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Büro: Live-Übersicht, wer gerade wo arbeitet, offene Einträge klären</dt><dd>3&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Büro: Zeiten prüfen, korrigieren und nachbuchen mit Begründung und Protokoll</dt><dd>3&nbsp;Std.</dd></div>
+                  <div class="ks-sub-row"><dt>Auswertungen nach Tag, Woche, Monat und Mitarbeiter, Lohnübersicht netto als Excel und PDF</dt><dd>3&nbsp;Std.</dd></div>
+                </dl>
               </div>
               <div class="re-item-price">
-                <span class="re-item-qty">13&nbsp;Std. × 85&nbsp;€</span>
-                <span class="re-item-amount">1.100,00 €</span>
+                <span class="re-item-qty">20&nbsp;Std. × 85&nbsp;€</span>
+                <span class="re-item-amount">1.700,00 €</span>
               </div>
             </div>
           </div>
@@ -385,18 +394,16 @@ Eike</textarea>
             <div class="re-item-row">
               <span class="re-item-index">B</span>
               <div>
-                <h3 class="re-item-title">Büro: Dashboard, Stundenbudget, Auswertungen und Exporte</h3>
+                <h3 class="re-item-title">Baustellen&#8209;Controlling</h3>
                 <ul class="re-item-details">
-                  <li>Alle Baustellen auf einen Blick: Ampel, Prognose bis Bauende, wer gerade wo eingestempelt ist</li>
-                  <li>Stundenbudget je Baustelle: Faktor mit Gültigkeitsdatum, effektive Stunden, Soll, Ist und Rest, Zusatzstunden mit Nachweis zum Stundenlohnzettel</li>
-                  <li>Aktionen: Zeiten korrigieren und nachbuchen mit Begründung, offene Einträge klären, Mitarbeiter Baustellen zuweisen, Protokoll aller Änderungen</li>
-                  <li>Auswertungen nach Tag, Woche, Monat, Baustelle und Mitarbeiter</li>
-                  <li>Exporte als Excel und PDF neben jeder Tabelle, Stundenaufstellung je Baustelle, Lohnübersicht netto ohne Faktor</li>
+                  <li>Stundenbudget je Baustelle: Faktor mit Gültigkeitsdatum, effektive Stunden, Soll, Ist und Rest</li>
+                  <li>Ampel und Prognose bis Bauende auf der Übersicht, Hinweis wenn die Stunden knapp werden</li>
+                  <li>Zusatzstunden mit Nachweis zum Stundenlohnzettel, Stundenaufstellung je Baustelle als Excel und PDF</li>
                 </ul>
               </div>
               <div class="re-item-price">
-                <span class="re-item-qty">16,5&nbsp;Std. × 85&nbsp;€</span>
-                <span class="re-item-amount">1.400,00 €</span>
+                <span class="re-item-qty">9,5&nbsp;Std. × 85&nbsp;€</span>
+                <span class="re-item-amount">800,00 €</span>
               </div>
             </div>
             <div class="re-item-row">
@@ -413,7 +420,7 @@ Eike</textarea>
               </div>
             </div>
           </div>
-          <p class="ks-note ks-note-after">Das Büro (B) setzt die Zeiterfassung (A) voraus: Budget, Ampel, Auswertungen und Exporte rechnen mit den Zeiten, die die Mitarbeiter in der App stempeln.</p>
+          <p class="ks-note ks-note-after">Jedes Modul ist für sich allein nutzbar. Nur das Baustellen&#8209;Controlling (B) baut auf der Zeiterfassung (A) auf, weil es mit deren Stunden rechnet.</p>
         </section>
 
         <!-- ======== 3. Personalplanung ======== -->
@@ -521,8 +528,8 @@ Eike</textarea>
               <p>Mitarbeiter korrigieren eigene Buchungen der letzten Tage, Pause-Knopf, Monatskalender.</p>
             </div>
             <div class="ks-page">
-              <strong>Prognose je Baustelle</strong>
-              <p>Neben der Ampel: Zeit vergangen und ob das Budget beim aktuellen Tempo bis zum Ende reicht.</p>
+              <strong>Demo zum Ausprobieren</strong>
+              <p>Testbaustellen und Demo&#8209;Mitarbeiter in der echten App, ohne echte Daten zu berühren.</p>
             </div>
             <div class="ks-page">
               <strong>Korrektur&#8209;Mitteilung</strong>
@@ -873,7 +880,7 @@ Eike</textarea>
           <dl class="ks-conditions">
             <div class="ks-condition">
               <dt>Auswahl</dt>
-              <dd>Die Module lassen sich einzeln wählen. Sie gelten nur zusammen mit der Architektur, weil sie auf deren Infrastruktur, Daten und App aufsetzen. Das Büro (B) setzt die Zeiterfassung (A) voraus, weil es mit deren Daten rechnet.</dd>
+              <dd>Die Module lassen sich einzeln wählen. Sie gelten nur zusammen mit der Architektur, weil sie auf deren Infrastruktur, Daten und App aufsetzen. Das Baustellen&#8209;Controlling (B) baut auf der Zeiterfassung (A) auf.</dd>
             </div>
             <div class="ks-condition">
               <dt>Betrieb</dt>
