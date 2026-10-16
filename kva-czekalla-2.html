@@ -108,6 +108,21 @@
     }
     .ks-answer strong { font-weight: 700; }
     .ks-costs td.ks-cost-ok { color: var(--ink); }
+    .ks-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 0.6rem; margin-top: 1.4rem; }
+    .ks-split-card { padding: 0.85rem 1rem; border: 1px solid var(--rule); border-radius: 10px; }
+    .ks-split-card-main { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .ks-split-card .re-doc-label { margin: 0; }
+    .ks-split-card-main .re-doc-label { color: rgba(255, 255, 255, 0.65); }
+    .ks-split-amount { display: block; margin: 0.15rem 0 0.35rem; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .ks-split-card p { margin: 0; font-size: 11px; line-height: 1.5; color: var(--muted); }
+    .ks-split-card-main p { color: rgba(255, 255, 255, 0.75); }
+    .ks-split-list { margin: 0.35rem 0 0; padding: 0; list-style: none; display: grid; gap: 0.15rem; }
+    .ks-split-list li { display: flex; justify-content: space-between; gap: 0.75rem; font-size: 11px; line-height: 1.45; border-top: 1px solid var(--rule); padding-top: 0.2rem; }
+    .ks-split-list li span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .ks-split-list b { color: var(--accent); font-weight: 800; margin-right: 0.35rem; }
+    .re-sheet.pdf-capture .ks-split { page-break-inside: avoid; }
+    @media print { .ks-split { break-inside: avoid; page-break-inside: avoid; } .ks-split-card-main { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    @media (max-width: 700px) { .re-sheet:not(.pdf-capture) .ks-split { grid-template-columns: 1fr; } }
     .ks-calc-sums { width: min(440px, 100%); }
     .ks-sum-hours { font-size: inherit; white-space: nowrap; }
     @media (max-width: 700px) {
@@ -214,13 +229,15 @@
 
 wie besprochen haben wir deine Wünsche zur Personalplanung bepreist: Wochenplan, Urlaubsplanung, Krankmeldungen, Benachrichtigungen bei Änderungen und dass alles miteinander verbunden ist.
 
-Damit du gut auswählen kannst, haben wir das Angebot neu gegliedert: Die Plattform mit Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live bildet das Fundament. Darauf setzen die Funktionen auf, die du wie aus einem Katalog wählst. Die Funktionen aus unserem ersten Angebot kosten zusammen mit der Plattform wie vereinbart 9.500 €. Die Personalplanung kommt mit 2.000 € dazu, zusammen also 11.500 €.
+Damit du gut auswählen kannst, haben wir das Angebot neu gegliedert: Die Architektur mit Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live bildet für 6.500 € das Fundament. Darauf setzen die Module auf, die du wie aus einem Katalog wählst, zusammen 5.000 €. Architektur und die Module aus unserem ersten Angebot ergeben wie vereinbart 9.500 €, mit der Personalplanung sind es 11.500 €.
+
+Alles ist bis Ende November umsetzbar, auch die Personalplanung. Zum Termin am 30. Oktober steht die Architektur, und du kannst eine erste Testversion ausprobieren.
 
 Einiges, das wir seit dem ersten Angebot zusätzlich gebaut haben, etwa Aufgaben, den Chat mit dem Büro und Hinweise an die Mitarbeiter, ist ohne Aufpreis enthalten.
 
 Dazu findest du im Angebot jetzt die Systemarchitektur, das Datenmodell und die laufenden Kosten. Kurz vorweg: Schnittstellen musst du keine einrichten, alles läuft in eurem Cloudflare-Konto, für etwa 5–10 € im Monat.
 
-Am 30.10. gehen wir das gern gemeinsam durch, und du kannst bis dahin festlegen, was in die erste Version kommt.
+Am 30.10. gehen wir das gern gemeinsam durch und legen fest, welche Module kommen.
 
 Viele Grüße
 Eike</textarea>
@@ -265,7 +282,7 @@ Eike</textarea>
           <div class="re-doc-titlebar-left">
             <span class="re-doc-label">Angebot · KVA-CZ-2611</span>
             <h1 class="re-doc-title ks-title">App „Czekalla @&nbsp;work“<br>mit Personalplanung</h1>
-            <p class="ks-subtitle">Plattform und Funktionskatalog: Zeiterfassung, Stundenkontrolle, Wochenplan, Urlaub und Krankmeldungen</p>
+            <p class="ks-subtitle">Architektur und auswählbare Module: Zeiterfassung, Stundenkontrolle, Wochenplan, Urlaub und Krankmeldungen</p>
           </div>
           <div class="re-doc-badge">
             <span class="re-doc-label">Gesamtpreis</span>
@@ -276,14 +293,32 @@ Eike</textarea>
         <div class="ks-intro">
           <p>Lieber Elmar,</p>
           <p>vielen Dank für deine Wünsche zur Personalplanung. Wochenplan, Urlaubsplanung, Krankmeldungen und automatische Benachrichtigungen haben wir in dieses Angebot aufgenommen. Es ersetzt unser Angebot KVA&#8209;CZ&#8209;2610 und gliedert die Leistungen neu, damit du gut auswählen kannst.</p>
-          <p>Die <strong>Plattform</strong> ist das Fundament: Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live. Darauf setzen die <strong>Funktionen</strong> auf, die du wie aus einem Katalog wählst. Plattform und Kernfunktionen kosten wie vereinbart 9.500&nbsp;€. Die Personalplanung kommt mit 2.000&nbsp;€ dazu.</p>
-          <p>Die Funktionen der Personalplanung nutzen Mitarbeiter, Baustellen, Rechte, Benachrichtigungen und App der Plattform. Sie sind deshalb nur zusammen mit der Plattform erhältlich, nicht als eigenständiges Produkt.</p>
+          <p>Die <strong>Architektur</strong> ist das Fundament: Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live für 6.500&nbsp;€. Darauf setzen die <strong>Module</strong> auf, die du wie aus einem Katalog wählst, zusammen 5.000&nbsp;€. Architektur und die Kernmodule A bis C ergeben wie vereinbart 9.500&nbsp;€.</p>
+          <p><strong>Alles ist bis Ende November umsetzbar,</strong> auch die Personalplanung. Zum Termin am 30.&nbsp;Oktober steht die Architektur, und du kannst eine erste Testversion selbst ausprobieren.</p>
+          <div class="ks-split">
+            <div class="ks-split-card ks-split-card-main">
+              <span class="re-doc-label">Architektur · Pos. 00</span>
+              <strong class="ks-split-amount">6.500,00 €</strong>
+              <p>Infrastruktur, Backend, Android&#8209;App, Automatismen, Tests und Go&#8209;Live. Grundlage für alle Module.</p>
+            </div>
+            <div class="ks-split-card">
+              <span class="re-doc-label">Module · auswählbar</span>
+              <strong class="ks-split-amount">5.000,00 €</strong>
+              <ul class="ks-split-list">
+                <li><span><b>A</b>Zeiterfassung</span><span>1.150 €</span></li>
+                <li><span><b>B</b>Büro mit Stundenbudget und Exporten</span><span>1.400 €</span></li>
+                <li><span><b>C</b>Baustellenakte</span><span>450 €</span></li>
+                <li><span><b>D</b>Wochen- und Einsatzplanung</span><span>900 €</span></li>
+                <li><span><b>E</b>Urlaub und Krankmeldungen</span><span>1.100 €</span></li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <!-- ======== 1. Plattform ======== -->
+        <!-- ======== 1. Architektur ======== -->
         <section class="ks-section ks-section-calc">
           <div class="ks-keep">
-          <h2 class="ks-h2"><span class="ks-h2-num">1</span> Plattform <span class="ks-h2-note">Grundlage für alle Funktionen</span></h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">1</span> Architektur <span class="ks-h2-note">Grundlage für alle Module</span></h2>
           <div class="re-items-head" aria-hidden="true">
             <span>Pos.</span>
             <span>Leistungsbereich</span>
@@ -293,7 +328,7 @@ Eike</textarea>
             <div class="re-item-row">
               <span class="re-item-index">00</span>
               <div>
-                <h3 class="re-item-title">Plattform: Infrastruktur, Backend, Android&#8209;App und Einführung</h3>
+                <h3 class="re-item-title">Architektur: Infrastruktur, Backend, Android&#8209;App und Einführung</h3>
                 <ul class="re-item-details">
                   <li>Konzeption und Gestaltung im Czekalla-Design, Abstimmung und Freigabe</li>
                   <li>Infrastruktur auf eurem Cloudflare-Konto: Server, Datenbank und Dateispeicher in der EU, verschlüsselte Übertragung</li>
@@ -320,7 +355,7 @@ Eike</textarea>
         <!-- ======== 2. Kernfunktionen ======== -->
         <section class="ks-section ks-section-calc">
           <div class="ks-keep">
-          <h2 class="ks-h2"><span class="ks-h2-num">2</span> Kernfunktionen <span class="ks-h2-note">aus Angebot KVA-CZ-2610</span></h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">2</span> Module: Kernfunktionen <span class="ks-h2-note">aus Angebot KVA-CZ-2610</span></h2>
           <div class="re-items-head" aria-hidden="true">
             <span>Pos.</span>
             <span>Leistungsbereich</span>
@@ -383,7 +418,7 @@ Eike</textarea>
         <!-- ======== 3. Personalplanung ======== -->
         <section class="ks-section ks-section-calc">
           <div class="ks-keep">
-          <h2 class="ks-h2"><span class="ks-h2-num">3</span> Personalplanung <span class="ks-h2-note">neu · nur mit der Plattform</span></h2>
+          <h2 class="ks-h2"><span class="ks-h2-num">3</span> Module: Personalplanung <span class="ks-h2-note">neu · nur mit der Architektur</span></h2>
           <div class="re-items-head" aria-hidden="true">
             <span>Pos.</span>
             <span>Leistungsbereich</span>
@@ -434,7 +469,7 @@ Eike</textarea>
           <h2 class="ks-h2"><span class="ks-h2-num">4</span> Kalkulation</h2>
           <div class="re-doc-sums ks-calc-sums">
             <div class="re-doc-sumrow">
-              <span>Plattform (Pos. 00) <small class="ks-sum-hours"><span class="ks-sum-dot">· </span>ca. 76,5&nbsp;Std.</small></span>
+              <span>Architektur (Pos. 00) <small class="ks-sum-hours"><span class="ks-sum-dot">· </span>ca. 76,5&nbsp;Std.</small></span>
               <span>6.500,00 €</span>
             </div>
             <div class="re-doc-sumrow">
@@ -799,19 +834,15 @@ Eike</textarea>
           <dl class="ks-conditions">
             <div class="ks-condition">
               <dt>30.10.2026</dt>
-              <dd>Gemeinsamer Termin: Testversion ansehen und festlegen, welche Funktionen in die erste Version kommen.</dd>
+              <dd>Gemeinsamer Termin: Die Architektur steht, du probierst eine erste Testversion aus und legst fest, welche Module kommen.</dd>
             </div>
             <div class="ks-condition">
-              <dt>Ende Nov. / Anfang Dez. 2026</dt>
-              <dd>Go-Live der Plattform mit den Kernfunktionen im ganzen Betrieb, wie vereinbart.</dd>
+              <dt>November 2026</dt>
+              <dd>Umsetzung der gewählten Module, Testlauf mit einer Kolonne.</dd>
             </div>
             <div class="ks-condition">
-              <dt>bis Mitte Dezember 2026</dt>
-              <dd>Wochen- und Einsatzplanung mit Mitteilungen bei Änderungen (D), Krankmeldungen aus E.</dd>
-            </div>
-            <div class="ks-condition">
-              <dt>Januar 2027</dt>
-              <dd>Urlaubsplanung und Abwesenheiten im Wochenplan (E), rechtzeitig zur Urlaubsplanung des Jahres.</dd>
+              <dt>Ende November 2026</dt>
+              <dd>Alle gewählten Module fertig, auch die Personalplanung. Go&#8209;Live im ganzen Betrieb.</dd>
             </div>
           </dl>
         </section>
@@ -826,7 +857,7 @@ Eike</textarea>
               <div class="ks-pay-step">
                 <span class="ks-pay-num">1</span>
                 <div>
-                  <strong>Plattform und Kernfunktionen: je 50&nbsp;% nach MVP&nbsp;1 und bei Projektende</strong>
+                  <strong>Architektur und Kernmodule A–C: je 50&nbsp;% nach MVP&nbsp;1 und bei Projektende</strong>
                   <p>2 × 4.750,00 €</p>
                 </div>
               </div>
@@ -843,7 +874,7 @@ Eike</textarea>
           <dl class="ks-conditions">
             <div class="ks-condition">
               <dt>Auswahl</dt>
-              <dd>Die Funktionen der Personalplanung lassen sich einzeln wählen. Sie gelten nur zusammen mit der Plattform, weil sie auf deren Infrastruktur, Daten und App aufsetzen.</dd>
+              <dd>Die Module lassen sich einzeln wählen. Sie gelten nur zusammen mit der Architektur, weil sie auf deren Infrastruktur, Daten und App aufsetzen.</dd>
             </div>
             <div class="ks-condition">
               <dt>Betrieb</dt>
