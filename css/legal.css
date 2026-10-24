@@ -28,7 +28,7 @@
 }
 
 .header-nav a:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .content {
@@ -68,6 +68,13 @@
 .content ul {
   padding-left: 1.5rem;
   margin-bottom: 1rem;
+}
+
+/* Links im Fließtext nicht nur an der Farbe erkennbar (WCAG 1.4.1) */
+.content a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
 }
 
 .site-footer {
