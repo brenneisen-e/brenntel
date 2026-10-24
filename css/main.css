@@ -572,11 +572,17 @@
 
 .service-details-list {
   list-style: none;
-  padding: 1.25rem 0 0;
+  padding: 0;
   margin: 0;
   display: grid;
   gap: 0.6rem;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid transparent;
+  transition: padding-top 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s ease;
+}
+
+.service-card.expanded .service-details-list {
+  padding-top: 1.25rem;
+  border-top-color: var(--color-border);
 }
 
 .service-details-list li {
@@ -3221,13 +3227,13 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     isolation: isolate;
 
     display: grid;
-    grid-template-columns: 44px 1fr 28px;
+    grid-template-columns: 44px minmax(0, 1fr) 28px;
     grid-template-areas:
       "icon title chevron"
-      "icon summary chevron"
+      "summary summary summary"
       "details details details";
     column-gap: 0.9rem;
-    row-gap: 0.15rem;
+    row-gap: 0;
     align-items: center;
   }
 
@@ -3237,8 +3243,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     font-size: 0.8rem;
     line-height: 1.4;
     color: var(--color-text-light);
-    margin: 0;
-    padding-right: 4rem;
+    margin: 0.7rem 0 0;
     position: relative;
     z-index: 1;
   }
