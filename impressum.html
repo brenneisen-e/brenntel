@@ -11,25 +11,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/legal.css">
+  <link rel="stylesheet" href="css/shared.css?v=20261024a">
+  <link rel="stylesheet" href="css/legal.css?v=20261024a">
 </head>
 <body>
+
+  <a class="skip-link" href="#main" data-de="Zum Inhalt springen" data-en="Skip to content">Zum Inhalt springen</a>
 
   <header class="site-header" role="banner">
     <div class="header-inner">
       <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
-      <nav class="header-nav" aria-label="Navigation">
+      <nav class="header-nav" aria-label="Navigation" data-de-aria-label="Navigation" data-en-aria-label="Navigation">
         <a href="index.html" data-de="Zurück zur Startseite" data-en="Back to Homepage">Zurück zur Startseite</a>
-        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
-          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
-          <button type="button" data-lang="en" aria-label="English">EN</button>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl" data-de-aria-label="Sprachauswahl" data-en-aria-label="Language">
+          <button type="button" data-lang="de" class="active" aria-pressed="true" aria-label="Deutsch" lang="de">DE</button>
+          <button type="button" data-lang="en" aria-pressed="false" aria-label="English" lang="en">EN</button>
         </div>
       </nav>
     </div>
   </header>
 
-  <main class="content">
+  <main class="content" id="main" tabindex="-1">
     <!-- German Version -->
     <div id="impressum-de">
       <h1>Impressum</h1>
@@ -59,7 +61,7 @@
       <h2>EU-Streitschlichtung</h2>
       <p>
         Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
-        <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr</a>.
+        <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr<span class="sr-only"> (öffnet in neuem Tab)</span></a>.
       </p>
       <p>Unsere E-Mail-Adresse finden Sie oben im Impressum.</p>
 
@@ -96,7 +98,7 @@
       <h2>EU Dispute Resolution</h2>
       <p>
         The European Commission provides a platform for online dispute resolution (ODR):
-        <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr</a>.
+        <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr<span class="sr-only"> (opens in a new tab)</span></a>.
       </p>
       <p>You can find our email address in the legal notice above.</p>
 
@@ -115,7 +117,7 @@
     </div>
   </footer>
 
-  <script src="js/shared.js"></script>
+  <script src="js/shared.js?v=20261024a"></script>
   <script>
     document.addEventListener('langchange', function (e) {
       var lang = e.detail.lang;

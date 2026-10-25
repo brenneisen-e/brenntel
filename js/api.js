@@ -806,6 +806,8 @@
       el.classList.remove('active', 'done');
       if (i < stepIndex) el.classList.add('done');
       if (i === stepIndex) el.classList.add('active');
+      if (i === stepIndex) el.setAttribute('aria-current', 'step');
+      else el.removeAttribute('aria-current');
     });
     $$('.step-line').forEach((el, i) => {
       el.classList.toggle('done', i < stepIndex);
@@ -1323,8 +1325,7 @@
       updateContentCounts();
     });
 
-    // Shared.js mobile nav
-    initMobileNav();
+    // Mobile nav is handled by shared.js
   }
 
   function updateAuthRequiredCards() {
@@ -1468,38 +1469,6 @@
       }
       $('#progress-status').textContent = 'Fehler bei der Extraktion — Log prüfen.';
     }
-  }
-
-  function initMobileNav() {
-    const hamburger = $('.hamburger');
-    const navMobile = $('.nav-mobile');
-    const overlay = $('.nav-overlay');
-    if (!hamburger || !navMobile) return;
-
-    hamburger.addEventListener('click', () => {
-      const open = hamburger.classList.toggle('open');
-      navMobile.classList.toggle('open', open);
-      if (overlay) overlay.classList.toggle('open', open);
-      hamburger.setAttribute('aria-expanded', String(open));
-    });
-
-    if (overlay) {
-      overlay.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        navMobile.classList.remove('open');
-        overlay.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      });
-    }
-
-    navMobile.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        navMobile.classList.remove('open');
-        if (overlay) overlay.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      });
-    });
   }
 
   // ==========================================

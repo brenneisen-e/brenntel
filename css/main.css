@@ -372,14 +372,14 @@
 .btn:hover::before { opacity: 1; }
 
 .btn-primary {
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
   box-shadow: 0 2px 10px rgba(232, 114, 12, 0.2);
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--color-accent-hover);
+  background: var(--color-accent-strong-hover);
   color: #fff;
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(232, 114, 12, 0.35);
@@ -433,7 +433,7 @@
 
 .btn-outline:hover,
 .btn-outline:focus {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-color: var(--color-accent);
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(232, 114, 12, 0.18);
@@ -553,7 +553,8 @@
 .service-details {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  visibility: hidden;
+  transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.5s;
   margin-top: 0;
 }
 
@@ -564,6 +565,8 @@
 .service-card.expanded .service-details {
   grid-template-rows: 1fr;
   margin-top: 1.25rem;
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 .service-details-desc {
@@ -609,7 +612,7 @@
 }
 
 .service-card[id] {
-  scroll-margin-top: 90px;
+  scroll-margin-top: 10px; /* plus scroll-padding-top von html = 90px */
 }
 
 .service-card-highlight {
@@ -643,7 +646,7 @@
   align-items: center;
   gap: 0.55rem;
   padding: 0.8rem 1.15rem;
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-accent-strong-hover) 100%);
   color: #fff;
   font-weight: 700;
   font-size: 0.9rem;
@@ -653,17 +656,21 @@
               inset 0 1px 0 rgba(255, 255, 255, 0.22);
   text-decoration: none;
   opacity: 0;
+  visibility: hidden;
   transform: translateY(18px) scale(0.96);
   pointer-events: none;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.3s ease;
+              box-shadow 0.3s ease,
+              visibility 0s linear 0.4s;
 }
 
 .floating-cta.visible {
   opacity: 1;
+  visibility: visible;
   transform: translateY(0) scale(1);
   pointer-events: auto;
+  transition-delay: 0s;
 }
 
 .floating-cta:hover {
@@ -705,7 +712,7 @@
   height: 58px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-accent-strong-hover) 100%);
   color: #fff;
   cursor: pointer;
   box-shadow: 0 14px 38px rgba(232, 114, 12, 0.4),
@@ -782,16 +789,20 @@
   flex-direction: column;
   overflow: hidden;
   opacity: 0;
+  visibility: hidden;
   transform: translateY(20px) scale(0.96);
   pointer-events: none;
   transition: opacity 0.35s ease,
-              transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+              transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              visibility 0s linear 0.4s;
 }
 
 .chat-panel.open {
   opacity: 1;
+  visibility: visible;
   transform: translateY(0) scale(1);
   pointer-events: auto;
+  transition-delay: 0s;
 }
 
 @media (max-width: 520px) {
@@ -812,7 +823,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.9rem 1rem;
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-accent-strong-hover) 100%);
   color: #fff;
 }
 
@@ -837,7 +848,7 @@
   min-width: 0;
 }
 
-.chat-header-text h3 {
+.chat-header-text h2 {
   font-size: 0.95rem;
   font-weight: 700;
   margin: 0 0 0.15rem;
@@ -962,7 +973,7 @@ ol.chat-msg-list li::before {
   width: 1.15rem;
   height: 1.15rem;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
   font-size: 0.66rem;
   font-weight: 800;
@@ -1024,7 +1035,7 @@ ul.chat-msg-list li::before {
   width: 1.35rem;
   height: 1.35rem;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
   font-size: 0.7rem;
   font-weight: 800;
@@ -1158,7 +1169,7 @@ ul.chat-msg-list li::before {
 }
 
 .chat-msg-user .chat-msg-bubble {
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-accent-strong-hover) 100%);
   color: #fff;
   border-bottom-right-radius: 4px;
   box-shadow: 0 6px 16px rgba(232, 114, 12, 0.24);
@@ -1221,8 +1232,8 @@ ul.chat-msg-list li::before {
 
 .chat-chip:hover {
   background: rgba(232, 114, 12, 0.08);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--color-accent-text);
+  color: var(--color-accent-text);
 }
 
 .chat-chip:active { transform: scale(0.96); }
@@ -1255,8 +1266,8 @@ ul.chat-msg-list li::before {
 
 .chat-input-row textarea:focus {
   outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 1px var(--color-focus), 0 0 0 4px var(--color-accent-glow);
 }
 
 .chat-send {
@@ -1264,7 +1275,7 @@ ul.chat-msg-list li::before {
   height: 42px;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-accent-strong-hover) 100%);
   color: #fff;
   cursor: pointer;
   display: flex;
@@ -1450,7 +1461,7 @@ ul.chat-msg-list li::before {
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   padding: 0.25rem 0.65rem;
   background: rgba(232, 114, 12, 0.1);
   border-radius: 999px;
@@ -1527,7 +1538,7 @@ ul.chat-msg-list li::before {
   font-size: clamp(1.75rem, 5vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--color-accent);
+  color: var(--color-accent-display);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -1726,7 +1737,7 @@ ul.chat-msg-list li::before {
 
 /* Projekte in Arbeit: Badge in Akzentfarbe statt Grün */
 .work-live.is-wip {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   background: rgba(232, 114, 12, 0.1);
 }
 
@@ -1978,7 +1989,7 @@ ul.chat-msg-list li::before {
 
 .work-card:hover .work-tags span {
   background: rgba(232, 114, 12, 0.1);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   transition: background 0.3s ease, color 0.3s ease;
 }
 
@@ -2128,7 +2139,7 @@ ul.chat-msg-list li::before {
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 0.85rem;
 }
 
@@ -2204,7 +2215,7 @@ ul.chat-msg-list li::before {
 }
 
 .chip:has(input:checked) {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+  background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent-strong-hover));
   border-color: var(--color-accent);
   box-shadow: 0 8px 22px rgba(232, 114, 12, 0.32);
   transform: translateY(-1px);
@@ -2305,6 +2316,12 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   transform: scale(1.15);
 }
 
+input[type="range"]#budget:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
 .budget-display {
   align-self: flex-end;
   padding: 0.3rem 0.85rem;
@@ -2315,7 +2332,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 .budget-value {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -2374,10 +2391,10 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px var(--color-accent-glow);
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 1px var(--color-focus), 0 0 0 5px var(--color-accent-glow);
   outline: none;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 .form-group textarea {
@@ -2440,7 +2457,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 
 .form-group-textarea:focus-within .form-counter {
   opacity: 1;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 /* Privacy checkbox */
@@ -3290,7 +3307,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
     margin: 0;
     border-radius: 50%;
     background: rgba(232, 114, 12, 0.08);
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     align-self: center;
     justify-self: end;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -3369,7 +3386,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   }
 
   .service-card.expanded .service-chevron {
-    background: var(--color-accent);
+    background: var(--color-accent-strong);
     color: #ffffff;
     transform: rotate(180deg);
   }
@@ -3522,7 +3539,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 
 .hero-rotator {
   display: inline-block;
-  color: var(--color-accent);
+  color: var(--color-accent-display);
   white-space: nowrap;
 }
 
@@ -3645,7 +3662,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   font-size: 0.85rem;
   font-weight: 600;
   border-radius: 999px;
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
   margin-left: 0.2rem;
   box-shadow: 0 2px 10px rgba(232, 114, 12, 0.25);
@@ -3655,7 +3672,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 
 .nav-desktop a.btn-nav:hover,
 .nav-desktop a.btn-nav:focus {
-  background: var(--color-accent-hover);
+  background: var(--color-accent-strong-hover);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(232, 114, 12, 0.35);
 }
@@ -3669,7 +3686,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 .btn-ghost:hover,
 .btn-ghost:focus {
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(232, 114, 12, 0.14);
 }
@@ -3691,7 +3708,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 1.1rem;
 }
 
@@ -3719,7 +3736,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 
 .section-heading em {
   font-style: italic;
-  color: var(--color-accent);
+  color: var(--color-accent-display);
 }
 
 .section-lead {
@@ -3818,7 +3835,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   margin-top: 0.35rem;
   font-weight: 700;
   font-size: 0.9rem;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .work-teaser-cta svg { transition: transform 0.3s ease; }
@@ -3916,8 +3933,7 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
   line-height: 1;
   letter-spacing: -0.03em;
   color: transparent;
-  -webkit-text-stroke: 1.5px var(--color-accent);
-  opacity: 0.8;
+  -webkit-text-stroke: 1.5px var(--color-accent-display);
   margin-bottom: 1rem;
   font-variant-numeric: tabular-nums;
 }
@@ -4017,7 +4033,12 @@ input[type="range"]#budget:focus::-webkit-slider-thumb {
 
 .faq-item summary::-webkit-details-marker { display: none; }
 
-.faq-item summary:hover { color: var(--color-accent); }
+.faq-item summary:focus-visible {
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.faq-item summary:hover { color: var(--color-accent-text); }
 
 .faq-icon {
   position: relative;
@@ -4282,7 +4303,7 @@ a.contact-aside-card:hover {
   align-items: flex-start;
 }
 
-.footer-col h4 {
+.footer-col .footer-heading {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -4300,7 +4321,7 @@ a.contact-aside-card:hover {
   overflow-wrap: anywhere;
 }
 
-.footer-col a:hover { color: var(--color-accent); }
+.footer-col a:hover { color: var(--color-accent-text); }
 
 .site-footer-big .footer-bottom {
   max-width: var(--max-width);
@@ -4367,4 +4388,177 @@ a.contact-aside-card:hover {
 /* Center the lone 7th service card on the 3-column grid */
 @media (min-width: 1024px) {
   .services-grid .service-card:nth-child(7):last-child { grid-column: 2; }
+}
+
+/* ========================================
+   Barrierefreiheit
+   ======================================== */
+
+/* Fokussierte Elemente nicht unter dem fixierten Header oder den schwebenden
+   Buttons verstecken (WCAG 2.4.11). Abschnittssprünge bleiben, wo sie waren. */
+html {
+  scroll-padding-top: 80px;
+  scroll-padding-bottom: 88px;
+}
+
+main > section[id] { scroll-margin-top: -80px; }
+
+/* Leistungskarten: der Titel ist der Auf-/Zuklapp-Button */
+.service-toggle {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+@supports selector(:has(*)) {
+  .service-toggle:focus-visible { outline: none; }
+
+  .service-card:has(.service-toggle:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+}
+
+/* Projekt-Chips: Checkbox ist unsichtbar, also den Chip umranden */
+.chip:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Pflichtfelder und Fehlermeldung im Kontaktformular */
+.form-required { color: var(--color-accent-text); }
+
+.form-hint {
+  margin: -0.75rem 0 1.25rem;
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+}
+
+.form-error {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid #b42318;
+  border-radius: 12px;
+  background: rgba(180, 35, 24, 0.06);
+  color: var(--color-text);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.form-error a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+:root[data-theme="dark"] .form-error {
+  border-color: #f97066;
+  background: rgba(249, 112, 102, 0.1);
+}
+
+.form-success:focus { outline: none; }
+
+/* Animationen anhalten (WCAG 2.2.2) — Schalter unter der Handy-Szene */
+.hero-visual {
+  flex-direction: column;
+  align-items: center;
+}
+
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 36px;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-light);
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.motion-toggle:hover {
+  color: var(--color-accent-text);
+  border-color: var(--color-accent);
+}
+
+.motion-toggle svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.motion-toggle-play,
+.motion-toggle-label-play,
+:root[data-motion="paused"] .motion-toggle-pause,
+:root[data-motion="paused"] .motion-toggle-label-pause {
+  display: none;
+}
+
+:root[data-motion="paused"] .motion-toggle-play { display: block; }
+:root[data-motion="paused"] .motion-toggle-label-play { display: inline; }
+
+/* Bei reduzierter Bewegung läuft ohnehin nichts endlos */
+@media (prefers-reduced-motion: reduce) {
+  .motion-toggle { display: none; }
+}
+
+/* Angehalten: Endlos-Animationen stehen still, die Szene zeigt ihr fertiges Bild */
+:root[data-motion="paused"] .hero-gradient,
+:root[data-motion="paused"] .hero-eyebrow-dot,
+:root[data-motion="paused"] .scroll-line::after,
+:root[data-motion="paused"] .btn-outline::after,
+:root[data-motion="paused"] .chat-fab-pulse,
+:root[data-motion="paused"] .chat-status-dot,
+:root[data-motion="paused"] .chat-demo-dot,
+:root[data-motion="paused"] .founder-accent,
+:root[data-motion="paused"] .work-card::before,
+:root[data-motion="paused"] .work-live-dot,
+:root[data-motion="paused"] .work-skeleton,
+:root[data-motion="paused"] .service-card.expanded .service-icon,
+:root[data-motion="paused"] .cta-banner::before,
+:root[data-motion="paused"] .hs-live-dot,
+:root[data-motion="paused"] .hs-chat-button::before {
+  animation: none !important;
+}
+
+:root[data-motion="paused"] .hs-bar,
+:root[data-motion="paused"] .hs-nav,
+:root[data-motion="paused"] .hs-hero-block,
+:root[data-motion="paused"] .hs-cards .hs-card,
+:root[data-motion="paused"] .hs-content,
+:root[data-motion="paused"] .hs-gallery .hs-thumb,
+:root[data-motion="paused"] .hs-palette,
+:root[data-motion="paused"] .hs-social,
+:root[data-motion="paused"] .hs-chat,
+:root[data-motion="paused"] .hs-live,
+:root[data-motion="paused"] .hs-caption-text {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Stehende Szene: nur eine Bildunterschrift statt fünf übereinander */
+:root[data-motion="paused"] .hs-caption .hs-caption-text:not(.hs-cap-1) {
+  opacity: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-caption .hs-caption-text:not(.hs-cap-1) { opacity: 0 !important; }
+}
+
+/* Chatverlauf ist per Tastatur scrollbar */
+.chat-messages:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
 }

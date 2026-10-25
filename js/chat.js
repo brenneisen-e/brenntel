@@ -31,6 +31,8 @@
     panel.setAttribute('aria-hidden', 'false');
     fab.classList.add('open');
     fab.setAttribute('aria-expanded', 'true');
+    // Fokus in den Dialog (ohne Handy-Tastatur aufzuklappen)
+    panel.focus({ preventScroll: true });
     if (!demoPlayed) {
       demoPlayed = true;
       playDemo();
@@ -38,10 +40,13 @@
   }
 
   function closePanel() {
+    // Lag der Fokus im Chat, zurück zum Chat-Button statt ins Leere
+    var focusInPanel = panel.contains(document.activeElement);
     panel.classList.remove('open');
     panel.setAttribute('aria-hidden', 'true');
     fab.classList.remove('open');
     fab.setAttribute('aria-expanded', 'false');
+    if (focusInPanel) fab.focus();
   }
 
   fab.addEventListener('click', function () {
@@ -126,6 +131,8 @@
     var bubble = document.createElement('div');
     bubble.className = 'chat-msg-bubble';
     if (opts.typing) {
+      // Tipp-Animation ist reine Optik, die Antwort wird angesagt, sobald sie da ist
+      wrap.setAttribute('aria-hidden', 'true');
       bubble.innerHTML = '<span></span><span></span><span></span>';
     } else if (role === 'ai' && !opts.extra) {
       bubble.classList.add('chat-msg-formatted');

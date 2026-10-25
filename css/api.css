@@ -1,3 +1,7 @@
+/* Grün für Erfolgs-Schrift, lesbar auf hellen und dunklen Flächen */
+:root { --api-success-text: #166534; }
+:root[data-theme="dark"] { --api-success-text: #4ade80; }
+
 /* ========================================
    API Page — Hero
    ======================================== */
@@ -16,7 +20,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   background: var(--color-accent-glow);
   border-radius: 20px;
   margin-bottom: 1.25rem;
@@ -31,7 +35,7 @@
 }
 
 .api-hero h1 .accent {
-  color: var(--color-accent);
+  color: var(--color-accent-display);
 }
 
 .api-hero-subtitle {
@@ -50,7 +54,7 @@
   position: sticky;
   top: 70px;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-header-bg-scrolled);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-border);
@@ -90,14 +94,14 @@
 }
 
 .step-item.active .step-number {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
+  border-color: var(--color-accent-strong);
+  background: var(--color-accent-strong);
   color: #fff;
 }
 
 .step-item.done .step-number {
-  border-color: #28c840;
-  background: #28c840;
+  border-color: #15803d;
+  background: #15803d;
   color: #fff;
 }
 
@@ -111,11 +115,11 @@
 }
 
 .step-item.active .step-label {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .step-item.done .step-label {
-  color: #28c840;
+  color: var(--api-success-text);
 }
 
 .step-line {
@@ -261,14 +265,14 @@
 }
 
 .btn-primary {
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-strong);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
+  background: var(--color-accent-strong-hover);
+  border-color: var(--color-accent-strong-hover);
   box-shadow: 0 4px 16px rgba(232, 114, 12, 0.25);
 }
 
@@ -280,7 +284,7 @@
 
 .btn-outline:hover:not(:disabled) {
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
@@ -380,7 +384,7 @@
 
 .badge-ok {
   background: rgba(40, 200, 64, 0.1);
-  color: #16a34a;
+  color: var(--api-success-text);
   border-color: rgba(40, 200, 64, 0.3);
 }
 
@@ -452,7 +456,7 @@
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
   border-radius: 10px;
 }
@@ -573,6 +577,11 @@
   position: relative;
 }
 
+.content-type-card input:focus-visible + .ct-inner {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 .content-type-card input:checked + .ct-inner {
   border-color: var(--color-accent);
   background: rgba(232, 114, 12, 0.04);
@@ -673,7 +682,7 @@
   font-weight: 700;
   min-width: 3rem;
   text-align: right;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .progress-details {
@@ -760,7 +769,7 @@
   display: block;
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--color-accent);
+  color: var(--color-accent-display);
 }
 
 .stat-label {
@@ -791,7 +800,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-family: var(--font-family);
   font-weight: 600;
   font-size: 0.8rem;

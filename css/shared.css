@@ -34,6 +34,14 @@
   --color-accent: #e8720c;
   --color-accent-hover: #d06000;
   --color-accent-glow: rgba(232, 114, 12, 0.18);
+  /* Barrierefreie Akzenttöne (WCAG AA): --color-accent bleibt für Flächen,
+     Linien und Icons. Für Schrift und Flächen mit weißer Schrift gelten diese: */
+  --color-accent-text: #ad4f00;          /* Schrift, mind. 4,5:1 auf allen hellen Flächen */
+  --color-accent-text-hover: #8a3f00;
+  --color-accent-display: #d06000;       /* große Schrift ab 24px bzw. 19px fett, mind. 3:1 */
+  --color-accent-strong: #c05600;        /* Fläche mit weißer Schrift, 4,6:1 */
+  --color-accent-strong-hover: #a84d00;
+  --color-focus: #ad4f00;
   --color-border: #e8ddc6;
   --color-header-bg: rgba(253, 250, 243, 0.72);
   --color-header-bg-scrolled: rgba(253, 250, 243, 0.88);
@@ -62,6 +70,10 @@
   --color-accent: #f59034;
   --color-accent-hover: #ffaa4c;
   --color-accent-glow: rgba(245, 144, 52, 0.22);
+  --color-accent-text: #f59034;
+  --color-accent-text-hover: #ffaa4c;
+  --color-accent-display: #f59034;
+  --color-focus: #f59034;
   --color-border: #3a2f25;
   --color-header-bg: rgba(20, 16, 12, 0.72);
   --color-header-bg-scrolled: rgba(20, 16, 12, 0.9);
@@ -125,22 +137,50 @@ img {
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   text-decoration: none;
   transition: color var(--transition);
 }
 
 a:hover {
-  color: var(--color-accent-hover);
+  color: var(--color-accent-text-hover);
 }
 
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid var(--color-accent);
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* Sprungziele (z. B. <main tabindex="-1">) bekommen keinen Fokusrahmen */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Sprunglink „Zum Inhalt“ — erscheint erst beim ersten Tab */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10001;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transform: translateY(calc(-100% - 1.5rem));
+  transition: transform 0.2s ease;
+}
+
+.skip-link:hover,
+.skip-link:focus {
+  color: var(--color-bg);
+  transform: none;
 }
 
 /* ========================================
@@ -266,7 +306,7 @@ select:focus-visible {
 }
 
 .nav-desktop a:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 /* Language Toggle */
@@ -276,7 +316,6 @@ select:focus-visible {
   gap: 0;
   border: 1.5px solid var(--color-border);
   border-radius: 24px;
-  overflow: hidden;
   font-size: 0.8rem;
   font-weight: 600;
   transition: border-color var(--transition);
@@ -303,8 +342,11 @@ select:focus-visible {
   justify-content: center;
 }
 
+.lang-toggle button:first-child { border-radius: 24px 0 0 24px; }
+.lang-toggle button:last-child { border-radius: 0 24px 24px 0; }
+
 .lang-toggle button.active {
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   color: #fff;
 }
 
@@ -541,7 +583,7 @@ select:focus-visible {
   background: rgba(232, 114, 12, 0.08) !important;
   border-color: rgba(232, 114, 12, 0.35) !important;
   box-shadow: 0 8px 24px rgba(232, 114, 12, 0.18);
-  color: #e8720c !important;
+  color: var(--color-accent-text) !important;
 }
 
 .nav-mobile a:hover::before,
@@ -729,7 +771,7 @@ select:focus-visible {
 }
 
 .footer-links a:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .footer-copy {
