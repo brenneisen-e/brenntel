@@ -11,25 +11,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/legal.css">
+  <link rel="stylesheet" href="css/shared.css?v=20261024a">
+  <link rel="stylesheet" href="css/legal.css?v=20261024a">
 </head>
 <body>
+
+  <a class="skip-link" href="#main" data-de="Zum Inhalt springen" data-en="Skip to content">Zum Inhalt springen</a>
 
   <header class="site-header" role="banner">
     <div class="header-inner">
       <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
-      <nav class="header-nav" aria-label="Navigation">
+      <nav class="header-nav" aria-label="Navigation" data-de-aria-label="Navigation" data-en-aria-label="Navigation">
         <a href="index.html" data-de="Zurück zur Startseite" data-en="Back to Homepage">Zurück zur Startseite</a>
-        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
-          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
-          <button type="button" data-lang="en" aria-label="English">EN</button>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl" data-de-aria-label="Sprachauswahl" data-en-aria-label="Language">
+          <button type="button" data-lang="de" class="active" aria-pressed="true" aria-label="Deutsch" lang="de">DE</button>
+          <button type="button" data-lang="en" aria-pressed="false" aria-label="English" lang="en">EN</button>
         </div>
       </nav>
     </div>
   </header>
 
-  <main class="content">
+  <main class="content" id="main" tabindex="-1">
     <!-- German Version -->
     <div id="datenschutz-de">
       <h1>Datenschutzerklärung</h1>
@@ -85,7 +87,7 @@
 
       <h2>5. Cookies</h2>
       <p>
-        Diese Website verwendet keine Cookies zu Tracking- oder Analysezwecken. Es wird lediglich ein technisch notwendiger Eintrag im Local Storage Ihres Browsers gespeichert, um Ihre Sprachpräferenz (Deutsch/Englisch) zu merken. Dieser Eintrag enthält keine personenbezogenen Daten.
+        Diese Website verwendet keine Cookies zu Tracking- oder Analysezwecken. Es werden lediglich technisch notwendige Einträge im Local Storage Ihres Browsers gespeichert, um Ihre Einstellungen zu merken: Sprache (Deutsch/Englisch), Farbdarstellung (hell/dunkel) und ob Animationen angehalten sind. Diese Einträge enthalten keine personenbezogenen Daten.
       </p>
 
       <h2>6. Ihre Rechte als betroffene Person</h2>
@@ -165,7 +167,7 @@
 
       <h2>5. Cookies</h2>
       <p>
-        This website does not use cookies for tracking or analytics purposes. Only a technically necessary entry in your browser's local storage is used to remember your language preference (German/English). This entry does not contain any personal data.
+        This website does not use cookies for tracking or analytics purposes. Only technically necessary entries in your browser's local storage are used to remember your settings: language (German/English), colour scheme (light/dark) and whether animations are paused. These entries do not contain any personal data.
       </p>
 
       <h2>6. Your Rights as a Data Subject</h2>
@@ -201,7 +203,7 @@
     </div>
   </footer>
 
-  <script src="js/shared.js"></script>
+  <script src="js/shared.js?v=20261024a"></script>
   <script>
     document.addEventListener('langchange', function (e) {
       var lang = e.detail.lang;

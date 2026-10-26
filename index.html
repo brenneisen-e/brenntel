@@ -24,8 +24,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20260827c">
-  <link rel="stylesheet" href="css/main.css?v=20261024a">
+  <link rel="stylesheet" href="css/shared.css?v=20261024a">
+  <link rel="stylesheet" href="css/main.css?v=20261026a">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -90,6 +90,8 @@
 </head>
 <body>
 
+  <a class="skip-link" href="#main" data-de="Zum Inhalt springen" data-en="Skip to content">Zum Inhalt springen</a>
+
   <!-- ======== Preloader ======== -->
   <div class="preloader" id="preloader" aria-hidden="true">
     <div class="preloader-content">
@@ -112,33 +114,33 @@
       <a href="#hero" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
 
       <!-- Desktop Navigation -->
-      <nav class="nav-desktop" aria-label="Hauptnavigation">
+      <nav class="nav-desktop" aria-label="Hauptnavigation" data-de-aria-label="Hauptnavigation" data-en-aria-label="Main navigation">
         <a href="#work" data-de="Referenzen" data-en="Work">Referenzen</a>
         <a href="#services" data-de="Leistungen" data-en="Services">Leistungen</a>
         <a href="#process" data-de="Prozess" data-en="Process">Prozess</a>
         <a href="#about" data-de="Über uns" data-en="About">Über uns</a>
-        <button class="theme-toggle" type="button" aria-label="Theme umschalten">
+        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Dunkles Design" data-de-aria-label="Dunkles Design" data-en-aria-label="Dark mode">
           <svg class="theme-toggle-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           <svg class="theme-toggle-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         </button>
-        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
-          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
-          <button type="button" data-lang="en" aria-label="English">EN</button>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl" data-de-aria-label="Sprachauswahl" data-en-aria-label="Language">
+          <button type="button" data-lang="de" class="active" aria-pressed="true" aria-label="Deutsch" lang="de">DE</button>
+          <button type="button" data-lang="en" aria-pressed="false" aria-label="English" lang="en">EN</button>
         </div>
         <a href="#contact" class="btn btn-nav" data-de="Projekt starten" data-en="Start a project">Projekt starten</a>
       </nav>
 
       <!-- Mobile: Theme + Language Toggle + Hamburger -->
       <div class="header-mobile-actions">
-        <button class="theme-toggle" type="button" aria-label="Theme umschalten">
+        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Dunkles Design" data-de-aria-label="Dunkles Design" data-en-aria-label="Dark mode">
           <svg class="theme-toggle-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           <svg class="theme-toggle-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         </button>
-        <div class="lang-toggle" role="group" aria-label="Sprachauswahl">
-          <button type="button" data-lang="de" class="active" aria-label="Deutsch">DE</button>
-          <button type="button" data-lang="en" aria-label="English">EN</button>
+        <div class="lang-toggle" role="group" aria-label="Sprachauswahl" data-de-aria-label="Sprachauswahl" data-en-aria-label="Language">
+          <button type="button" data-lang="de" class="active" aria-pressed="true" aria-label="Deutsch" lang="de">DE</button>
+          <button type="button" data-lang="en" aria-pressed="false" aria-label="English" lang="en">EN</button>
         </div>
-        <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false">
+        <button class="hamburger" type="button" aria-label="Menü" aria-expanded="false" aria-controls="nav-mobile">
           <span></span>
           <span></span>
           <span></span>
@@ -147,34 +149,34 @@
     </div>
 
     <!-- Mobile Navigation -->
-    <nav class="nav-mobile" aria-label="Mobile Navigation">
+    <nav class="nav-mobile" id="nav-mobile" aria-label="Hauptnavigation" data-de-aria-label="Hauptnavigation" data-en-aria-label="Main navigation">
       <div class="nav-mobile-inner">
         <a href="#work">
           <span data-de="Referenzen" data-en="Work">Referenzen</span>
-          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </a>
         <a href="#services">
           <span data-de="Leistungen" data-en="Services">Leistungen</span>
-          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </a>
         <a href="#process">
           <span data-de="Prozess" data-en="Process">Prozess</span>
-          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </a>
         <a href="#about">
           <span data-de="Über uns" data-en="About">Über uns</span>
-          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </a>
         <a href="#contact">
           <span data-de="Kontakt" data-en="Contact">Kontakt</span>
-          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </a>
       </div>
     </nav>
     <div class="nav-overlay" aria-hidden="true"></div>
   </header>
 
-  <main>
+  <main id="main" tabindex="-1">
     <!-- ======== Hero ======== -->
     <section class="hero" id="hero">
       <div class="hero-gradient" aria-hidden="true"></div>
@@ -217,9 +219,9 @@
           </ul>
         </div>
 
-        <div class="hero-visual" aria-hidden="true">
+        <div class="hero-visual">
           <!-- Unified portrait scene that fills up over time -->
-          <div class="hero-scene">
+          <div class="hero-scene" aria-hidden="true">
             <div class="hs-device">
               <div class="hs-screen">
               <div class="hs-bar">
@@ -290,6 +292,13 @@
               <span class="hs-caption-text hs-cap-5" data-de="Zuverlässig gehostet — immer online, 24/7." data-en="Reliably hosted — always online, 24/7.">Zuverlässig gehostet — immer online, 24/7.</span>
             </div>
           </div>
+          <!-- Hält alle Endlos-Animationen der Seite an (WCAG 2.2.2) -->
+          <button class="motion-toggle" type="button">
+            <svg class="motion-toggle-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            <svg class="motion-toggle-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            <span class="motion-toggle-label-pause" data-de="Animationen anhalten" data-en="Pause animations">Animationen anhalten</span>
+            <span class="motion-toggle-label-play" data-de="Animationen fortsetzen" data-en="Play animations">Animationen fortsetzen</span>
+          </button>
         </div>
       </div>
 
@@ -315,7 +324,7 @@
 
         <div class="work-grid stagger-children">
 
-          <a class="work-card fade-in" href="https://brenneisen.info" target="_blank" rel="noopener noreferrer" aria-label="Malte Brenneisen Portfolio öffnen">
+          <a class="work-card fade-in" href="https://brenneisen.info" target="_blank" rel="noopener noreferrer" aria-label="Malte Brenneisen – Portfolio ansehen (öffnet in neuem Tab)" data-de-aria-label="Malte Brenneisen – Portfolio ansehen (öffnet in neuem Tab)" data-en-aria-label="Malte Brenneisen – view portfolio (opens in a new tab)">
             <div class="work-frame">
               <div class="work-frame-bar">
                 <span class="work-dot"></span>
@@ -345,7 +354,7 @@
             </div>
           </a>
 
-          <a class="work-card fade-in" href="https://natberger-huette.de" target="_blank" rel="noopener noreferrer" aria-label="Natberger Hütte Website öffnen">
+          <a class="work-card fade-in" href="https://natberger-huette.de" target="_blank" rel="noopener noreferrer" aria-label="Natberger Hütte – Website ansehen (öffnet in neuem Tab)" data-de-aria-label="Natberger Hütte – Website ansehen (öffnet in neuem Tab)" data-en-aria-label="Natberger Hütte – view website (opens in a new tab)">
             <div class="work-frame">
               <div class="work-frame-bar">
                 <span class="work-dot"></span>
@@ -375,7 +384,7 @@
             </div>
           </a>
 
-          <a class="work-card fade-in" href="https://sechszirbenhuette.de" target="_blank" rel="noopener noreferrer" aria-label="Sechszirbenhütte Website öffnen">
+          <a class="work-card fade-in" href="https://sechszirbenhuette.de" target="_blank" rel="noopener noreferrer" aria-label="Sechszirbenhütte – Website ansehen (öffnet in neuem Tab)" data-de-aria-label="Sechszirbenhütte – Website ansehen (öffnet in neuem Tab)" data-en-aria-label="Sechszirbenhütte – view website (opens in a new tab)">
             <div class="work-frame">
               <div class="work-frame-bar">
                 <span class="work-dot"></span>
@@ -405,7 +414,7 @@
             </div>
           </a>
 
-          <a class="work-card fade-in" href="https://wildwege.de" target="_blank" rel="noopener noreferrer" aria-label="Wildwege Festival Website öffnen">
+          <a class="work-card fade-in" href="https://wildwege.de" target="_blank" rel="noopener noreferrer" aria-label="Wildwege – Festival-Website ansehen (öffnet in neuem Tab)" data-de-aria-label="Wildwege – Festival-Website ansehen (öffnet in neuem Tab)" data-en-aria-label="Wildwege – view festival website (opens in a new tab)">
             <div class="work-frame">
               <div class="work-frame-bar">
                 <span class="work-dot"></span>
@@ -467,7 +476,7 @@
             </div>
           </div>
 
-          <a class="work-card fade-in" href="https://schornsteintechnik-hamburg.eike-3e2.workers.dev/" target="_blank" rel="noopener noreferrer" aria-label="Vorschau der Website von Schornsteintechnik Hamburg öffnen">
+          <a class="work-card fade-in" href="https://schornsteintechnik-hamburg.eike-3e2.workers.dev/" target="_blank" rel="noopener noreferrer" aria-label="Schornsteintechnik Hamburg – Vorschau ansehen (öffnet in neuem Tab)" data-de-aria-label="Schornsteintechnik Hamburg – Vorschau ansehen (öffnet in neuem Tab)" data-en-aria-label="Schornsteintechnik Hamburg – view preview (opens in a new tab)">
             <div class="work-frame">
               <div class="work-frame-bar">
                 <span class="work-dot"></span>
@@ -497,7 +506,7 @@
             </div>
           </a>
 
-          <a class="work-card work-card-teaser fade-in" href="#contact" aria-label="Eigenes Projekt anfragen">
+          <a class="work-card work-card-teaser fade-in" href="#contact" aria-label="Dein Projekt – Projekt anfragen" data-de-aria-label="Dein Projekt – Projekt anfragen" data-en-aria-label="Your project – start a project">
             <div class="work-teaser-inner">
               <div class="work-teaser-plus" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -541,10 +550,10 @@
               <line x1="18" y1="40" x2="30" y2="40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
               <line x1="24" y1="36" x2="24" y2="40" stroke="currentColor" stroke-width="2.5"/>
             </svg>
-            <h3 data-de="Webdesign" data-en="Web Design">Webdesign</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-webdesign" data-de="Webdesign" data-en="Web Design">Webdesign</button></h3>
             <p data-de="Modernes, responsives Webdesign mit Fokus auf Benutzerfreundlichkeit und Ästhetik. Jede Website wird individuell gestaltet." data-en="Modern, responsive web design with a focus on usability and aesthetics. Every website is individually crafted.">Modernes, responsives Webdesign mit Fokus auf Benutzerfreundlichkeit und Ästhetik. Jede Website wird individuell gestaltet.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-webdesign">
               <p class="service-details-desc" data-de="Wir entwerfen maßgeschneiderte Websites, die nicht nur gut aussehen, sondern auch konvertieren. Vom ersten Wireframe bis zum finalen Pixel-Perfect-Design begleiten wir dich durch den gesamten Gestaltungsprozess — immer mit dem Nutzer im Fokus." data-en="We design custom websites that not only look great but also convert. From the first wireframe to the final pixel-perfect design, we guide you through the entire creative process — always with the user in mind.">Wir entwerfen maßgeschneiderte Websites, die nicht nur gut aussehen, sondern auch konvertieren. Vom ersten Wireframe bis zum finalen Pixel-Perfect-Design begleiten wir dich durch den gesamten Gestaltungsprozess — immer mit dem Nutzer im Fokus.</p>
               <ul class="service-details-list">
                 <li data-de="UX/UI-Konzeption &amp; Wireframing" data-en="UX/UI concept &amp; wireframing">UX/UI-Konzeption &amp; Wireframing</li>
@@ -563,10 +572,10 @@
               <polyline points="32,14 42,24 32,34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
               <line x1="28" y1="10" x2="20" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            <h3 data-de="Webentwicklung" data-en="Development">Webentwicklung</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-dev" data-de="Webentwicklung" data-en="Development">Webentwicklung</button></h3>
             <p data-de="Performante, saubere Webentwicklung mit modernen Technologien. Schnell, sicher und suchmaschinenoptimiert." data-en="Performant, clean web development using modern technologies. Fast, secure, and SEO-optimized.">Performante, saubere Webentwicklung mit modernen Technologien. Schnell, sicher und suchmaschinenoptimiert.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-dev">
               <p class="service-details-desc" data-de="Wir setzen Designs in performanten, sauberen Code um. Ob statische Website, CMS-Integration oder komplexe Webanwendung — wir wählen die passende Technologie für dein Projekt und sorgen für schnelle Ladezeiten und optimale Suchmaschinenplatzierung." data-en="We turn designs into performant, clean code. Whether static website, CMS integration, or complex web application — we choose the right technology for your project and ensure fast load times and optimal search engine rankings.">Wir setzen Designs in performanten, sauberen Code um. Ob statische Website, CMS-Integration oder komplexe Webanwendung — wir wählen die passende Technologie für dein Projekt und sorgen für schnelle Ladezeiten und optimale Suchmaschinenplatzierung.</p>
               <ul class="service-details-list">
                 <li data-de="HTML, CSS &amp; JavaScript Entwicklung" data-en="HTML, CSS &amp; JavaScript development">HTML, CSS &amp; JavaScript Entwicklung</li>
@@ -590,10 +599,10 @@
               <line x1="24" y1="38" x2="24" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
               <line x1="16" y1="42" x2="32" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            <h3 data-de="Hosting" data-en="Hosting">Hosting</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-hosting" data-de="Hosting" data-en="Hosting">Hosting</button></h3>
             <p data-de="Zuverlässiges Hosting, Domain-Verwaltung und technische Betreuung. Deine Website ist bei uns in sicheren Händen." data-en="Reliable hosting, domain management, and technical support. Your website is in safe hands with us.">Zuverlässiges Hosting, Domain-Verwaltung und technische Betreuung. Deine Website ist bei uns in sicheren Händen.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-hosting">
               <p class="service-details-desc" data-de="Wir kümmern uns um die gesamte technische Infrastruktur deiner Website. Von der Wahl des richtigen Hosting-Anbieters über SSL-Zertifikate bis hin zu regelmäßigen Backups und Updates — damit du dich auf dein Kerngeschäft konzentrieren kannst." data-en="We take care of the entire technical infrastructure of your website. From choosing the right hosting provider to SSL certificates, regular backups, and updates — so you can focus on your core business.">Wir kümmern uns um die gesamte technische Infrastruktur deiner Website. Von der Wahl des richtigen Hosting-Anbieters über SSL-Zertifikate bis hin zu regelmäßigen Backups und Updates — damit du dich auf dein Kerngeschäft konzentrieren kannst.</p>
               <ul class="service-details-list">
                 <li data-de="Domain-Registrierung &amp; DNS-Verwaltung" data-en="Domain registration &amp; DNS management">Domain-Registrierung &amp; DNS-Verwaltung</li>
@@ -614,10 +623,10 @@
               <line x1="8" y1="18" x2="40" y2="18" stroke="currentColor" stroke-width="2.5"/>
               <line x1="8" y1="30" x2="40" y2="30" stroke="currentColor" stroke-width="2.5"/>
             </svg>
-            <h3 data-de="Branding" data-en="Branding">Branding</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-branding" data-de="Branding" data-en="Branding">Branding</button></h3>
             <p data-de="Einprägsame Markenidentitäten, die deine Werte widerspiegeln. Logo, Farbwelt, Typografie und Styleguide." data-en="Memorable brand identities that reflect your values. Logo, color palette, typography, and style guide.">Einprägsame Markenidentitäten, die deine Werte widerspiegeln. Logo, Farbwelt, Typografie und Styleguide.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-branding">
               <p class="service-details-desc" data-de="Eine starke Marke ist mehr als nur ein Logo. Wir entwickeln eine ganzheitliche visuelle Identität, die deine Werte transportiert und bei deiner Zielgruppe Vertrauen schafft — konsistent über alle Touchpoints hinweg." data-en="A strong brand is more than just a logo. We develop a holistic visual identity that communicates your values and builds trust with your audience — consistent across all touchpoints.">Eine starke Marke ist mehr als nur ein Logo. Wir entwickeln eine ganzheitliche visuelle Identität, die deine Werte transportiert und bei deiner Zielgruppe Vertrauen schafft — konsistent über alle Touchpoints hinweg.</p>
               <ul class="service-details-list">
                 <li data-de="Logo-Design &amp; Markenzeichen" data-en="Logo design &amp; brand marks">Logo-Design &amp; Markenzeichen</li>
@@ -638,10 +647,10 @@
               <line x1="12" y1="34" x2="30" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
               <line x1="12" y1="40" x2="24" y2="40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            <h3 data-de="Content" data-en="Content">Content</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-content" data-de="Content" data-en="Content">Content</button></h3>
             <p data-de="Professionelle Texte, Bilder und Videos für deine Website und Marketingkanäle. Inhalte, die deine Zielgruppe ansprechen." data-en="Professional copy, images, and videos for your website and marketing channels. Content that engages your audience.">Professionelle Texte, Bilder und Videos für deine Website und Marketingkanäle. Inhalte, die deine Zielgruppe ansprechen.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-content">
               <p class="service-details-desc" data-de="Guter Content ist das Herzstück jeder digitalen Präsenz. Wir erstellen Inhalte, die deine Zielgruppe begeistern — von überzeugenden Webtexten über professionelle Fotografie bis hin zu kurzen Videoformaten für Social Media." data-en="Great content is the heart of every digital presence. We create content that captivates your audience — from compelling web copy to professional photography and short video formats for social media.">Guter Content ist das Herzstück jeder digitalen Präsenz. Wir erstellen Inhalte, die deine Zielgruppe begeistern — von überzeugenden Webtexten über professionelle Fotografie bis hin zu kurzen Videoformaten für Social Media.</p>
               <ul class="service-details-list">
                 <li data-de="Website-Texte &amp; Copywriting" data-en="Website copy &amp; copywriting">Website-Texte &amp; Copywriting</li>
@@ -663,10 +672,10 @@
               <circle cx="21" cy="21" r="1.6" fill="currentColor"/>
               <circle cx="27" cy="21" r="1.6" fill="currentColor"/>
             </svg>
-            <h3 data-de="KI-Integration" data-en="AI Integration">KI-Integration</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-ai" data-de="KI-Integration" data-en="AI Integration">KI-Integration</button></h3>
             <p data-de="Intelligente Features für deine Website: Chat-Bots, KI-Assistenten und smarte Automatisierungen." data-en="Intelligent features for your website: chatbots, AI assistants, and smart automations.">Intelligente Features für deine Website: Chat-Bots, KI-Assistenten und smarte Automatisierungen.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-ai">
               <p class="service-details-desc" data-de="Von einfachen Chat-Widgets bis zu komplexen KI-Integrationen — wir bringen moderne Sprachmodelle auf deine Website. Ob Kundensupport rund um die Uhr, smarte Produktempfehlungen oder automatisch generierte Inhalte: wir finden die passende Lösung." data-en="From simple chat widgets to complex AI integrations — we bring modern language models to your website. Whether it's 24/7 customer support, smart product recommendations, or automatically generated content: we'll find the right fit.">Von einfachen Chat-Widgets bis zu komplexen KI-Integrationen — wir bringen moderne Sprachmodelle auf deine Website. Ob Kundensupport rund um die Uhr, smarte Produktempfehlungen oder automatisch generierte Inhalte: wir finden die passende Lösung.</p>
               <ul class="service-details-list">
                 <li data-de="Chat-Bots mit GPT, Claude &amp; Co." data-en="Chatbots powered by GPT, Claude &amp; others">Chat-Bots mit GPT, Claude &amp; Co.</li>
@@ -688,10 +697,10 @@
               <line x1="18" y1="20" x2="17" y2="31" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
               <line x1="34" y1="29" x2="19" y2="33" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            <h3 data-de="Social Media" data-en="Social Media">Social Media</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="service-details-social" data-de="Social Media" data-en="Social Media">Social Media</button></h3>
             <p data-de="Strategische Planung und Betreuung deiner Social-Media-Kanäle. Mehr Reichweite und Engagement für deine Marke." data-en="Strategic planning and management of your social media channels. More reach and engagement for your brand.">Strategische Planung und Betreuung deiner Social-Media-Kanäle. Mehr Reichweite und Engagement für deine Marke.</p>
             <svg class="service-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="service-details">
+            <div class="service-details" id="service-details-social">
               <p class="service-details-desc" data-de="Social Media ist mehr als nur posten. Wir entwickeln eine durchdachte Strategie für deine Kanäle, erstellen ansprechende Inhalte und sorgen für nachhaltiges Wachstum — organisch und bei Bedarf auch durch bezahlte Kampagnen." data-en="Social media is more than just posting. We develop a thoughtful strategy for your channels, create engaging content, and drive sustainable growth — organically and through paid campaigns when needed.">Social Media ist mehr als nur posten. Wir entwickeln eine durchdachte Strategie für deine Kanäle, erstellen ansprechende Inhalte und sorgen für nachhaltiges Wachstum — organisch und bei Bedarf auch durch bezahlte Kampagnen.</p>
               <ul class="service-details-list">
                 <li data-de="Kanalstrategie &amp; Zielgruppenanalyse" data-en="Channel strategy &amp; audience analysis">Kanalstrategie &amp; Zielgruppenanalyse</li>
@@ -925,7 +934,7 @@
         </div>
 
         <div class="contact-layout">
-          <aside class="contact-aside fade-in">
+          <div class="contact-aside fade-in">
             <a class="contact-aside-card" href="mailto:kontakt@brenntelmediadesign.com">
               <span class="contact-aside-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
@@ -962,7 +971,7 @@
                 <span data-de="Der KI-Chat unten rechts antwortet in Sekunden." data-en="The AI chat in the corner replies in seconds.">Der KI-Chat unten rechts antwortet in Sekunden.</span>
               </span>
             </div>
-          </aside>
+          </div>
 
           <div class="contact-main">
             <form class="contact-form scale-in" id="contact-form" novalidate>
@@ -1051,14 +1060,14 @@
 
               <div class="form-row">
                 <div class="form-group form-group-icon">
-                  <label for="name" data-de="Name" data-en="Name">Name</label>
+                  <label for="name"><span data-de="Name" data-en="Name">Name</span> <span class="form-required" aria-hidden="true">*</span></label>
                   <span class="input-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
                   </span>
                   <input type="text" id="name" name="name" required autocomplete="name" data-de-placeholder="Dein Name" data-en-placeholder="Your name" placeholder="Dein Name">
                 </div>
                 <div class="form-group form-group-icon">
-                  <label for="email" data-de="E-Mail" data-en="Email">E-Mail</label>
+                  <label for="email"><span data-de="E-Mail" data-en="Email">E-Mail</span> <span class="form-required" aria-hidden="true">*</span></label>
                   <span class="input-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
                   </span>
@@ -1075,21 +1084,28 @@
               </div>
 
               <div class="form-group form-group-icon form-group-textarea">
-                <label for="message" data-de="Nachricht" data-en="Message">Nachricht</label>
+                <label for="message"><span data-de="Nachricht" data-en="Message">Nachricht</span> <span class="form-required" aria-hidden="true">*</span></label>
                 <span class="input-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </span>
                 <textarea id="message" name="message" required data-de-placeholder="Erzähle uns von deinem Projekt…" data-en-placeholder="Tell us about your project…" placeholder="Erzähle uns von deinem Projekt…"></textarea>
-                <span class="form-counter" data-counter="0">0</span>
+                <span class="form-counter" data-counter="0" aria-hidden="true">0</span>
               </div>
 
               <div class="form-checkbox">
                 <input type="checkbox" id="privacy" name="privacy" required>
-                <label for="privacy" data-de="Ich stimme der <a href='datenschutz.html'>Datenschutzerklärung</a> zu." data-en="I agree to the <a href='datenschutz.html'>Privacy Policy</a>.">Ich stimme der <a href="datenschutz.html">Datenschutzerklärung</a> zu.</label>
+                <label for="privacy" data-de="Ich stimme der <a href='datenschutz.html'>Datenschutzerklärung</a> zu. <span class='form-required' aria-hidden='true'>*</span>" data-en="I agree to the <a href='datenschutz.html'>Privacy Policy</a>. <span class='form-required' aria-hidden='true'>*</span>">Ich stimme der <a href="datenschutz.html">Datenschutzerklärung</a> zu. <span class="form-required" aria-hidden="true">*</span></label>
               </div>
 
-              <button type="submit" class="btn btn-primary btn-submit" data-de="Nachricht senden" data-en="Send Message" data-sending-de="Wird gesendet…" data-sending-en="Sending…">
-                <span class="btn-submit-text">Nachricht senden</span>
+              <p class="form-hint"><span aria-hidden="true">*</span> <span data-de="Pflichtfeld" data-en="Required field">Pflichtfeld</span></p>
+
+              <p class="form-error" id="form-error" role="alert" hidden>
+                <span data-de="Die Nachricht konnte gerade nicht gesendet werden. Bitte versuch es gleich noch einmal oder schreib uns direkt an" data-en="Your message couldn't be sent right now. Please try again in a moment or email us directly at">Die Nachricht konnte gerade nicht gesendet werden. Bitte versuch es gleich noch einmal oder schreib uns direkt an</span>
+                <a href="mailto:kontakt@brenntelmediadesign.com">kontakt@brenntelmediadesign.com</a>
+              </p>
+
+              <button type="submit" class="btn btn-primary btn-submit">
+                <span class="btn-submit-text" data-de="Nachricht senden" data-en="Send Message">Nachricht senden</span>
                 <span class="btn-submit-spinner" aria-hidden="true"></span>
                 <span class="btn-submit-check" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,12 10,17 19,7"/></svg>
@@ -1097,7 +1113,7 @@
               </button>
             </form>
 
-            <div class="form-success" id="form-success" aria-live="polite">
+            <div class="form-success" id="form-success" tabindex="-1">
               <div class="confetti" aria-hidden="true"></div>
               <svg class="form-success-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="3" class="success-ring"/>
@@ -1116,11 +1132,11 @@
   <footer class="site-footer site-footer-big" role="contentinfo">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#hero" class="logo" aria-label="Nach oben">brenntel<span>.</span></a>
+        <a href="#hero" class="logo" aria-label="brenntel – nach oben" data-de-aria-label="brenntel – nach oben" data-en-aria-label="brenntel – back to top">brenntel<span>.</span></a>
         <p class="footer-tagline" data-de="Digitalstudio für Design, Code &amp; KI — aus Köln." data-en="Digital studio for design, code &amp; AI — based in Cologne.">Digitalstudio für Design, Code &amp; KI — aus Köln.</p>
       </div>
-      <nav class="footer-col" aria-label="Footer Navigation">
-        <h4 data-de="Menü" data-en="Menu">Menü</h4>
+      <nav class="footer-col" aria-label="Fußzeilen-Navigation" data-de-aria-label="Fußzeilen-Navigation" data-en-aria-label="Footer navigation">
+        <h2 class="footer-heading" data-de="Menü" data-en="Menu">Menü</h2>
         <a href="#work" data-de="Referenzen" data-en="Work">Referenzen</a>
         <a href="#services" data-de="Leistungen" data-en="Services">Leistungen</a>
         <a href="#process" data-de="Prozess" data-en="Process">Prozess</a>
@@ -1128,12 +1144,12 @@
         <a href="#contact" data-de="Kontakt" data-en="Contact">Kontakt</a>
       </nav>
       <div class="footer-col">
-        <h4 data-de="Direkt" data-en="Direct">Direkt</h4>
+        <h2 class="footer-heading" data-de="Direkt" data-en="Direct">Direkt</h2>
         <a href="mailto:kontakt@brenntelmediadesign.com">kontakt@<br>brenntelmediadesign.com</a>
         <span data-de="50823 Köln" data-en="Cologne, Germany">50823 Köln</span>
       </div>
       <div class="footer-col">
-        <h4 data-de="Rechtliches" data-en="Legal">Rechtliches</h4>
+        <h2 class="footer-heading" data-de="Rechtliches" data-en="Legal">Rechtliches</h2>
         <a href="impressum.html" data-de="Impressum" data-en="Legal Notice">Impressum</a>
         <a href="datenschutz.html" data-de="Datenschutz" data-en="Privacy Policy">Datenschutz</a>
       </div>
@@ -1144,54 +1160,56 @@
     </div>
   </footer>
 
+  <aside class="quick-actions" aria-label="Schnellzugriff" data-de-aria-label="Schnellzugriff" data-en-aria-label="Quick access">
   <!-- Floating CTA — fades in once the visitor has scrolled past the hero -->
-  <a href="#contact" class="floating-cta" id="floating-cta" aria-label="Projekt anfragen">
+  <a href="#contact" class="floating-cta" id="floating-cta">
     <span class="floating-cta-label" data-de="Projekt anfragen" data-en="Start a project">Projekt anfragen</span>
     <svg class="floating-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
   </a>
 
   <!-- ======== AI Chat Widget ======== -->
-  <button class="chat-fab" id="chat-fab" type="button" aria-label="KI-Chat öffnen" aria-expanded="false">
+  <button class="chat-fab" id="chat-fab" type="button" aria-label="KI-Chat" data-de-aria-label="KI-Chat" data-en-aria-label="AI chat" aria-expanded="false" aria-controls="chat-panel">
     <svg class="chat-fab-icon chat-fab-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <svg class="chat-fab-icon chat-fab-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     <span class="chat-fab-pulse" aria-hidden="true"></span>
   </button>
+  </aside>
 
-  <aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-label="KI-Chat" aria-hidden="true">
-    <header class="chat-header">
+  <div class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-labelledby="chat-title" aria-hidden="true" tabindex="-1">
+    <div class="chat-header">
       <div class="chat-header-avatar" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
       <div class="chat-header-text">
-        <h3 data-de="brenntel · KI-Chat" data-en="brenntel · AI chat">brenntel · KI-Chat</h3>
+        <h2 id="chat-title" data-de="brenntel · KI-Chat" data-en="brenntel · AI chat">brenntel · KI-Chat</h2>
         <p>
-          <span class="chat-status-dot"></span>
+          <span class="chat-status-dot" aria-hidden="true"></span>
           <span data-de="Fragt uns alles zum Projekt" data-en="Ask us anything about your project">Fragt uns alles zum Projekt</span>
         </p>
       </div>
-      <button class="chat-close" type="button" aria-label="Schließen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <button class="chat-close" type="button" aria-label="Chat schließen" data-de-aria-label="Chat schließen" data-en-aria-label="Close chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
-    </header>
+    </div>
 
-    <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" tabindex="0" aria-label="Chatverlauf" data-de-aria-label="Chatverlauf" data-en-aria-label="Chat history"></div>
 
-    <div class="chat-suggestions" id="chat-suggestions">
+    <div class="chat-suggestions" id="chat-suggestions" role="group" aria-label="Vorschläge" data-de-aria-label="Vorschläge" data-en-aria-label="Suggestions">
       <button type="button" class="chat-chip" data-msg-de="Könnt ihr einen KI-Chatbot für meine Seite bauen?" data-msg-en="Can you build an AI chatbot for my site?" data-de="KI-Chatbot" data-en="AI chatbot">KI-Chatbot</button>
       <button type="button" class="chat-chip" data-intent="process" data-msg-de="Wie läuft ein Projekt ab?" data-msg-en="How does a project work?" data-de="Ablauf" data-en="Process">Ablauf</button>
       <button type="button" class="chat-chip" data-msg-de="Was macht brenntel eigentlich?" data-msg-en="What does brenntel actually do?" data-de="Über brenntel" data-en="About brenntel">Über brenntel</button>
     </div>
 
     <form class="chat-input-row" id="chat-form">
-      <textarea id="chat-input" rows="1" data-de-placeholder="Schreib uns…" data-en-placeholder="Write us…" placeholder="Schreib uns…" maxlength="1000" required></textarea>
-      <button type="submit" class="chat-send" aria-label="Senden">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+      <textarea id="chat-input" rows="1" aria-label="Deine Nachricht" data-de-aria-label="Deine Nachricht" data-en-aria-label="Your message" data-de-placeholder="Schreib uns…" data-en-placeholder="Write us…" placeholder="Schreib uns…" maxlength="1000" required></textarea>
+      <button type="submit" class="chat-send" aria-label="Senden" data-de-aria-label="Senden" data-en-aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
       </button>
     </form>
-  </aside>
+  </div>
 
-  <script src="js/shared.js?v=20260827c"></script>
-  <script src="js/main.js?v=20260827c"></script>
-  <script src="js/chat.js?v=20260827c"></script>
+  <script src="js/shared.js?v=20261024a"></script>
+  <script src="js/main.js?v=20261024a"></script>
+  <script src="js/chat.js?v=20261024a"></script>
 </body>
 </html>

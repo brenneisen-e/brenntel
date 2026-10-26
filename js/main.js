@@ -31,6 +31,32 @@
   })();
 
   /* ========================================
+     Animationen anhalten (WCAG 2.2.2)
+     Hält alle Endlos-Animationen an; die Wahl bleibt gespeichert.
+     ======================================== */
+  var MOTION_KEY = 'brenntel-motion';
+
+  function motionPaused() {
+    return document.documentElement.getAttribute('data-motion') === 'paused';
+  }
+
+  (function initMotionToggle() {
+    var root = document.documentElement;
+    var stored = null;
+    try { stored = localStorage.getItem(MOTION_KEY); } catch (_) {}
+    if (stored === 'paused') root.setAttribute('data-motion', 'paused');
+
+    document.querySelectorAll('.motion-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var paused = !motionPaused();
+        if (paused) root.setAttribute('data-motion', 'paused');
+        else root.removeAttribute('data-motion');
+        try { localStorage.setItem(MOTION_KEY, paused ? 'paused' : 'running'); } catch (_) {}
+      });
+    });
+  })();
+
+  /* ========================================
      Page-specific language updates
      ======================================== */
   document.addEventListener('langchange', function (e) {
@@ -101,6 +127,7 @@
     });
 
     setInterval(function () {
+      if (motionPaused()) return;
       var list = words();
       if (list.length < 2) return;
       index = (index + 1) % list.length;
@@ -127,10 +154,16 @@
 
       // Close all other cards first
       document.querySelectorAll('.service-card.expanded').forEach(function (other) {
-        if (other !== card) other.classList.remove('expanded');
+        if (other !== card) setExpanded(other, false);
       });
 
-      card.classList.toggle('expanded', shouldOpen);
+      setExpanded(card, shouldOpen);
+    }
+
+    function setExpanded(card, open) {
+      card.classList.toggle('expanded', open);
+      var toggle = card.querySelector('.service-toggle');
+      if (toggle) toggle.setAttribute('aria-expanded', String(open));
     }
 
     // --- Direct click on service cards ---
@@ -168,6 +201,7 @@
   (function initStatCounters() {
     var stats = document.querySelectorAll('.stat-number[data-count]');
     if (!stats.length || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     function animate(el) {
       var target = parseInt(el.getAttribute('data-count'), 10) || 0;
@@ -326,6 +360,7 @@
      ======================================== */
   var form = document.getElementById('contact-form');
   var formSuccess = document.getElementById('form-success');
+  var formError = document.getElementById('form-error');
 
   // Budget slider: map 0-5 to ranges with DE/EN labels
   var BUDGET_STEPS = [
@@ -355,6 +390,8 @@
       display.setAttribute('data-de', step.de);
       display.setAttribute('data-en', step.en);
       display.textContent = step[currentLang()];
+      // Screenreader lesen den Betrag statt der Stufe 0–5 vor
+      slider.setAttribute('aria-valuetext', step[currentLang()]);
     }
 
     slider.addEventListener('input', update);
@@ -414,7 +451,10 @@
         .call(form.querySelectorAll('input[name="projectType"]:checked'))
         .map(function (el) { return el.value; });
 
-      if (!name.value.trim() || !email.value.trim() || !message.value.trim() || !privacy.checked) {
+      if (formError) formError.hidden = true;
+
+      // Prüft auch das E-Mail-Format; der Browser markiert das erste fehlerhafte Feld
+      if (!name.value.trim() || !message.value.trim() || !form.checkValidity()) {
         form.reportValidity();
         return;
       }
@@ -465,6 +505,8 @@
           setTimeout(function () {
             form.style.display = 'none';
             formSuccess.classList.add('show');
+            // Fokus auf die Bestätigung, sonst landet er im Nichts (Formular ist weg)
+            formSuccess.focus();
             spawnConfetti(formSuccess.querySelector('.confetti'));
           }, 650);
         })
@@ -473,6 +515,7 @@
             submitBtn.disabled = false;
             submitBtn.classList.remove('is-sending');
           }
+          if (formError) formError.hidden = false;
           // eslint-disable-next-line no-console
           console.error('Contact form error:', err);
         });

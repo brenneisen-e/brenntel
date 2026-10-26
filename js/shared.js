@@ -32,9 +32,22 @@
       if (placeholder) el.placeholder = placeholder;
     });
 
+    // Screenreader-Beschriftungen (aria-label) mitübersetzen
+    document.querySelectorAll('[data-de-aria-label]').forEach(function (el) {
+      var label = el.getAttribute('data-' + lang + '-aria-label');
+      if (label) el.setAttribute('aria-label', label);
+    });
+
     // Update toggle buttons
     document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      var isActive = btn.getAttribute('data-lang') === lang;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    // Menü-Button: gleichbleibende Beschriftung, der Zustand steckt in aria-expanded
+    document.querySelectorAll('.hamburger').forEach(function (btn) {
+      btn.setAttribute('aria-label', lang === 'en' ? 'Menu' : 'Menü');
     });
   }
 
@@ -60,6 +73,11 @@
   var navOverlay = document.querySelector('.nav-overlay');
 
   if (hamburger && navMobile && navOverlay) {
+    if (!navMobile.id) navMobile.id = 'nav-mobile';
+    hamburger.setAttribute('aria-controls', navMobile.id);
+    // Zugeklappt nicht per Tab oder Screenreader erreichbar (bleibt aber gezeichnet)
+    navMobile.inert = true;
+
     // Set nav top position based on actual header height
     var siteHeader = document.querySelector('.site-header');
     function updateNavTop() {
@@ -73,6 +91,7 @@
     function toggleMenu() {
       updateNavTop();
       var isOpen = navMobile.classList.toggle('open');
+      navMobile.inert = !isOpen;
       hamburger.classList.toggle('open', isOpen);
       navOverlay.classList.toggle('open', isOpen);
       hamburger.setAttribute('aria-expanded', String(isOpen));
@@ -81,6 +100,7 @@
 
     function closeMenu() {
       navMobile.classList.remove('open');
+      navMobile.inert = true;
       hamburger.classList.remove('open');
       navOverlay.classList.remove('open');
       hamburger.setAttribute('aria-expanded', 'false');
@@ -95,7 +115,10 @@
     });
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeMenu();
+      if (e.key !== 'Escape' || !navMobile.classList.contains('open')) return;
+      var focusInMenu = navMobile.contains(document.activeElement);
+      closeMenu();
+      if (focusInMenu) hamburger.focus();
     });
   }
 
@@ -129,6 +152,10 @@
     } else {
       root.removeAttribute('data-theme');
     }
+    // Schalter „Dunkles Design“: gedrückt = dunkel
+    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', String(theme === 'dark'));
+    });
   }
 
   var initialTheme = getStoredTheme() || (systemPrefersDark() ? 'dark' : 'light');
