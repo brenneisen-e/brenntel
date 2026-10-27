@@ -13,7 +13,23 @@
  * hier steht der allgemeine Brief.
  */
 
-const FONT = "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif";
+/*
+ * Aptos ist die Office-Schrift und in Outlook/Office 365 überall vorhanden;
+ * Webfonts (Inter) lädt kaum ein Mailprogramm. Der Schriftzug kommt deshalb
+ * als Bild (WORDMARK), der Text in Aptos mit Systemschriften als Ersatz.
+ */
+const FONT = "Aptos,'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif";
+
+/** Schriftzug „brenntel. mediadesign“ in Inter 800/300, dreifach aufgelöst (639 × 84 px). */
+const WORDMARK = 'https://brenntelmediadesign.com/assets/brenntel-wordmark@3x.png';
+
+/** Schriftzug als Bild in der Höhe `hoehe`; alt-Text trägt ihn, wenn Bilder blockiert sind. */
+function schriftzugBild(hoehe) {
+  const breite = Math.round(hoehe * 639 / 84);
+  return `<img src="${WORDMARK}" width="${breite}" height="${hoehe}" ` +
+    `alt="brenntel. mediadesign" style="display:block;border:0;outline:none;` +
+    `width:${breite}px;height:${hoehe}px;${schrift(Math.round(hoehe * 0.75), hoehe, 800, FARBE.text)}">`;
+}
 
 /**
  * Schriftangaben ausgeschrieben, nie als Kurzform `font: 400 15px/1.7 …`.
@@ -157,11 +173,14 @@ function fussHtml(zeilen) {
   const inhalt = (zeilen || [])
     .map((z) => String(z).trim())
     .filter(Boolean)
-    .map((z) => `<div style="${schrift(11, 18, 400, FARBE.fuss)}">${escapeHtml(z)}</div>`)
-    .join('');
-  if (!inhalt) return '';
+    .map((z) => escapeHtml(z))
+    .join('<br>');
+  // Ohne Fußzeile trotzdem Luft unter dem Text, sonst endet die Karte direkt
+  // an der letzten Zeile.
+  if (!inhalt) return `<tr><td style="height:30px;line-height:30px;font-size:0">&nbsp;</td></tr>`;
+  // Zeilen mit <br> in EINEM Block: Outlook setzt zwischen <div> Absatzabstand.
   return `<tr><td style="padding:26px 36px 30px"><div style="border-top:1px solid ` +
-    `${FARBE.linie};padding-top:16px">${inhalt}</div></td></tr>`;
+    `${FARBE.linie};padding-top:16px;${schrift(11, 18, 400, FARBE.fuss)}">${inhalt}</div></td></tr>`;
 }
 
 /**
@@ -191,10 +210,7 @@ ${preheaderHtml(d.preheader)}
       background:${FARBE.akzent};background:linear-gradient(90deg,${FARBE.akzent},#f5a623 55%,${FARBE.akzent});">&nbsp;</td></tr>
 
   <tr><td style="padding:30px 36px 0;">
-    <div style="${schrift(21, 28, 800, FARBE.text)};letter-spacing:-0.03em;">
-      brenntel<span style="color:${FARBE.akzent};">.</span>
-      <span style="font-weight:300;color:${FARBE.leise};">mediadesign</span>
-    </div>
+    ${schriftzugBild(28)}
   </td></tr>
 
   <tr><td style="padding:26px 36px 0;">${koerper}</td></tr>
@@ -245,9 +261,8 @@ export function renderMailText(doc) {
    ---------------------------------------- */
 
 /** Eine Zeile der Signatur; leere Teile fallen weg, statt Trenner zu hinterlassen. */
-function sigZeile(teile, stil) {
-  const inhalt = teile.filter(Boolean).join(' · ');
-  return inhalt ? `<div style="${stil}">${inhalt}</div>` : '';
+function sigZeile(teile) {
+  return teile.filter(Boolean).join(' · ');
 }
 
 function mailtoLink(adresse) {
@@ -279,39 +294,45 @@ function webLink(roh) {
 export function renderSignatureHtml(sig) {
   const s = sig || {};
   const schriftzug = s.wordmark === false ? '' :
-    `<div style="${schrift(15, 22, 800, FARBE.text)};letter-spacing:-0.02em;` +
-    `padding-bottom:6px">brenntel<span style="color:${FARBE.akzent}">.</span> ` +
-    `<span style="font-weight:300;color:${FARBE.leise}">mediadesign</span></div>`;
+    `<div style="padding-bottom:8px">${schriftzugBild(20)}</div>`;
 
   const name = String(s.name || '').trim();
   const rolle = String(s.role || '').trim();
+  // Name steht im selben Block wie die Zeilen darunter (siehe unten).
   const kopfzeile = name
-    ? `<div style="${schrift(14, 21, 600, FARBE.text)}">${escapeHtml(name)}` +
-      (rolle ? `<span style="font-weight:400;color:${FARBE.leise}"> · ${escapeHtml(rolle)}</span>` : '') +
-      `</div>`
+    ? `<span style="font-size:14px;line-height:21px;font-weight:600;color:${FARBE.text}">${escapeHtml(name)}</span>` +
+      (rolle ? `<span style="font-size:14px;color:${FARBE.leise}"> · ${escapeHtml(rolle)}</span>` : '')
     : '';
 
-  const leise = schrift(12, 20, 400, FARBE.leise);
-  const zeilen =
-    sigZeile([escapeHtml(String(s.company || '').trim())], leise) +
+  // Alle Zeilen in EINEM Block mit <br>: Outlook (Word-Maschine) setzt
+  // zwischen aufeinanderfolgende <div> Absatzabstand, und die Signatur
+  // zerfiel dort in luftige Einzelzeilen.
+  const zeilenListe = [
+    sigZeile([escapeHtml(String(s.company || '').trim())]),
     sigZeile([
       escapeHtml(String(s.street || '').trim()),
       escapeHtml(String(s.city || '').trim()),
-    ], leise) +
+    ]),
     sigZeile([
       escapeHtml(String(s.phone || '').trim()),
       mailtoLink(s.email),
-    ], leise) +
-    sigZeile([webLink(s.web)], leise) +
-    sigZeile([escapeHtml(String(s.extra || '').trim())],
-      `${schrift(11, 18, 400, FARBE.fuss)};padding-top:4px`);
+    ]),
+    sigZeile([webLink(s.web)]),
+  ].filter(Boolean);
+  const extra = escapeHtml(String(s.extra || '').trim());
+  const block = (kopfzeile ? [kopfzeile] : []).concat(zeilenListe);
+  const zeilen =
+    (block.length
+      ? `<div style="${schrift(12, 20, 400, FARBE.leise)};white-space:nowrap">${block.join('<br>')}</div>`
+      : '') +
+    (extra ? `<div style="${schrift(11, 18, 400, FARBE.fuss)};padding-top:4px">${extra}</div>` : '');
 
   // Die Akzentlinie trennt die Signatur vom Text darüber — schmal gehalten,
   // damit sie in einem Antwortverlauf nicht wie ein Seitenrahmen wirkt.
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" ` +
     `style="border-collapse:collapse;margin-top:18px"><tr><td style="padding-top:12px;` +
     `border-top:2px solid ${FARBE.akzent};min-width:240px">` +
-    schriftzug + kopfzeile + zeilen +
+    schriftzug + zeilen +
     `</td></tr></table>`;
 }
 
