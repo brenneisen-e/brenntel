@@ -12,7 +12,7 @@ import {
   renderSignatureHtml,
   renderSignatureText,
   buildEml,
-} from './mail-layout.js?v=20261027b';
+} from './mail-layout.js?v=20261027c';
 
 (function () {
   'use strict';

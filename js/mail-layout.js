@@ -21,7 +21,7 @@
 const FONT = "Aptos,'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif";
 
 /** Schriftzug „brenntel. mediadesign“ in Inter 800/300, dreifach aufgelöst (639 × 84 px). */
-const WORDMARK = 'https://brenntelmediadesign.com/assets/brenntel-wordmark.png';
+const WORDMARK = 'https://brenntelmediadesign.com/assets/brenntel-wordmark.png?v=20261027';
 
 /** Schriftzug als Bild in der Höhe `hoehe`; alt-Text trägt ihn, wenn Bilder blockiert sind. */
 function schriftzugBild(hoehe) {
