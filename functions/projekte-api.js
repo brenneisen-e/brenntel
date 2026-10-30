@@ -8,24 +8,26 @@
  * POST /projekte-api  { action: 'entwurf', prompt, draft?, angebot?, projects?, lastNumber? }
  *                                                             → Rechnungsentwurf von Claude
  *
+ * Zugang: Anmeldung im Admin Center (Sitzungs-Cookie, siehe _auth.js) oder
+ * für Werkzeuge ohne Browser ein Bearer-Token (ADMIN_TOKEN bzw. MAILGEN_TOKEN).
+ *
  * Nötig im Cloudflare-Dashboard:
  *   KV-Namespace  PROJEKTE      (Pages → Settings → Bindings)
- *   Secret        ADMIN_TOKEN   (mindestens 24 Zeichen)
  *   Secret        ANTHROPIC_API_KEY (für Entwürfe, derselbe wie beim Chat)
  * Optional:
  *   PROJEKT_MODEL — Claude-Modell für Entwürfe, Standard claude-opus-5-5
  *
- * Solange PROJEKTE und ADMIN_TOKEN fehlen, nimmt die Funktion den
- * Vorlagenspeicher MAILGEN und MAILGEN_TOKEN des Mail-Generators. Die Daten
- * liegen dort unter einem eigenen Schlüssel und stören die Vorlagen nicht.
+ * Solange PROJEKTE fehlt, nimmt die Funktion den Vorlagenspeicher MAILGEN
+ * des Mail-Generators. Die Daten liegen dort unter eigenen Schlüsseln und
+ * stören die Vorlagen nicht.
  *
- * Wie beim Mail-Generator ist der Token Pflicht: Hier liegen Kundendaten und
- * Beträge, und jeder Entwurf kostet API-Guthaben. Ein fehlendes Geheimnis
- * darf nie stillschweigend einen offenen Endpunkt ergeben.
+ * Ohne Anmeldung gibt es nichts: Hier liegen Kundendaten und Beträge, und
+ * jeder Entwurf kostet API-Guthaben.
  */
 
+import { store, authorized } from './_auth.js';
+
 const KV_KEY = 'projektcenter-v1';
-const MIN_TOKEN_LENGTH = 24;
 const MAX_BODY = 256 * 1024;
 const MAX_INVOICES = 500;
 const DEFAULT_MODEL = 'claude-opus-5-5';
@@ -42,30 +44,6 @@ function json(data, status, extra) {
       ...(extra || {}),
     },
   });
-}
-
-function store(env) {
-  return env.PROJEKTE || env.MAILGEN || null;
-}
-
-/** Vergleich über SHA-256-Digests, damit die Laufzeit nichts über den Token verrät. */
-async function tokenOk(request, env) {
-  const erwartet = (env.ADMIN_TOKEN || env.MAILGEN_TOKEN || '').trim();
-  if (erwartet.length < MIN_TOKEN_LENGTH) return false;
-
-  const header = request.headers.get('Authorization') || '';
-  const match = header.match(/^Bearer\s+(.+)$/i);
-  if (!match) return false;
-
-  const [a, b] = await Promise.all([
-    crypto.subtle.digest('SHA-256', new TextEncoder().encode(match[1].trim())),
-    crypto.subtle.digest('SHA-256', new TextEncoder().encode(erwartet)),
-  ]);
-  const x = new Uint8Array(a);
-  const y = new Uint8Array(b);
-  let diff = x.length ^ y.length;
-  for (let i = 0; i < Math.min(x.length, y.length); i++) diff |= x[i] ^ y[i];
-  return diff === 0;
 }
 
 /* ----------------------------------------
@@ -329,7 +307,7 @@ export async function onRequest(context) {
   if (!kv) {
     return json({ error: 'Speicher nicht eingerichtet (KV-Bindung PROJEKTE fehlt).' }, 500);
   }
-  if (!(await tokenOk(request, env))) {
+  if (!(await authorized(request, env))) {
     return json({ error: 'Nicht berechtigt' }, 401, { 'WWW-Authenticate': 'Bearer' });
   }
 

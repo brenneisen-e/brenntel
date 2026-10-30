@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20261030a">
-  <link rel="stylesheet" href="css/admin.css?v=20261030a">
+  <link rel="stylesheet" href="css/shared.css?v=20261030b">
+  <link rel="stylesheet" href="css/admin.css?v=20261030b">
 </head>
 <body class="ad-body">
 
@@ -26,9 +26,10 @@
     </div>
   </header>
 
-  <!-- ======== Zugang ========
-       Clientseitiger Sichtschutz wie bei Rechnung und Mail-Generator. Die
-       Projektdaten selbst hängen am Token der /projekte-api. -->
+  <!-- ======== Anmeldung ========
+       Konto mit E-Mail und Kennwort, Sitzung als HttpOnly-Cookie
+       (functions/admin-auth.js). Das erste Kennwort entsteht wie ein
+       vergessenes: über den Link aus der Mail. -->
   <section class="ad-entry" id="ad-entry">
     <div class="ad-entry-content">
       <div class="ad-entry-icon" aria-hidden="true">
@@ -37,13 +38,44 @@
         </svg>
       </div>
       <h1 class="ad-entry-title">Admin Center</h1>
-      <p class="ad-entry-sub">Internes Werkzeug — bitte Zugangscode eingeben.</p>
-      <form class="ad-code-form" id="ad-code-form" autocomplete="off">
-        <input type="password" id="ad-code-input" class="ad-input ad-code-input" placeholder="Zugangscode"
-               maxlength="20" spellcheck="false" autocomplete="off" aria-label="Zugangscode">
-        <button type="submit" class="ad-btn ad-btn-primary">Öffnen</button>
+      <p class="ad-entry-sub" id="ad-entry-sub">Bitte anmelden.</p>
+
+      <!-- Anmelden -->
+      <form class="ad-auth-form" id="ad-login" data-view="login" hidden>
+        <label class="ad-field"><span>E-Mail</span>
+          <input type="email" id="ad-login-email" class="ad-input" autocomplete="username" required
+                 value="eike@brenntelmediadesign.com">
+        </label>
+        <label class="ad-field"><span>Kennwort</span>
+          <input type="password" id="ad-login-password" class="ad-input" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="ad-btn ad-btn-primary">Anmelden</button>
+        <button type="button" class="ad-auth-link" data-goto="forgot">Kennwort vergessen?</button>
       </form>
-      <p class="ad-error" id="ad-error" aria-live="polite">Ungültiger Code.</p>
+
+      <!-- Kennwort vergessen -->
+      <form class="ad-auth-form" id="ad-forgot" data-view="forgot" hidden>
+        <label class="ad-field"><span>E-Mail</span>
+          <input type="email" id="ad-forgot-email" class="ad-input" autocomplete="username" required>
+        </label>
+        <button type="submit" class="ad-btn ad-btn-primary">Link per Mail senden</button>
+        <button type="button" class="ad-auth-link" data-goto="login">Zurück zur Anmeldung</button>
+      </form>
+
+      <!-- Neues Kennwort -->
+      <form class="ad-auth-form" id="ad-reset" data-view="reset" hidden>
+        <input type="email" id="ad-reset-email" autocomplete="username" hidden>
+        <label class="ad-field"><span>Neues Kennwort</span>
+          <input type="password" id="ad-reset-password" class="ad-input" autocomplete="new-password" minlength="10" required>
+          <small>Mindestens 10 Zeichen.</small>
+        </label>
+        <label class="ad-field"><span>Kennwort wiederholen</span>
+          <input type="password" id="ad-reset-password2" class="ad-input" autocomplete="new-password" minlength="10" required>
+        </label>
+        <button type="submit" class="ad-btn ad-btn-primary">Kennwort speichern</button>
+      </form>
+
+      <p class="ad-status" id="ad-auth-status" aria-live="polite"></p>
     </div>
   </section>
 
@@ -51,8 +83,17 @@
   <main class="ad-app" id="ad-app" hidden>
 
     <div class="ad-head">
-      <h1>Admin Center</h1>
-      <p>Werkzeuge, Angebote und Rechnungen von brenntel an einem Ort.</p>
+      <div>
+        <h1>Admin Center</h1>
+        <p>Werkzeuge, Angebote und Rechnungen von brenntel an einem Ort.</p>
+      </div>
+      <div class="ad-account">
+        <span id="ad-account-email"></span>
+        <button type="button" class="ad-btn ad-btn-ghost ad-btn-sm" id="ad-logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+          Abmelden
+        </button>
+      </div>
     </div>
 
     <!-- ======== Werkzeuge ======== -->
@@ -87,16 +128,6 @@
           Aktualisieren
         </button>
       </div>
-
-      <!-- Token für /projekte-api -->
-      <form class="ad-card ad-token" id="pc-token-form" hidden autocomplete="off">
-        <h3>Zugangstoken</h3>
-        <p>Der Speicher für Rechnungen ist mit einem Token geschützt. Im Cloudflare-Dashboard heißt er <code>ADMIN_TOKEN</code>, solange der fehlt, gilt der Token des Mail-Generators (<code>MAILGEN_TOKEN</code>). Er bleibt nur in diesem Browser.</p>
-        <div class="ad-inline">
-          <input type="password" id="pc-token" class="ad-input" placeholder="Token" spellcheck="false" autocomplete="off" aria-label="Zugangstoken">
-          <button type="submit" class="ad-btn ad-btn-primary">Verbinden</button>
-        </div>
-      </form>
 
       <!-- Kennzahlen -->
       <div class="ad-kpis" id="pc-kpis">
@@ -189,7 +220,7 @@
     </div>
   </footer>
 
-  <script src="js/shared.js?v=20261030a"></script>
-  <script src="js/admin.js?v=20261030a"></script>
+  <script src="js/shared.js?v=20261030b"></script>
+  <script src="js/admin.js?v=20261030b"></script>
 </body>
 </html>

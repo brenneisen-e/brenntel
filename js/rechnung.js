@@ -13,9 +13,8 @@
   var UNLOCK_KEY = 'brenntel-re-unlocked';
   var DRAFT_KEY = 'brenntel-re-draft';
   var SENDER_KEY = 'brenntel-re-sender';
-  // Projektcenter im Admin Center (/admin): Verknüpfung und Token
+  // Projektcenter im Admin Center (/admin): Verknüpfung zur gespeicherten Rechnung
   var LINK_KEY = 'brenntel-re-link';
-  var TOKEN_KEYS = ['brenntel-admin-token', 'brenntel-mg-token'];
 
   /* ----------------------------------------
      Startentwurf — die aktuell offene Rechnung.
@@ -155,9 +154,19 @@
     init();
   }
 
+  // Angemeldet im Admin Center (Sitzungs-Cookie): kein Code nötig
+  var pcLoggedIn = false;
+
   if (sessionStorage.getItem(UNLOCK_KEY) === 'yes') {
     unlock();
   }
+
+  fetch('/admin-auth', { credentials: 'same-origin' }).then(function (res) {
+    pcLoggedIn = res.ok;
+    if (!pcLoggedIn) return;
+    if (app.hidden) unlock();
+    else updatePcBar();
+  }).catch(function () {});
 
   codeForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -505,8 +514,8 @@
       })
       .then(function () {
         setSendStatus('Rechnung wurde an ' + to + ' gesendet.', 'ok');
-        // Im Projektcenter als versendet vermerken, sofern verbunden
-        if (!pcToken()) return;
+        // Im Projektcenter als versendet vermerken, sofern angemeldet
+        if (!pcLoggedIn) return;
         return pcSave({
           status: $('f-paystatus').value === 'paid' ? 'bezahlt' : 'versendet',
           sentAt: new Date().toISOString(),
@@ -532,16 +541,6 @@
      ---------------------------------------- */
   var syncTimer = null;
 
-  function pcToken() {
-    for (var i = 0; i < TOKEN_KEYS.length; i++) {
-      try {
-        var t = localStorage.getItem(TOKEN_KEYS[i]);
-        if (t) return t;
-      } catch (_) {}
-    }
-    return '';
-  }
-
   function pcLink() {
     var link = load(LINK_KEY);
     return link && link.id ? link : null;
@@ -556,12 +555,11 @@
   function updatePcBar() {
     var bar = $('re-pc');
     var link = pcLink();
-    var hasToken = !!pcToken();
     bar.hidden = false;
-    $('re-pc-save').hidden = !hasToken || !!link;
+    $('re-pc-save').hidden = !pcLoggedIn || !!link;
 
-    if (!hasToken) {
-      $('re-pc-text').innerHTML = 'Projektcenter nicht verbunden — <a href="admin.html#projektcenter">im Admin Center verbinden</a>';
+    if (!pcLoggedIn) {
+      $('re-pc-text').innerHTML = 'Projektcenter nicht verbunden — <a href="admin.html">im Admin Center anmelden</a>';
       bar.className = 're-pc';
       return;
     }
@@ -570,7 +568,7 @@
   }
 
   function scheduleSync() {
-    if (!pcLink() || !pcToken()) return;
+    if (!pcLink() || !pcLoggedIn) return;
     clearTimeout(syncTimer);
     setPc('Änderungen werden gespeichert …', '');
     syncTimer = setTimeout(function () {
@@ -597,7 +595,8 @@
 
     return fetch('/projekte-api', {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + pcToken(), 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'save', invoice: invoice })
     }).then(function (res) {
       return res.json().catch(function () { return null; }).then(function (data) {

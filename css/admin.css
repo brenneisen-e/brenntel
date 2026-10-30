@@ -65,29 +65,58 @@
   margin: 0 0 22px;
 }
 
-.ad-code-form {
+.ad-entry .ad-entry-sub { min-height: 1.4em; }
+
+.ad-auth-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
+  text-align: left;
 }
 
-.ad-code-input { text-align: center; }
-.ad-code-input.error { border-color: var(--ad-warn); }
+.ad-auth-form[hidden] { display: none; }
 
-.ad-error {
-  margin: 12px 0 0;
-  color: var(--ad-warn);
+.ad-auth-form .ad-btn { margin-top: 6px; }
+
+.ad-auth-link {
+  align-self: center;
+  margin-top: 10px;
+  border: 0;
+  background: none;
+  padding: 4px;
+  font: inherit;
   font-size: 0.85rem;
-  visibility: hidden;
+  font-weight: 600;
+  color: var(--color-accent-text);
+  cursor: pointer;
 }
 
-.ad-error.visible { visibility: visible; }
+.ad-auth-link:hover { text-decoration: underline; }
+
+.ad-entry .ad-status { text-align: center; }
 
 /* ---------- Rahmen ---------- */
 .ad-app {
   max-width: 1100px;
   margin: 0 auto;
   padding: 92px 16px 120px;
+}
+
+.ad-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 22px;
+}
+
+.ad-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--color-text-light);
 }
 
 .ad-head h1 {
@@ -98,7 +127,7 @@
 }
 
 .ad-head p {
-  margin: 0 0 22px;
+  margin: 0;
   color: var(--color-text-light);
   font-size: 0.9rem;
 }
@@ -315,29 +344,6 @@ textarea.ad-input {
 .ad-sync.ok { color: var(--ad-ok); }
 .ad-sync.err { color: var(--ad-warn); }
 
-.ad-token {
-  margin-bottom: 16px;
-  border-color: var(--color-accent);
-}
-
-.ad-token h3 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-}
-
-.ad-token p {
-  margin: 0 0 12px;
-  font-size: 0.85rem;
-  color: var(--color-text-light);
-}
-
-.ad-token code {
-  font-size: 0.8rem;
-  background: var(--ad-muted-bg);
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
 /* Kennzahlen */
 .ad-kpis {
   display: grid;
@@ -406,6 +412,13 @@ textarea.ad-input {
   font-size: 0.8rem;
   font-weight: 600;
   margin-bottom: 5px;
+}
+
+.ad-field small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--color-text-light);
 }
 
 .ad-status {

@@ -8,13 +8,6 @@
 (function () {
   'use strict';
 
-  /* ----------------------------------------
-     Zugangscode — wie bei Rechnung und Mail-Generator nur Sichtschutz
-     ---------------------------------------- */
-  var ACCESS_CODE = 'brenntel2026';
-  var UNLOCK_KEY = 'brenntel-ad-unlocked';
-  var TOKEN_KEY = 'brenntel-admin-token';
-  var MG_TOKEN_KEY = 'brenntel-mg-token';
   var CLAUDE_DRAFT_KEY = 'brenntel-ad-draft';
 
   // Schlüssel des Rechnungseditors (js/rechnung.js)
@@ -24,6 +17,7 @@
   var RE_UNLOCK_KEY = 'brenntel-re-unlocked';
 
   var API = '/projekte-api';
+  var AUTH = '/admin-auth';
 
   /* ----------------------------------------
      Angebote — dieselben Seiten wie im Register VALID_CODES (js/kva.js).
@@ -208,29 +202,130 @@
   }
 
   /* ----------------------------------------
-     Zugang
+     Anmeldung (functions/admin-auth.js)
      ---------------------------------------- */
-  function unlock() {
+  function postJSON(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
+        return data;
+      });
+    });
+  }
+
+  function setAuthStatus(text, cls) {
+    var node = $('ad-auth-status');
+    node.textContent = text;
+    node.className = 'ad-status' + (cls ? ' ' + cls : '');
+  }
+
+  var VIEW_SUB = {
+    login: 'Bitte anmelden.',
+    forgot: 'Wir schicken dir einen Link, mit dem du ein neues Kennwort festlegst.',
+    reset: 'Lege dein Kennwort fest.'
+  };
+
+  function showView(view) {
+    document.querySelectorAll('.ad-auth-form').forEach(function (form) {
+      form.hidden = form.getAttribute('data-view') !== view;
+    });
+    $('ad-entry-sub').textContent = VIEW_SUB[view];
+    setAuthStatus('', '');
+    if (view === 'forgot') $('ad-forgot-email').value = $('ad-login-email').value;
+    var first = document.querySelector('.ad-auth-form[data-view="' + view + '"] .ad-input');
+    // Bei vorausgefüllter Adresse gleich ins Kennwortfeld
+    if (view === 'login' && $('ad-login-email').value) first = $('ad-login-password');
+    if (first) first.focus();
+  }
+
+  function showLoggedIn(email) {
     $('ad-entry').classList.add('hidden');
     $('ad-app').hidden = false;
+    $('ad-account-email').textContent = email;
     init();
   }
 
-  try {
-    if (sessionStorage.getItem(UNLOCK_KEY) === 'yes') unlock();
-  } catch (_) {}
+  function showLoggedOut() {
+    $('ad-app').hidden = true;
+    $('ad-entry').classList.remove('hidden');
+    showView(resetToken ? 'reset' : 'login');
+  }
 
-  $('ad-code-form').addEventListener('submit', function (e) {
+  // Link aus der Mail: /admin?reset=<token>
+  var resetToken = new URLSearchParams(window.location.search).get('reset') || '';
+  if (resetToken) history.replaceState(null, '', window.location.pathname);
+
+  document.querySelectorAll('[data-goto]').forEach(function (btn) {
+    btn.addEventListener('click', function () { showView(btn.getAttribute('data-goto')); });
+  });
+
+  function busy(form, on) {
+    form.querySelectorAll('button').forEach(function (b) { b.disabled = on; });
+  }
+
+  $('ad-login').addEventListener('submit', function (e) {
     e.preventDefault();
-    var input = $('ad-code-input');
-    if (input.value.trim().toLowerCase() === ACCESS_CODE) {
-      try { sessionStorage.setItem(UNLOCK_KEY, 'yes'); } catch (_) {}
-      unlock();
-    } else {
-      input.classList.add('error');
-      $('ad-error').classList.add('visible');
-      setTimeout(function () { input.classList.remove('error'); }, 600);
+    var form = e.target;
+    busy(form, true);
+    setAuthStatus('Anmelden …', 'busy');
+    postJSON(AUTH, {
+      action: 'login',
+      email: $('ad-login-email').value,
+      password: $('ad-login-password').value
+    }).then(function (data) {
+      $('ad-login-password').value = '';
+      setAuthStatus('', '');
+      showLoggedIn(data.email);
+    }).catch(function (err) {
+      setAuthStatus(err.message, 'err');
+      $('ad-login-password').select();
+    }).then(function () { busy(form, false); });
+  });
+
+  $('ad-forgot').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    busy(form, true);
+    setAuthStatus('Sende …', 'busy');
+    postJSON(AUTH, { action: 'forgot', email: $('ad-forgot-email').value }).then(function (data) {
+      setAuthStatus(data.message + ' Der Link gilt eine Stunde.', 'ok');
+    }).catch(function (err) {
+      setAuthStatus(err.message, 'err');
+    }).then(function () { busy(form, false); });
+  });
+
+  $('ad-reset').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    var pw = $('ad-reset-password').value;
+    if (pw !== $('ad-reset-password2').value) {
+      setAuthStatus('Die beiden Kennwörter stimmen nicht überein.', 'err');
+      $('ad-reset-password2').focus();
+      return;
     }
+    busy(form, true);
+    setAuthStatus('Speichere …', 'busy');
+    postJSON(AUTH, { action: 'reset', token: resetToken, password: pw }).then(function (data) {
+      resetToken = '';
+      form.reset();
+      setAuthStatus('', '');
+      showLoggedIn(data.email);
+    }).catch(function (err) {
+      setAuthStatus(err.message, 'err');
+    }).then(function () { busy(form, false); });
+  });
+
+  $('ad-logout').addEventListener('click', function () {
+    postJSON(AUTH, { action: 'logout' }).catch(function () {}).then(function () {
+      state = { invoices: [], angebote: {} };
+      connected = false;
+      showLoggedOut();
+    });
   });
 
   /* ----------------------------------------
@@ -239,27 +334,20 @@
   var state = { invoices: [], angebote: {} };
   var connected = false;
 
-  function token() {
-    try {
-      return localStorage.getItem(TOKEN_KEY) || localStorage.getItem(MG_TOKEN_KEY) || '';
-    } catch (_) { return ''; }
-  }
-
   function api(method, body) {
     return fetch(API, {
       method: method,
-      headers: {
-        'Authorization': 'Bearer ' + token(),
-        'Content-Type': 'application/json'
-      },
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined
     }).then(function (res) {
       return res.text().then(function (raw) {
         var data;
         try { data = JSON.parse(raw); } catch (_) { data = null; }
         if (res.status === 401) {
-          showTokenForm(true);
-          throw new Error('Token fehlt oder passt nicht.');
+          // Sitzung abgelaufen
+          showLoggedOut();
+          throw new Error('Bitte erneut anmelden.');
         }
         if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
         return data;
@@ -273,30 +361,18 @@
     node.className = 'ad-sync' + (cls ? ' ' + cls : '');
   }
 
-  function showTokenForm(show) {
-    $('pc-token-form').hidden = !show;
-    if (show) setSync('Nicht verbunden — bitte Token eingeben.', 'err');
-  }
-
   function refresh() {
-    if (!token()) {
-      showTokenForm(true);
-      render();
-      return Promise.resolve();
-    }
     setSync('Lade …', '');
     return api('GET').then(function (data) {
       state.invoices = Array.isArray(data.invoices) ? data.invoices : [];
       state.angebote = data.angebote || {};
       connected = true;
-      showTokenForm(false);
       setSync(data.updatedAt
         ? 'Verbunden · zuletzt geändert ' + new Date(data.updatedAt).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })
         : 'Verbunden · noch keine Rechnungen gespeichert', 'ok');
       render();
     }).catch(function (err) {
       connected = false;
-      if (!$('pc-token-form').hidden) return render();
       setSync('Fehler: ' + err.message, 'err');
       render();
     });
@@ -398,11 +474,6 @@
     if (!prompt) {
       setDraftStatus(claudeDraft ? 'Bitte beschreiben, was Claude ändern soll.' : 'Bitte beschreiben, was berechnet werden soll.', 'err');
       $('pc-prompt').focus();
-      return;
-    }
-    if (!token()) {
-      showTokenForm(true);
-      setDraftStatus('Erst mit dem Token verbinden.', 'err');
       return;
     }
 
@@ -771,7 +842,10 @@
   var initialised = false;
 
   function init() {
-    if (initialised) return;
+    if (initialised) {
+      refresh();
+      return;
+    }
     initialised = true;
 
     renderOfferSelect();
@@ -782,15 +856,6 @@
       claudeHint = saved.hint || '';
     }
     renderDraft();
-
-    $('pc-token-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var value = $('pc-token').value.trim();
-      if (!value) return;
-      try { localStorage.setItem(TOKEN_KEY, value); } catch (_) {}
-      $('pc-token').value = '';
-      refresh();
-    });
 
     $('pc-reload').addEventListener('click', refresh);
     $('pc-draft-btn').addEventListener('click', requestDraft);
@@ -808,5 +873,17 @@
 
     render();
     refresh();
+  }
+
+  // Beim Laden: bestehende Sitzung? Der Link aus der Mail geht vor.
+  if (resetToken) {
+    showLoggedOut();
+  } else {
+    fetch(AUTH, { credentials: 'same-origin' }).then(function (res) {
+      return res.ok ? res.json() : null;
+    }).then(function (data) {
+      if (data && data.email) showLoggedIn(data.email);
+      else showLoggedOut();
+    }).catch(showLoggedOut);
   }
 })();
