@@ -197,6 +197,8 @@
   function restore() {
     var sender = load(SENDER_KEY);
     if (sender && sender.mailfrom === LEGACY_MAILFROM) delete sender.mailfrom;
+    // Kontaktzeile in Fußzeile und Mail: kontakt@, nie die private Adresse
+    if (sender && /@brenneisen\.info$/i.test(String(sender.email || '').trim())) delete sender.email;
     if (sender) {
       SENDER_FIELDS.forEach(function (key) {
         if (typeof sender[key] === 'string' && $('f-' + key)) {

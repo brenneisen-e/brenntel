@@ -91,7 +91,7 @@ const SEED_INVOICES = [
     // auf Ansage Eike 30.10.2026. Ersetzt die früheren Fassungen unter
     // BR-2026-002 (vor dem Nummernkreis je Kunde).
     id: 'seed-re-cz-2026-01',
-    rev: 7,
+    rev: 8,
     // Ersetzt den Entwurf auch, wenn der Editor ihn schon gespeichert hat —
     // solange er nicht versendet ist
     force: true,
@@ -107,7 +107,7 @@ const SEED_INVOICES = [
     remail: 'czekalla@malereifachbetrieb.de',
     project: 'Czekalla @ work',
     angebot: 'KVA-CZ-2611',
-    intro: 'Lieber Elmar,\n\nschön, dass die App seit dem 28.10. bei euch läuft und Büro und Team schon damit arbeiten! ' +
+    intro: 'Lieber Elmar,\n\nschön, dass die App seit dem 28.10. bei euch läuft! ' +
       'Wie besprochen schicken wir dir die Rechnung über die erste Hälfte, im November feilen wir gemeinsam\u00a0weiter.',
     closing: 'Vielen Dank für die tolle Zusammenarbeit!',
     greeting: 'Viele Grüße',
@@ -119,9 +119,11 @@ const SEED_INVOICES = [
     items: [{
       title: 'Abschlagszahlung 1 von 2 (50 %) nach dem Livegang am 28.10.2026',
       // Was bis zum Livegang fertig war (Stand im Repo czekallaAtWork), knapp für eine Seite
-      details: 'Architektur, Web‑App und Android‑App mit automatischem Ausstempeln\n' +
+      details: 'Konzeption und Umsetzung: Architektur, Android‑App und Web‑App\n' +
                'Module A bis C: Zeiterfassung, Lohnexport, Controlling, Baustellenakte\n' +
                'Module D und E: Wochen- und Einsatzplanung, Urlaub und Krankmeldungen\n' +
+               'Freischaltung des Büroteams und Schulung vor Ort\n' +
+               'Start des produktiven Tests mit ausgewählten Mitarbeitern\n' +
                'Gesamtpreis 11.500,00 €, nach der Übergabe noch offen: 5.750,00 €',
       qty: '1',
       unit: 'Pauschal',

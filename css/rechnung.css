@@ -975,6 +975,7 @@
 .re-sheet.pdf-capture .re-doc-addr-row { margin: 26px 0 22px; }
 .re-sheet.pdf-capture .re-doc-titlebar { margin-bottom: 20px; }
 .re-sheet.pdf-capture .re-item-row { padding: 11px 0; }
+.re-sheet.pdf-capture .re-item-details { gap: 1px; }
 .re-sheet.pdf-capture .re-doc-payment { margin-top: 20px; }
 /* Rutscht die Summe auf eine neue Seite, schneidet html2pdf genau an ihrer
    Oberkante: ohne Polster bliebe die Linie über dem Gesamtbetrag auf der
