@@ -16,6 +16,10 @@
   // Projektcenter im Admin Center (/admin): Verknüpfung zur gespeicherten Rechnung
   var LINK_KEY = 'brenntel-re-link';
 
+  // Früherer Standardabsender: steht er noch im Browser, wird auf das eigene
+  // Postfach umgestellt (seit dem Umzug zu Migadu, mit Ablage in „Gesendet“)
+  var LEGACY_MAILFROM = 'brenntel mediadesign <kontakt@brenntelmediadesign.com>';
+
   /* ----------------------------------------
      Startentwurf — die aktuell offene Rechnung.
      "Neue Rechnung" leert Empfänger + Positionen und zählt die Nummer hoch.
@@ -61,7 +65,7 @@
 
   var SENDER_FIELDS = ['company', 'owners', 'street', 'city', 'email', 'phone',
                        'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays',
-                       'mailfrom', 'mailbcc'];
+                       'mailfrom', 'mailcc', 'mailbcc'];
   var DRAFT_FIELDS = ['number', 'date', 'service', 'paystatus', 'paiddate',
                       'rname', 'rextra', 'rstreet', 'rcity', 'intro', 'closing', 'greeting',
                       'remail', 'mailsubject', 'mailtext'];
@@ -156,6 +160,7 @@
     if (!pcLoggedIn) return;
     if (app.hidden) unlock();
     else updatePcBar();
+    refreshFromServer();
   }).catch(function () {});
 
   codeForm.addEventListener('submit', function (e) {
@@ -191,6 +196,7 @@
 
   function restore() {
     var sender = load(SENDER_KEY);
+    if (sender && sender.mailfrom === LEGACY_MAILFROM) delete sender.mailfrom;
     if (sender) {
       SENDER_FIELDS.forEach(function (key) {
         if (typeof sender[key] === 'string' && $('f-' + key)) {
@@ -487,12 +493,12 @@
           body: JSON.stringify({
             to: to,
             from: $('f-mailfrom').value.trim(),
+            cc: $('f-mailcc').value.trim(),
             bcc: $('f-mailbcc').value.trim(),
             subject: subject,
             message: message,
             filename: safeFilename(number),
             pdfBase64: pdfBase64,
-            replyTo: $('f-email').value.trim(),
             // Für die Rechnungs-Übersicht in der Mail
             meta: {
               number: number,
@@ -522,8 +528,10 @@
           return data;
         });
       })
-      .then(function () {
-        setSendStatus('Rechnung wurde an ' + to + ' gesendet.', 'ok');
+      .then(function (data) {
+        var sentText = 'Rechnung wurde an ' + to + ' gesendet' +
+          (data && data.sentFolder ? ' und liegt in „Gesendet“' : '') + '.';
+        setSendStatus(sentText, 'ok');
         // Im Projektcenter als versendet vermerken, sofern angemeldet
         if (!pcLoggedIn) return;
         return pcSave({
@@ -531,9 +539,9 @@
           sentAt: new Date().toISOString(),
           sentTo: to
         }).then(function () {
-          setSendStatus('Rechnung wurde an ' + to + ' gesendet und im Projektcenter vermerkt.', 'ok');
+          setSendStatus(sentText.replace(/\.$/, '') + ', im Projektcenter vermerkt.', 'ok');
         }, function () {
-          setSendStatus('Rechnung wurde an ' + to + ' gesendet. Im Projektcenter konnte sie nicht vermerkt werden.', 'ok');
+          setSendStatus(sentText + ' Im Projektcenter konnte sie nicht vermerkt werden.', 'ok');
         });
       })
       .catch(function (err) {
@@ -609,6 +617,32 @@
       setPc('Nummer: ' + err.message, 'err');
       throw err;
     });
+  }
+
+  // Eine verknüpfte Rechnung kommt beim Öffnen frisch aus dem Projektcenter:
+  // Dort liegt der maßgebliche Stand (Änderungen werden laufend gespeichert,
+  // eine überarbeitete Vorlage kann den Entwurf ersetzt haben)
+  function refreshFromServer() {
+    var link = pcLink();
+    if (!link) return;
+    fetch('/projekte-api', { credentials: 'same-origin' }).then(function (res) {
+      return res.ok ? res.json() : null;
+    }).then(function (data) {
+      var inv = data && (data.invoices || []).filter(function (r) {
+        return r.id === link.id || r.number === link.number;
+      })[0];
+      if (!inv) return;
+      DRAFT_FIELDS.forEach(function (key) {
+        if (typeof inv[key] === 'string' && $('f-' + key)) $('f-' + key).value = inv[key];
+      });
+      if (!$('f-date').value) $('f-date').value = todayISO();
+      itemsWrap.innerHTML = '';
+      (inv.items && inv.items.length ? inv.items : [{}]).forEach(addItem);
+      store(LINK_KEY, { id: inv.id, number: inv.number, project: inv.project, angebot: inv.angebot });
+      save();
+      render();
+      updatePcBar();
+    }).catch(function () {});
   }
 
   function pcSave(extra) {

@@ -91,7 +91,10 @@ const SEED_INVOICES = [
     // auf Ansage Eike 30.10.2026. Ersetzt die früheren Fassungen unter
     // BR-2026-002 (vor dem Nummernkreis je Kunde).
     id: 'seed-re-cz-2026-01',
-    rev: 6,
+    rev: 7,
+    // Ersetzt den Entwurf auch, wenn der Editor ihn schon gespeichert hat —
+    // solange er nicht versendet ist
+    force: true,
     replaces: ['seed-br-2026-002', 'seed-br-2026-002-v2'],
     number: 'RE-CZ-2026-01',
     date: '2026-10-30',
@@ -158,7 +161,7 @@ async function loadState(kv) {
       if (alt !== -1) {
         const r = state.invoices[alt];
         const nummerFrei = !state.invoices.some((x, k) => k !== alt && x.number === seed.number);
-        if (r.status === 'entwurf' && r.updatedAt === r.createdAt && nummerFrei) {
+        if (r.status === 'entwurf' && (seed.force || r.updatedAt === r.createdAt) && nummerFrei) {
           state.invoices[alt] = sanitizeInvoice(seed, null);
         }
         return;

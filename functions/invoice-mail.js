@@ -6,9 +6,11 @@
  * Adresse. meta.kind = 'kva' schaltet die Beschriftung auf Kostenvoranschlag,
  * meta.kind = 'angebot' auf Angebot.
  *
- * Der Versand läuft über functions/_mail.js: Cloudflare Email Service mit
- * Resend als Rückfallebene — welche Variablen dafür nötig sind, steht dort
- * im Kopf. Cloudflare nimmt nur Nachrichten bis 5 MiB an; größere Anhänge
+ * Absender mit eigenem Postfach (eike@ und kontakt@brenntelmediadesign.com
+ * bei Migadu) gehen über den Mail-Connector (functions/_connector.js), damit
+ * die Mail auch in „Gesendet“ liegt. Sonst läuft der Versand über
+ * functions/_mail.js: Cloudflare Email Service mit Resend als Rückfallebene —
+ * welche Variablen dafür nötig sind, steht dort im Kopf. Cloudflare nimmt nur Nachrichten bis 5 MiB an; größere Anhänge
  * gehen deshalb automatisch über Resend, sofern eingerichtet.
  *
  * Absender, CC, BCC, Antwortadresse und Empfänger kommen aus dem Formular,
@@ -22,6 +24,7 @@
  */
 
 import { sendMail } from './_mail.js';
+import { connectorAccount, sendViaConnector } from './_connector.js';
 
 const ALLOWED_ORIGINS = [
   'https://brenntel.pages.dev',
@@ -306,17 +309,35 @@ export async function onRequest(context) {
     (textSummary ? '\n\n--\n' + textSummary : '') +
     '\n\nAnhang: ' + filename;
 
-  const result = await sendMail(env, {
-    from,
-    to,
-    cc,
-    bcc,
-    replyTo: replyTo && isValidEmail(replyTo) ? replyTo : undefined,
-    subject,
-    text: plainText,
-    html: htmlBody,
-    attachments: [{ filename, contentBase64: pdfBase64, type: 'application/pdf' }],
-  });
+  const attachments = [{ filename, contentBase64: pdfBase64, type: 'application/pdf' }];
+
+  // Absender mit eigenem Postfach (Migadu) gehen über den Mail-Connector:
+  // dann liegt die Mail danach auch in „Gesendet“. Ohne Connector-Token oder
+  // für andere Absender bleibt es beim Cloudflare Email Service. Kein
+  // Rückfall bei einem Fehler des Connectors — sonst ginge eine Mail, deren
+  // Versand nur unklar ist, womöglich zweimal oder unter anderem Absender raus.
+  const account = connectorAccount(env, extractEmail(from));
+  const result = account
+    ? await sendViaConnector(env, account, {
+        to: [to],
+        cc,
+        bcc: bcc ? [bcc] : [],
+        subject,
+        text: plainText,
+        html: htmlBody,
+        attachments,
+      })
+    : await sendMail(env, {
+        from,
+        to,
+        cc,
+        bcc,
+        replyTo: replyTo && isValidEmail(replyTo) ? replyTo : undefined,
+        subject,
+        text: plainText,
+        html: htmlBody,
+        attachments,
+      });
 
   if (!result.ok) {
     const status = result.provider === 'keiner' ? 500 : 502;
@@ -327,5 +348,9 @@ export async function onRequest(context) {
     );
   }
 
-  return jsonResponse({ ok: true, provider: result.provider, id: result.id, to }, 200, cors);
+  return jsonResponse(
+    { ok: true, provider: result.provider, id: result.id, to, sentFolder: result.sentFolder || null },
+    200,
+    cors
+  );
 }

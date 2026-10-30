@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20261030g">
-  <link rel="stylesheet" href="css/rechnung.css?v=20261030g">
+  <link rel="stylesheet" href="css/shared.css?v=20261030h">
+  <link rel="stylesheet" href="css/rechnung.css?v=20261030h">
 </head>
 <body class="re-body">
 
@@ -139,7 +139,10 @@
               </label>
             </div>
             <label class="re-field"><span>Absender für den E-Mail-Versand</span>
-              <input type="text" id="f-mailfrom" value="brenntel mediadesign &lt;kontakt@brenntelmediadesign.com&gt;">
+              <input type="text" id="f-mailfrom" value="Eike Brenneisen &lt;eike@brenntelmediadesign.com&gt;">
+            </label>
+            <label class="re-field"><span>Kopie an (CC, mehrere mit Komma)</span>
+              <input type="text" id="f-mailcc" value="irena@brenntelmediadesign.com" placeholder="irena@brenntelmediadesign.com">
             </label>
             <label class="re-field"><span>Kopie an mich (BCC, optional)</span>
               <input type="email" id="f-mailbcc" value="eike@brenneisen.info" placeholder="kontakt@brenntelmediadesign.com">
@@ -379,7 +382,7 @@
 
   <!-- lokal eingebunden statt per CDN: kein Fremdzugriff beim Rechnungsversand -->
   <script src="js/vendor/html2pdf.bundle.min.js"></script>
-  <script src="js/shared.js?v=20261030g"></script>
-  <script src="js/rechnung.js?v=20261030g"></script>
+  <script src="js/shared.js?v=20261030h"></script>
+  <script src="js/rechnung.js?v=20261030h"></script>
 </body>
 </html>
