@@ -91,6 +91,7 @@ const SEED_INVOICES = [
     // auf Ansage Eike 30.10.2026. Ersetzt die früheren Fassungen unter
     // BR-2026-002 (vor dem Nummernkreis je Kunde).
     id: 'seed-re-cz-2026-01',
+    rev: 6,
     replaces: ['seed-br-2026-002', 'seed-br-2026-002-v2'],
     number: 'RE-CZ-2026-01',
     date: '2026-10-30',
@@ -143,18 +144,21 @@ async function loadState(kv) {
     } catch (_) {}
   }
 
-  const neu = SEED_INVOICES.filter((seed) => state.seeded.indexOf(seed.id) === -1);
+  // Jede Vorlage wird je Revision einmal angewendet („seeded“ merkt sich
+  // id@rev). Eine neue Revision ersetzt die gespeicherte Fassung nur, solange
+  // diese ein unberührter Entwurf ist; Bearbeitetes oder Versendetes bleibt.
+  const schluessel = (seed) => seed.id + '@' + (seed.rev || 1);
+  const schonAngewendet = (seed) => state.seeded.indexOf(seed.rev ? schluessel(seed) : seed.id) !== -1;
+  const neu = SEED_INVOICES.filter((seed) => !schonAngewendet(seed));
   if (neu.length) {
     neu.forEach((seed) => {
-      state.seeded.push(seed.id);
-      // Eine neuere Fassung ersetzt eine ältere nur, solange diese ein
-      // unberührter Entwurf ist; Bearbeitetes oder Versendetes bleibt stehen
-      // und die neue Fassung kommt dann nicht dazu
-      const alt = state.invoices.findIndex((r) => (seed.replaces || []).indexOf(r.id) !== -1);
+      state.seeded.push(seed.rev ? schluessel(seed) : seed.id);
+      const ids = [seed.id].concat(seed.replaces || []);
+      const alt = state.invoices.findIndex((r) => ids.indexOf(r.id) !== -1);
       if (alt !== -1) {
         const r = state.invoices[alt];
-        if (r.status === 'entwurf' && r.updatedAt === r.createdAt &&
-            !state.invoices.some((x) => x.number === seed.number)) {
+        const nummerFrei = !state.invoices.some((x, k) => k !== alt && x.number === seed.number);
+        if (r.status === 'entwurf' && r.updatedAt === r.createdAt && nummerFrei) {
           state.invoices[alt] = sanitizeInvoice(seed, null);
         }
         return;
