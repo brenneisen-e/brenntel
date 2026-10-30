@@ -103,15 +103,14 @@ const SEED_INVOICES = [
     remail: 'czekalla@malereifachbetrieb.de',
     project: 'Czekalla @ work',
     angebot: 'KVA-CZ-2611',
-    intro: 'Lieber Elmar,\n\nam 28.10. haben wir die App live genommen, das Büro und sieben Mitarbeiter sind freigeschaltet. ' +
-      'Wie besprochen berechnen wir die erste Hälfte, im November folgen Weiterentwicklung\u00a0und\u00a0Test.',
+    intro: 'Lieber Elmar,\n\nschön, dass die App seit dem 28.10. bei euch läuft und Büro und Team schon damit arbeiten! ' +
+      'Wie besprochen schicken wir dir die Rechnung über die erste Hälfte, im November feilen wir gemeinsam\u00a0weiter.',
     closing: 'Vielen Dank für die tolle Zusammenarbeit!',
     greeting: 'Viele Grüße',
     mailsubject: 'Rechnung RE-CZ-2026-01 – Abschlag Czekalla @ work',
-    mailtext: 'Lieber Elmar,\n\nam 28.10. haben wir die App vorgestellt und live genommen, das Büro und die ersten sieben ' +
-      'Mitarbeiter sind freigeschaltet. Wie besprochen findest du anbei die Rechnung über die erste Hälfte des Gesamtpreises ' +
-      'von 11.500,00 €. Darin haben wir aufgeführt, was bis dahin fertig war.\n\n' +
-      'Im November entwickeln wir die App weiter und testen sie mit euch, am Ende übergeben wir sie an dich. ' +
+    mailtext: 'Lieber Elmar,\n\nschön, dass Czekalla @ work seit dem 28.10. bei euch läuft und Büro und Team schon damit arbeiten! ' +
+      'Wie besprochen findest du anbei die Rechnung über die erste Hälfte des Gesamtpreises von 11.500,00 €.\n\n' +
+      'Im November entwickeln wir die App gemeinsam mit euch weiter und testen sie im Alltag, zum Abschluss übergeben wir sie dir. ' +
       'Die zweite Hälfte rechnen wir dann mit der Schlussrechnung ab.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
     items: [{
       title: 'Abschlagszahlung 1 von 2 (50 %) nach dem Livegang am 28.10.2026',
