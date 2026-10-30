@@ -432,7 +432,16 @@
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        // Nicht „avoid-all“: Eine lange Position (z. B. eine Abschlagsrechnung
+        // mit Leistungsstand) darf zwischen ihren Punkten umbrechen, statt als
+        // Ganzes auf die nächste Seite zu springen. Zusammen bleiben einzelne
+        // Punkte, Summe, Zahlung, Gruß und Fußzeile.
+        pagebreak: {
+          mode: ['css', 'legacy'],
+          avoid: ['.re-doc-addr-row', '.re-doc-titlebar', '.re-doc-intro p', '.re-items-head',
+                  '.re-item-title', '.re-item-details li', '.re-item-price', '.re-doc-empty',
+                  '.re-doc-sums', '.re-doc-payment', '.re-doc-closing', '.re-doc-foot']
+        }
       })
       .from(sheet)
       .outputPdf('datauristring')

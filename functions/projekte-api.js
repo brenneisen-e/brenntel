@@ -103,16 +103,20 @@ const SEED_INVOICES = [
     remail: 'czekalla@malereifachbetrieb.de',
     project: 'Czekalla @ work',
     angebot: 'KVA-CZ-2611',
-    intro: 'Lieber Elmar,\n\nwie am 28.10. bei der Vorstellung der App besprochen, berechnen wir dir mit dieser Rechnung ' +
-      'die erste Hälfte des Gesamtpreises aus dem Angebot KVA‑CZ‑2611. Darunter steht, was bis zur Vorstellung fertig war.',
+    intro: 'Lieber Elmar,\n\nam 28.10. haben wir die App vorgestellt und live genommen, das Büro und die ersten sieben ' +
+      'Mitarbeiter sind freigeschaltet. Wie besprochen berechnen wir dir hiermit die erste Hälfte des Gesamtpreises aus ' +
+      'dem Angebot KVA‑CZ‑2611. Im November entwickeln wir die App weiter und testen sie im Betrieb, ' +
+      'zum Abschluss übergeben wir sie dir.',
     closing: 'Vielen Dank für die tolle Zusammenarbeit! Wir freuen uns auf den Testlauf mit euch.',
     greeting: 'Viele Grüße',
     mailsubject: 'Rechnung RE-CZ-2026-01 – Abschlag Czekalla @ work',
-    mailtext: 'Lieber Elmar,\n\nwie am 28.10. besprochen, findest du anbei die Rechnung über die erste Hälfte des Gesamtpreises ' +
-      'von 11.500,00 €. Darin haben wir aufgeführt, was bis zur Vorstellung der App fertig war.\n\n' +
-      'Die zweite Hälfte stellen wir bei Projektende in Rechnung.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
+    mailtext: 'Lieber Elmar,\n\nam 28.10. haben wir die App vorgestellt und live genommen, das Büro und die ersten sieben ' +
+      'Mitarbeiter sind freigeschaltet. Wie besprochen findest du anbei die Rechnung über die erste Hälfte des Gesamtpreises ' +
+      'von 11.500,00 €. Darin haben wir aufgeführt, was bis dahin fertig war.\n\n' +
+      'Im November entwickeln wir die App weiter und testen sie mit euch, am Ende übergeben wir sie an dich. ' +
+      'Die zweite Hälfte rechnen wir dann mit der Schlussrechnung ab.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
     items: [{
-      title: 'Abschlagszahlung 1 von 2 (50 %) nach der App‑Vorstellung am 28.10.2026',
+      title: 'Abschlagszahlung 1 von 2 (50 %) nach dem Livegang am 28.10.2026',
       // Was bis zur Vorstellung fertig war (Stand im Repo czekallaAtWork)
       details: 'Architektur: Infrastruktur bei Cloudflare, Backend mit Datenbank, Web‑App für iPhone, Android und Büro‑PC, automatische Tests und Deployment unter czekallaatwork.app\n' +
                'Android‑App mit automatischem Ausstempeln beim Verlassen der Baustelle\n' +
@@ -123,10 +127,10 @@ const SEED_INVOICES = [
                'Modul D Wochen- und Einsatzplanung: Wochenplan für Baustellen und Mitarbeiter, Ansicht für den Fernseher im Teamraum\n' +
                'Modul E Urlaub und Krankmeldungen: Anträge und Genehmigung, Urlaubskonten, Stundenkonto und Anwesenheit\n' +
                'Dazu: Mitarbeiterverwaltung mit Einrichtung der Handys per QR‑Code, Aufgaben, Nachrichten und Mitteilungen aufs Handy, Datenschutz‑Paket mit Löschkonzept\n' +
-               'Einführung: Handout und Vorführung „Ein Tag mit der App“ am 28.10.2026\n' +
+               'Einführung am 28.10.2026: Vorstellung mit Handout „Ein Tag mit der App“, Livegang mit Freischaltung des Büros und der ersten sieben Mitarbeiter\n' +
                'Gesamtpreis laut Angebot KVA‑CZ‑2611: 11.500,00 €\n' +
                'Mit dieser Rechnung (Abschlag 1 von 2): 5.750,00 €\n' +
-               'Noch abzurechnen mit der Schlussrechnung bei Projektende: 5.750,00 €',
+               'Noch abzurechnen mit der Schlussrechnung nach der Übergabe: 5.750,00 €',
       qty: '1',
       unit: 'Pauschal',
       price: '5750',
