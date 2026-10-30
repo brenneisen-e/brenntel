@@ -24,7 +24,8 @@
  */
 
 import { sendMail } from './_mail.js';
-import { connectorAccount, sendViaConnector } from './_connector.js';
+import { connectorAccount, sendViaConnector, defaultSignature } from './_connector.js';
+import { sessionEmail } from './_auth.js';
 
 const ALLOWED_ORIGINS = [
   'https://brenntel.pages.dev',
@@ -228,6 +229,40 @@ function renderEmail(message, meta, filename, withSignature) {
 </body></html>`;
 }
 
+/* ----------------------------------------
+   Vorschau im Rechnungseditor
+   Die Signatur holt sie nur für Angemeldete (Admin Center), weil dafür das
+   Postfach gefragt wird. Bilder der Signatur kommen als cid:-Verweise ohne
+   Bytes — an ihrer Stelle steht ein Platzhalter, die echte Mail hat sie.
+   ---------------------------------------- */
+const BILD_PLATZHALTER =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='28'>" +
+  "<rect width='120' height='28' rx='4' fill='%23f1ebe0'/><text x='60' y='18' font-family='Arial' font-size='10' " +
+  "text-anchor='middle' fill='%238a8074'>Bild</text></svg>";
+
+async function preview(env, request, mail) {
+  const meta = (mail.payload.meta && typeof mail.payload.meta === 'object') ? mail.payload.meta : {};
+  const L = labelsFor(meta);
+  const textBody = mail.message || L.fallback;
+  const account = connectorAccount(env, extractEmail(mail.from));
+  let signature = null;
+  if (account && (await sessionEmail(request, env))) {
+    signature = await defaultSignature(env, account);
+  }
+  let html = renderEmail(textBody, meta, mail.filename, !!signature);
+  if (signature) {
+    const sigHtml = signature.html.replace(/(<img\b[^>]*?\bsrc\s*=\s*)(["'])cid:[^"']*\2/gi, `$1"${BILD_PLATZHALTER}"`);
+    html = html.replace('<!--signature-->', `<div style="margin-top:18px">${sigHtml}</div>`);
+  }
+  return {
+    ok: true,
+    html,
+    signature: signature ? signature.name : null,
+    via: account ? 'connector' : 'cloudflare',
+    savedToSent: !!account,
+  };
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
   const origin = request.headers.get('Origin') || '';
@@ -259,6 +294,13 @@ export async function onRequest(context) {
   const filename = (payload.filename || 'Rechnung.pdf').toString().trim();
   const pdfBase64 = (payload.pdfBase64 || '').toString();
   const replyTo = (payload.replyTo || '').toString().trim();
+
+  // Vorschau: dieselbe Mail wie beim Versand, ohne PDF und ohne Versand —
+  // deshalb vor den Prüfungen, die nur fürs Senden gelten
+  if (payload.preview === true) {
+    if (message.length > 5000) return jsonResponse({ error: 'Nachricht zu lang' }, 400, cors);
+    return jsonResponse(await preview(env, request, { from, message, filename, payload }), 200, cors);
+  }
 
   if (!isValidEmail(to)) {
     return jsonResponse({ error: 'Ungültige Empfängeradresse' }, 400, cors);

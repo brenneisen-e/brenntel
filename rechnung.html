@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20261030l">
-  <link rel="stylesheet" href="css/rechnung.css?v=20261030l">
+  <link rel="stylesheet" href="css/shared.css?v=20261030m">
+  <link rel="stylesheet" href="css/rechnung.css?v=20261030m">
 </head>
 <body class="re-body">
 
@@ -256,6 +256,10 @@
               </span>
               <textarea id="f-mailtext" rows="5"></textarea>
             </div>
+            <button type="button" class="re-btn re-btn-ghost re-preview-btn" id="re-preview-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              Mail-Vorschau
+            </button>
             <button type="button" class="re-btn re-btn-primary re-send-btn" id="re-send-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
               <span class="re-send-label">Rechnung als PDF senden</span>
@@ -378,6 +382,20 @@
     </div>
   </main>
 
+  <!-- ======== Mail-Vorschau ======== -->
+  <dialog class="re-mail-dialog" id="re-mail-dialog" aria-labelledby="re-mail-dialog-title">
+    <div class="re-mail-dialog-head">
+      <h2 id="re-mail-dialog-title">So kommt die Mail an</h2>
+      <button type="button" class="re-mail-dialog-close" id="re-mail-dialog-close" aria-label="Vorschau schließen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <dl class="re-mail-dialog-meta" id="re-mail-dialog-meta"></dl>
+    <p class="re-mail-dialog-note" id="re-mail-dialog-note"></p>
+    <!-- sandbox ohne Rechte: kein Skript, kein Zugriff auf diese Seite -->
+    <iframe class="re-mail-dialog-frame" id="re-mail-dialog-frame" sandbox title="Vorschau der Mail"></iframe>
+  </dialog>
+
   <!-- ======== Footer ======== -->
   <footer class="site-footer re-site-footer" role="contentinfo">
     <div class="footer-inner">
@@ -392,7 +410,7 @@
   <!-- lokal eingebunden statt per CDN: kein Fremdzugriff beim Rechnungsversand -->
   <script src="js/vendor/html2pdf.bundle.min.js"></script>
   <script src="js/vendor/qrcode-generator-1.4.4.js"></script>
-  <script src="js/shared.js?v=20261030l"></script>
-  <script src="js/rechnung.js?v=20261030l"></script>
+  <script src="js/shared.js?v=20261030m"></script>
+  <script src="js/rechnung.js?v=20261030m"></script>
 </body>
 </html>

@@ -382,6 +382,13 @@
       $('f-mailtext').focus();
     });
 
+    $('re-preview-btn').addEventListener('click', showMailPreview);
+    $('re-mail-dialog-close').addEventListener('click', function () { $('re-mail-dialog').close(); });
+    $('re-mail-dialog').addEventListener('click', function (e) {
+      // Klick auf den abgedunkelten Rand schließt
+      if (e.target === $('re-mail-dialog')) $('re-mail-dialog').close();
+    });
+
     $('re-send-btn').addEventListener('click', function () {
       // Ohne Nummer erst eine für den Kunden holen, dann versenden
       if ($('f-number').value.trim() || !pcLoggedIn) return sendMail();
@@ -461,12 +468,94 @@
       });
   }
 
+  // Betreff und Anlage genau wie beim Versand
+  function mailSubject(number) {
+    return $('f-mailsubject').value.trim() ||
+           ('Rechnung ' + (number || '') + ' — brenntel mediadesign').replace(/\s+/g, ' ').trim();
+  }
+
+  function mailMeta(number) {
+    return {
+      number: number,
+      total: $('p-total').textContent,
+      paid: $('f-paystatus').value === 'paid',
+      paidDate: formatDateDE($('f-paiddate').value),
+      dueDate: formatDateDE(addDays($('f-date').value || todayISO(),
+                                    parseInt($('f-paydays').value, 10) || 0)),
+      company: $('f-company').value.trim(),
+      owners: $('f-owners').value.trim(),
+      street: $('f-street').value.trim(),
+      city: $('f-city').value.trim(),
+      email: $('f-email').value.trim(),
+      phone: $('f-phone').value.trim(),
+      taxid: $('f-taxid').value.trim()
+    };
+  }
+
+  /* ----------------------------------------
+     Mail-Vorschau: der Server baut dieselbe Mail wie beim Versand
+     (mit Signatur, wenn im Admin Center angemeldet), verschickt nichts
+     ---------------------------------------- */
+  function showMailPreview() {
+    var number = $('f-number').value.trim();
+    var dialog = $('re-mail-dialog');
+    var meta = $('re-mail-dialog-meta');
+    var note = $('re-mail-dialog-note');
+    var frame = $('re-mail-dialog-frame');
+
+    meta.textContent = '';
+    [['Von', $('f-mailfrom').value.trim()],
+     ['An', $('f-remail').value.trim() || 'noch keine Adresse'],
+     ['CC', $('f-mailcc').value.trim()],
+     ['Betreff', mailSubject(number)],
+     ['Anhang', safeFilename(number)]].forEach(function (pair) {
+      if (!pair[1]) return;
+      var dt = document.createElement('dt'); dt.textContent = pair[0];
+      var dd = document.createElement('dd'); dd.textContent = pair[1];
+      meta.appendChild(dt); meta.appendChild(dd);
+    });
+    note.textContent = 'Vorschau wird erstellt …';
+    frame.srcdoc = '';
+    if (!dialog.open) dialog.showModal();
+
+    fetch('/invoice-mail', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        preview: true,
+        from: $('f-mailfrom').value.trim(),
+        message: $('f-mailtext').value,
+        filename: safeFilename(number),
+        meta: mailMeta(number)
+      })
+    }).then(function (res) {
+      return res.json().then(function (data) {
+        if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      frame.srcdoc = data.html;
+      var hinweise = [];
+      if (data.signature) {
+        hinweise.push('Mit deiner Signatur „' + data.signature + '“. Bilder darin erscheinen hier als Platzhalter, in der Mail sind sie echt.');
+      } else if (data.via === 'connector' && !pcLoggedIn) {
+        hinweise.push('Ohne Signatur: Für die Vorschau mit Signatur im Admin Center anmelden.');
+      } else if (data.via === 'connector') {
+        hinweise.push('Das Postfach hat keine Standard-Signatur, die Mail geht mit der Fußzeile raus.');
+      }
+      hinweise.push(data.savedToSent ? 'Nach dem Versand liegt sie in „Gesendet“.' : 'Diese Mail wird nicht in „Gesendet“ abgelegt.');
+      note.textContent = hinweise.join(' ');
+    }).catch(function (err) {
+      note.textContent = 'Vorschau fehlgeschlagen: ' + (err && err.message ? err.message : err);
+    });
+  }
+
   function sendMail() {
     var btn = $('re-send-btn');
     var to = $('f-remail').value.trim();
     var number = $('f-number').value.trim();
-    var subject = $('f-mailsubject').value.trim() ||
-                  ('Rechnung ' + (number || '') + ' — brenntel mediadesign').replace(/\s+/g, ' ').trim();
+    var subject = mailSubject(number);
     var message = $('f-mailtext').value;
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
@@ -502,21 +591,7 @@
             filename: safeFilename(number),
             pdfBase64: pdfBase64,
             // Für die Rechnungs-Übersicht in der Mail
-            meta: {
-              number: number,
-              total: $('p-total').textContent,
-              paid: $('f-paystatus').value === 'paid',
-              paidDate: formatDateDE($('f-paiddate').value),
-              dueDate: formatDateDE(addDays($('f-date').value || todayISO(),
-                                            parseInt($('f-paydays').value, 10) || 0)),
-              company: $('f-company').value.trim(),
-              owners: $('f-owners').value.trim(),
-              street: $('f-street').value.trim(),
-              city: $('f-city').value.trim(),
-              email: $('f-email').value.trim(),
-              phone: $('f-phone').value.trim(),
-              taxid: $('f-taxid').value.trim()
-            }
+            meta: mailMeta(number)
           })
         });
       })

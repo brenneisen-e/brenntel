@@ -58,6 +58,52 @@ function parseRpc(raw) {
 }
 
 /**
+ * Ruft ein Werkzeug des Connectors auf.
+ * → { ok: true, text } oder { ok: false, error }
+ */
+async function callTool(env, name, args) {
+  let res;
+  try {
+    res = await fetch(env.MAIL_CONNECTOR_URL || DEFAULT_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.MAIL_CONNECTOR_TOKEN}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
+    });
+  } catch (err) {
+    return { ok: false, error: 'Connector nicht erreichbar: ' + err.message };
+  }
+  const raw = await res.text();
+  if (!res.ok) return { ok: false, error: `Connector antwortet ${res.status}: ${raw.slice(0, 200)}` };
+  const rpc = parseRpc(raw);
+  if (!rpc) return { ok: false, error: 'Antwort des Connectors unlesbar' };
+  if (rpc.error) return { ok: false, error: String(rpc.error.message || 'Fehler').slice(0, 300) };
+  const result = rpc.result || {};
+  const text = (result.content || []).map((block) => block.text || '').join('\n');
+  if (result.isError) return { ok: false, error: text.slice(0, 500) };
+  return { ok: true, text };
+}
+
+/**
+ * Standard-Signatur eines Postfachs für die Vorschau: { name, html } oder null.
+ * Bilder stehen darin als cid:-Verweise, ihre Bytes liefert der Connector nicht.
+ */
+export async function defaultSignature(env, account) {
+  const r = await callTool(env, 'list_signatures', { withHtml: true, account });
+  if (!r.ok) return null;
+  try {
+    const list = JSON.parse(r.text).signatures || [];
+    const sig = list.find((s) => Array.isArray(s.defaultFor) && s.defaultFor.indexOf(account) !== -1);
+    return sig && sig.html ? { name: sig.name, html: sig.html } : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
  * Schickt eine Mail über das Postfach `account`.
  * mail = { to: [..], cc: [..], bcc: [..], subject, text, html,
  *          attachments: [{ filename, contentBase64, type }] }
@@ -82,37 +128,9 @@ export async function sendViaConnector(env, account, mail) {
     }));
   }
 
-  let res;
-  try {
-    res = await fetch(env.MAIL_CONNECTOR_URL || DEFAULT_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${env.MAIL_CONNECTOR_TOKEN}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json, text/event-stream',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'tools/call',
-        params: { name: 'send_mail', arguments: args },
-      }),
-    });
-  } catch (err) {
-    return { ok: false, provider: 'connector', error: 'Connector nicht erreichbar: ' + err.message };
-  }
-
-  const raw = await res.text();
-  if (!res.ok) {
-    return { ok: false, provider: 'connector', error: `Connector antwortet ${res.status}: ${raw.slice(0, 200)}` };
-  }
-  const rpc = parseRpc(raw);
-  if (!rpc) return { ok: false, provider: 'connector', error: 'Antwort des Connectors unlesbar' };
-  if (rpc.error) return { ok: false, provider: 'connector', error: String(rpc.error.message || 'Fehler').slice(0, 300) };
-
-  const result = rpc.result || {};
-  const text = (result.content || []).map((block) => block.text || '').join('\n');
-  if (result.isError) return { ok: false, provider: 'connector', error: text.slice(0, 500) };
+  const r = await callTool(env, 'send_mail', args);
+  if (!r.ok) return { ok: false, provider: 'connector', error: r.error };
+  const text = r.text;
 
   let daten = {};
   try { daten = JSON.parse(text); } catch (_) { /* Text statt JSON: trotzdem gesendet */ }

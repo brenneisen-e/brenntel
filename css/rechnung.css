@@ -1023,7 +1023,85 @@
 /* ========================================
    E-Mail-Versand
    ======================================== */
-.re-send-btn { align-self: flex-start; }
+.re-send-btn,
+.re-preview-btn { align-self: flex-start; }
+
+/* ---------- Mail-Vorschau ---------- */
+.re-mail-dialog {
+  /* margin: auto zentriert; das globale Zurücksetzen der Abstände nimmt es sonst weg */
+  margin: auto;
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+.re-mail-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.re-mail-dialog::backdrop { background: var(--color-overlay); }
+
+.re-mail-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0.5rem;
+}
+
+.re-mail-dialog-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.re-mail-dialog-close {
+  display: inline-flex;
+  padding: 0.4rem;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+}
+
+.re-mail-dialog-close:hover { color: var(--color-text); }
+.re-mail-dialog-close svg { width: 20px; height: 20px; }
+
+.re-mail-dialog-meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.2rem 0.9rem;
+  margin: 0;
+  padding: 0 1.25rem 0.6rem;
+  font-size: 0.83rem;
+}
+
+.re-mail-dialog-meta dt { color: var(--color-text-light); }
+.re-mail-dialog-meta dd { margin: 0; overflow-wrap: anywhere; }
+
+.re-mail-dialog-note {
+  margin: 0;
+  padding: 0 1.25rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+}
+
+.re-mail-dialog-note:empty { display: none; }
+
+.re-mail-dialog-frame {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 60vh;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  background: #f5ecdb;
+}
 
 .re-send-btn[disabled] {
   opacity: 0.6;
