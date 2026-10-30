@@ -80,12 +80,14 @@ const SEED_INVOICES = [
     status: 'versendet',
   },
   {
-    // Abschlag nach MVP 1: 50 % des Gesamtpreises aus Angebot KVA-CZ-2611
-    // (Architektur, Module A bis E), auf Ansage Eike 30.10.2026
-    id: 'seed-br-2026-002',
+    // Abschlag nach der App-Vorstellung am 28.10.2026: 50 % des
+    // Gesamtpreises aus Angebot KVA-CZ-2611 (Architektur, Module A bis E),
+    // auf Ansage Eike 30.10.2026. Ersetzt die erste Fassung „nach MVP 1“.
+    id: 'seed-br-2026-002-v2',
+    replaces: 'seed-br-2026-002',
     number: 'BR-2026-002',
     date: '2026-10-30',
-    service: 'Oktober 2026 (MVP 1)',
+    service: '09.10. bis 28.10.2026',
     paystatus: 'open',
     rname: 'Czekalla Malereifachbetrieb',
     rextra: 'z. Hd. Elmar Czekalla',
@@ -97,12 +99,12 @@ const SEED_INVOICES = [
     closing: 'Vielen Dank für die gute Zusammenarbeit!',
     greeting: 'Viele Grüße',
     mailsubject: 'Rechnung BR-2026-002 – Abschlag Czekalla @ work',
-    mailtext: 'Lieber Elmar,\n\nMVP 1 von Czekalla @ work steht, die App ist seit dieser Woche bei euch im Einsatz. ' +
-      'Anbei findest du die Rechnung über die erste Hälfte des Gesamtpreises von 11.500,00 €.\n\n' +
+    mailtext: 'Lieber Elmar,\n\nnach der Vorstellung der App am 28.10. findest du anbei die Rechnung über die erste Hälfte ' +
+      'des Gesamtpreises von 11.500,00 €.\n\n' +
       'Die zweite Hälfte stellen wir bei Projektende in Rechnung.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
     items: [{
-      title: 'Abschlagszahlung 1 von 2 (50 %) nach MVP 1: App „Czekalla @ work“',
-      details: 'Grundlage: Angebot KVA-CZ-2611 vom 13.10.2026, Gesamtpreis 11.500,00 €\n' +
+      title: 'Abschlagszahlung 1 von 2 (50 %) nach der App-Vorstellung am 28.10.2026',
+      details: 'App „Czekalla @ work“, Angebot KVA-CZ-2611, Gesamtpreis 11.500,00 €\n' +
                'Architektur: Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live\n' +
                'Module A bis C: Zeiterfassung, Baustellen-Controlling und Baustellenakte\n' +
                'Module D und E: Wochen- und Einsatzplanung, Urlaub und Krankmeldungen\n' +
@@ -135,8 +137,17 @@ async function loadState(kv) {
   if (neu.length) {
     neu.forEach((seed) => {
       state.seeded.push(seed.id);
-      if (!state.invoices.some((r) => r.number === seed.number)) {
+      const i = state.invoices.findIndex((r) => r.number === seed.number);
+      if (i === -1) {
         state.invoices.push(sanitizeInvoice(seed, null));
+        return;
+      }
+      // Eine neuere Fassung ersetzt die ältere nur, solange diese ein
+      // unberührter Entwurf ist; Bearbeitetes oder Versendetes bleibt
+      const alt = state.invoices[i];
+      if (seed.replaces && alt.id === seed.replaces && alt.status === 'entwurf' &&
+          alt.updatedAt === alt.createdAt) {
+        state.invoices[i] = sanitizeInvoice(seed, null);
       }
     });
     await saveState(kv, state);
@@ -367,11 +378,13 @@ export async function onRequest(context) {
 
   if (body.action === 'save') {
     const eingang = body.invoice || {};
-    // Ohne ID zählt die Rechnungsnummer: Wer im Editor eine schon bekannte
-    // Rechnung speichert oder versendet, aktualisiert sie statt sie zu doppeln
+    // Ohne passende ID zählt die Rechnungsnummer: Wer im Editor eine schon
+    // bekannte Rechnung speichert oder versendet, aktualisiert sie statt sie
+    // zu doppeln (auch wenn eine neuere Fassung die ID ersetzt hat)
     let index = eingang.id ? state.invoices.findIndex((r) => r.id === eingang.id) : -1;
-    if (index === -1 && !eingang.id && eingang.number) {
+    if (index === -1 && eingang.number) {
       index = state.invoices.findIndex((r) => r.number === String(eingang.number).trim());
+      if (index !== -1) eingang.id = state.invoices[index].id;
     }
     const vorher = index === -1 ? null : state.invoices[index];
     const invoice = sanitizeInvoice(eingang, vorher);
