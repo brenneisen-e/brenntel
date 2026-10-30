@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20260827c">
-  <link rel="stylesheet" href="css/rechnung.css?v=20260827c">
+  <link rel="stylesheet" href="css/shared.css?v=20261030a">
+  <link rel="stylesheet" href="css/rechnung.css?v=20261030a">
 </head>
 <body class="re-body">
 
@@ -19,7 +19,7 @@
     <div class="header-inner">
       <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
       <nav class="nav-desktop" aria-label="Navigation">
-        <a href="index.html">Startseite</a>
+        <a href="admin.html">Admin Center</a>
         <a href="kva.html">KVA</a>
       </nav>
       <div class="header-mobile-actions">
@@ -30,8 +30,8 @@
     </div>
     <nav class="nav-mobile" aria-label="Mobile Navigation">
       <div class="nav-mobile-inner">
-        <a href="index.html">
-          <span>Startseite</span>
+        <a href="admin.html">
+          <span>Admin Center</span>
           <svg class="nav-mobile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </a>
         <a href="kva.html">
@@ -72,7 +72,12 @@
     <div class="re-toolbar">
       <div class="re-toolbar-title">
         <h1>Rechnung erstellen</h1>
-        <p>Alle Daten bleiben lokal in deinem Browser — nichts wird an einen Server geschickt.</p>
+        <p>Die Daten bleiben in deinem Browser, bis du sie im Projektcenter speicherst oder versendest.</p>
+        <p class="re-pc" id="re-pc" aria-live="polite" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span id="re-pc-text"></span>
+          <button type="button" class="re-pc-save" id="re-pc-save" hidden>Im Projektcenter speichern</button>
+        </p>
       </div>
       <div class="re-toolbar-actions">
         <button type="button" class="re-btn re-btn-ghost" id="re-new-btn" title="Formular leeren und nächste Rechnungsnummer vergeben">
@@ -365,7 +370,7 @@
 
   <!-- lokal eingebunden statt per CDN: kein Fremdzugriff beim Rechnungsversand -->
   <script src="js/vendor/html2pdf.bundle.min.js"></script>
-  <script src="js/shared.js?v=20260827c"></script>
-  <script src="js/rechnung.js?v=20260827c"></script>
+  <script src="js/shared.js?v=20261030a"></script>
+  <script src="js/rechnung.js?v=20261030a"></script>
 </body>
 </html>

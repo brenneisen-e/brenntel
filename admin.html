@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Center — brenntel. mediadesign</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=20261030a">
+  <link rel="stylesheet" href="css/admin.css?v=20261030a">
+</head>
+<body class="ad-body">
+
+  <!-- ======== Header ======== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="brenntel mediadesign GbR — Startseite">brenntel<span>.</span></a>
+      <nav class="nav-desktop" aria-label="Navigation">
+        <a href="rechnung.html">Rechnung</a>
+        <a href="kva.html">KVA</a>
+        <a href="mailgen.html">Mail-Generator</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======== Zugang ========
+       Clientseitiger Sichtschutz wie bei Rechnung und Mail-Generator. Die
+       Projektdaten selbst hängen am Token der /projekte-api. -->
+  <section class="ad-entry" id="ad-entry">
+    <div class="ad-entry-content">
+      <div class="ad-entry-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+      </div>
+      <h1 class="ad-entry-title">Admin Center</h1>
+      <p class="ad-entry-sub">Internes Werkzeug — bitte Zugangscode eingeben.</p>
+      <form class="ad-code-form" id="ad-code-form" autocomplete="off">
+        <input type="password" id="ad-code-input" class="ad-input ad-code-input" placeholder="Zugangscode"
+               maxlength="20" spellcheck="false" autocomplete="off" aria-label="Zugangscode">
+        <button type="submit" class="ad-btn ad-btn-primary">Öffnen</button>
+      </form>
+      <p class="ad-error" id="ad-error" aria-live="polite">Ungültiger Code.</p>
+    </div>
+  </section>
+
+  <!-- ======== App ======== -->
+  <main class="ad-app" id="ad-app" hidden>
+
+    <div class="ad-head">
+      <h1>Admin Center</h1>
+      <p>Werkzeuge, Angebote und Rechnungen von brenntel an einem Ort.</p>
+    </div>
+
+    <!-- ======== Werkzeuge ======== -->
+    <nav class="ad-tools" aria-label="Werkzeuge">
+      <a class="ad-tool" href="#projektcenter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span><strong>Projektcenter</strong><small>Angebote, Rechnungen, Entwürfe mit Claude</small></span>
+      </a>
+      <a class="ad-tool" href="rechnung.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+        <span><strong>Rechnungseditor</strong><small>Rechnung prüfen, als PDF speichern, versenden</small></span>
+      </a>
+      <a class="ad-tool" href="kva.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
+        <span><strong>Angebote</strong><small>Kostenvoranschläge und Angebote per Code</small></span>
+      </a>
+      <a class="ad-tool" href="mailgen.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 7l-10 7L2 7"/></svg>
+        <span><strong>Mail-Generator</strong><small>Mails und Signaturen im brenntel-Layout</small></span>
+      </a>
+    </nav>
+
+    <!-- ======== Projektcenter ======== -->
+    <section class="ad-section" id="projektcenter" aria-labelledby="pc-title">
+      <div class="ad-section-head">
+        <div>
+          <h2 id="pc-title">Projektcenter</h2>
+          <p class="ad-sync" id="pc-sync" aria-live="polite">Verbinde …</p>
+        </div>
+        <button type="button" class="ad-btn ad-btn-ghost" id="pc-reload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg>
+          Aktualisieren
+        </button>
+      </div>
+
+      <!-- Token für /projekte-api -->
+      <form class="ad-card ad-token" id="pc-token-form" hidden autocomplete="off">
+        <h3>Zugangstoken</h3>
+        <p>Der Speicher für Rechnungen ist mit einem Token geschützt. Im Cloudflare-Dashboard heißt er <code>ADMIN_TOKEN</code>, solange der fehlt, gilt der Token des Mail-Generators (<code>MAILGEN_TOKEN</code>). Er bleibt nur in diesem Browser.</p>
+        <div class="ad-inline">
+          <input type="password" id="pc-token" class="ad-input" placeholder="Token" spellcheck="false" autocomplete="off" aria-label="Zugangstoken">
+          <button type="submit" class="ad-btn ad-btn-primary">Verbinden</button>
+        </div>
+      </form>
+
+      <!-- Kennzahlen -->
+      <div class="ad-kpis" id="pc-kpis">
+        <div class="ad-kpi"><span>Offene Rechnungen</span><strong id="kpi-open">—</strong><small id="kpi-open-sub"></small></div>
+        <div class="ad-kpi"><span>Bezahlt <span id="kpi-year"></span></span><strong id="kpi-paid">—</strong><small id="kpi-paid-sub"></small></div>
+        <div class="ad-kpi"><span>Angebote offen</span><strong id="kpi-offers">—</strong><small id="kpi-offers-sub"></small></div>
+      </div>
+
+      <!-- Neue Rechnung mit Claude -->
+      <div class="ad-card ad-claude" id="pc-claude">
+        <div class="ad-card-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>
+          <h3>Neue Rechnung mit Claude</h3>
+        </div>
+        <p class="ad-muted">Beschreib in eigenen Worten, was berechnet werden soll. Claude schreibt Empfänger, Positionen und Mailtext, du prüfst im Rechnungseditor und versendest von dort.</p>
+
+        <label class="ad-field"><span>Bezug auf ein Angebot (optional)</span>
+          <select id="pc-angebot" class="ad-input">
+            <option value="">Kein Angebot</option>
+          </select>
+        </label>
+        <label class="ad-field"><span id="pc-prompt-label">Was soll berechnet werden?</span>
+          <textarea id="pc-prompt" class="ad-input" rows="4" placeholder="z. B. 50 % Abschlag auf das Angebot KVA-CZ-2611, Leistungszeitraum Oktober 2026, Mail an elmar@czekalla.de"></textarea>
+        </label>
+        <div class="ad-actions">
+          <button type="button" class="ad-btn ad-btn-primary" id="pc-draft-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>
+            <span id="pc-draft-label">Entwurf erstellen</span>
+          </button>
+          <button type="button" class="ad-btn ad-btn-ghost" id="pc-draft-reset" hidden>Neu beginnen</button>
+        </div>
+        <p class="ad-status" id="pc-draft-status" aria-live="polite"></p>
+
+        <!-- Ergebnis -->
+        <div class="ad-draft" id="pc-draft" hidden>
+          <p class="ad-hint" id="pc-draft-hint" hidden></p>
+          <div class="ad-draft-grid">
+            <div>
+              <span class="ad-label">Rechnung</span>
+              <p class="ad-draft-number" id="pc-d-number"></p>
+              <p class="ad-muted" id="pc-d-meta"></p>
+            </div>
+            <div>
+              <span class="ad-label">Empfänger</span>
+              <p id="pc-d-recipient"></p>
+            </div>
+          </div>
+          <ol class="ad-draft-items" id="pc-d-items"></ol>
+          <div class="ad-draft-total"><span>Gesamtbetrag</span><strong id="pc-d-total"></strong></div>
+          <details class="ad-draft-mail">
+            <summary>Mail an <span id="pc-d-to"></span></summary>
+            <p class="ad-draft-subject" id="pc-d-subject"></p>
+            <p class="ad-draft-text" id="pc-d-text"></p>
+          </details>
+          <div class="ad-actions">
+            <button type="button" class="ad-btn ad-btn-primary" id="pc-open-editor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+              Prüfen und versenden
+            </button>
+            <button type="button" class="ad-btn ad-btn-ghost" id="pc-save-draft">Als Entwurf speichern</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projekte -->
+      <h3 class="ad-subtitle">Projekte</h3>
+      <div class="ad-projects" id="pc-projects"></div>
+
+      <!-- Rechnungen -->
+      <div class="ad-subhead">
+        <h3 class="ad-subtitle">Rechnungen</h3>
+        <a class="ad-link" href="rechnung.html" id="pc-new-manual">Rechnung von Hand anlegen</a>
+      </div>
+      <div class="ad-list" id="pc-invoices"></div>
+
+      <!-- Angebote -->
+      <h3 class="ad-subtitle">Angebote</h3>
+      <div class="ad-list" id="pc-offers"></div>
+    </section>
+  </main>
+
+  <!-- ======== Footer ======== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> brenntel mediadesign GbR</p>
+      <div class="footer-links">
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/shared.js?v=20261030a"></script>
+  <script src="js/admin.js?v=20261030a"></script>
+</body>
+</html>

@@ -21,3 +21,8 @@
 /Mailgen        /mailgen   301
 /MailGen        /mailgen   301
 /mailgen.html   /mailgen   301
+
+# Case-insensitive redirects for /admin
+/Admin        /admin   301
+/ADMIN        /admin   301
+/admin.html   /admin   301

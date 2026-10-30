@@ -13,6 +13,9 @@
   var UNLOCK_KEY = 'brenntel-re-unlocked';
   var DRAFT_KEY = 'brenntel-re-draft';
   var SENDER_KEY = 'brenntel-re-sender';
+  // Projektcenter im Admin Center (/admin): Verknüpfung und Token
+  var LINK_KEY = 'brenntel-re-link';
+  var TOKEN_KEYS = ['brenntel-admin-token', 'brenntel-mg-token'];
 
   /* ----------------------------------------
      Startentwurf — die aktuell offene Rechnung.
@@ -172,6 +175,7 @@
      App
      ---------------------------------------- */
   var itemsWrap, initialised = false;
+  var currentTotal = 0;
 
   function init() {
     if (initialised) return;
@@ -183,6 +187,7 @@
     bindInputs();
     bindButtons();
     render();
+    updatePcBar();
   }
 
   function restore() {
@@ -323,6 +328,7 @@
   function onChange() {
     save();
     render();
+    scheduleSync();
   }
 
   function bindInputs() {
@@ -352,6 +358,9 @@
         $('f-' + key).value = '';
       });
       $('f-mailtext').value = GENERIC_MAILTEXT;
+      // Neue Rechnung gehört (noch) zu keinem Eintrag im Projektcenter
+      store(LINK_KEY, null);
+      updatePcBar();
       itemsWrap.innerHTML = '';
       addItem();
       setSendStatus('', '');
@@ -366,6 +375,10 @@
     });
 
     $('re-send-btn').addEventListener('click', sendMail);
+
+    $('re-pc-save').addEventListener('click', function () {
+      pcSave({}).catch(function () {});
+    });
 
     $('re-print-btn').addEventListener('click', function () {
       var original = document.title;
@@ -492,6 +505,17 @@
       })
       .then(function () {
         setSendStatus('Rechnung wurde an ' + to + ' gesendet.', 'ok');
+        // Im Projektcenter als versendet vermerken, sofern verbunden
+        if (!pcToken()) return;
+        return pcSave({
+          status: $('f-paystatus').value === 'paid' ? 'bezahlt' : 'versendet',
+          sentAt: new Date().toISOString(),
+          sentTo: to
+        }).then(function () {
+          setSendStatus('Rechnung wurde an ' + to + ' gesendet und im Projektcenter vermerkt.', 'ok');
+        }, function () {
+          setSendStatus('Rechnung wurde an ' + to + ' gesendet. Im Projektcenter konnte sie nicht vermerkt werden.', 'ok');
+        });
       })
       .catch(function (err) {
         setSendStatus('Versand fehlgeschlagen: ' + (err && err.message ? err.message : err), 'err');
@@ -499,6 +523,97 @@
       .then(function () {
         btn.disabled = false;
       });
+  }
+
+  /* ----------------------------------------
+     Projektcenter (/projekte-api)
+     Eine aus dem Admin Center geöffnete Rechnung bleibt verknüpft: Änderungen
+     werden kurz nach dem Tippen gespeichert, der Versand wird vermerkt.
+     ---------------------------------------- */
+  var syncTimer = null;
+
+  function pcToken() {
+    for (var i = 0; i < TOKEN_KEYS.length; i++) {
+      try {
+        var t = localStorage.getItem(TOKEN_KEYS[i]);
+        if (t) return t;
+      } catch (_) {}
+    }
+    return '';
+  }
+
+  function pcLink() {
+    var link = load(LINK_KEY);
+    return link && link.id ? link : null;
+  }
+
+  function setPc(text, cls) {
+    var bar = $('re-pc');
+    bar.className = 're-pc' + (cls ? ' ' + cls : '');
+    $('re-pc-text').textContent = text;
+  }
+
+  function updatePcBar() {
+    var bar = $('re-pc');
+    var link = pcLink();
+    var hasToken = !!pcToken();
+    bar.hidden = false;
+    $('re-pc-save').hidden = !hasToken || !!link;
+
+    if (!hasToken) {
+      $('re-pc-text').innerHTML = 'Projektcenter nicht verbunden — <a href="admin.html#projektcenter">im Admin Center verbinden</a>';
+      bar.className = 're-pc';
+      return;
+    }
+    setPc(link ? 'Verknüpft mit dem Projektcenter' + (link.project ? ' · ' + link.project : '')
+               : 'Nicht im Projektcenter gespeichert', '');
+  }
+
+  function scheduleSync() {
+    if (!pcLink() || !pcToken()) return;
+    clearTimeout(syncTimer);
+    setPc('Änderungen werden gespeichert …', '');
+    syncTimer = setTimeout(function () {
+      pcSave({}).catch(function () {});
+    }, 1500);
+  }
+
+  function pcSave(extra) {
+    clearTimeout(syncTimer);
+    var link = pcLink();
+    var invoice = {};
+    DRAFT_FIELDS.forEach(function (key) {
+      var el = $('f-' + key);
+      if (el) invoice[key] = el.value;
+    });
+    invoice.items = readItems();
+    invoice.total = currentTotal;
+    if (link) {
+      invoice.id = link.id;
+      invoice.project = link.project || '';
+      invoice.angebot = link.angebot || '';
+    }
+    Object.keys(extra || {}).forEach(function (key) { invoice[key] = extra[key]; });
+
+    return fetch('/projekte-api', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + pcToken(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save', invoice: invoice })
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
+        return data.invoice;
+      });
+    }).then(function (saved) {
+      store(LINK_KEY, { id: saved.id, number: saved.number, project: saved.project, angebot: saved.angebot });
+      updatePcBar();
+      var time = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      setPc('Im Projektcenter gespeichert · ' + time + (saved.project ? ' · ' + saved.project : ''), 'ok');
+      return saved;
+    }).catch(function (err) {
+      setPc('Projektcenter: ' + err.message, 'err');
+      throw err;
+    });
   }
 
   /* ----------------------------------------
@@ -605,6 +720,7 @@
     $('p-net').textContent = euro(net);
     $('p-vat').textContent = euro(vat);
     $('p-total').textContent = euro(total);
+    currentTotal = Math.round(total * 100) / 100;
     $('p-total-badge').textContent = euro(total);
 
     var hint = $('p-kleinhinweis');

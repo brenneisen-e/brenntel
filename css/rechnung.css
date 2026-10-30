@@ -153,6 +153,44 @@
   margin-top: 0.3rem;
 }
 
+/* Verknüpfung mit dem Projektcenter im Admin Center */
+.re-pc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  font-size: 0.82rem;
+  color: var(--color-text-light);
+}
+
+.re-pc[hidden] { display: none; }
+
+.re-pc svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--color-accent);
+}
+
+.re-pc.ok #re-pc-text { color: #1b9c3f; }
+.re-pc.err #re-pc-text { color: #d64545; }
+
+.re-pc a { color: var(--color-accent-text); font-weight: 600; }
+
+.re-pc-save {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.re-pc-save:hover { border-color: var(--color-accent); }
+
 .re-toolbar-actions {
   display: flex;
   flex-wrap: wrap;
