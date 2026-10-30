@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20261030b">
-  <link rel="stylesheet" href="css/rechnung.css?v=20261030b">
+  <link rel="stylesheet" href="css/shared.css?v=20261030e">
+  <link rel="stylesheet" href="css/rechnung.css?v=20261030e">
 </head>
 <body class="re-body">
 
@@ -80,7 +80,7 @@
         </p>
       </div>
       <div class="re-toolbar-actions">
-        <button type="button" class="re-btn re-btn-ghost" id="re-new-btn" title="Formular leeren und nächste Rechnungsnummer vergeben">
+        <button type="button" class="re-btn re-btn-ghost" id="re-new-btn" title="Formular leeren, die Nummer folgt dem Kunden">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
           Neue Rechnung
         </button>
@@ -162,9 +162,13 @@
           <h2 class="re-panel-title">Rechnung</h2>
           <div class="re-panel-body">
             <div class="re-field-row">
-              <label class="re-field"><span>Rechnungs-Nr.</span>
-                <input type="text" id="f-number" value="BR-2026-001">
-              </label>
+              <div class="re-field">
+                <span class="re-field-head">
+                  <label for="f-number">Rechnungs-Nr.</label>
+                  <button type="button" class="re-reset-link" id="re-number-btn" title="Nächste Nummer für diesen Kunden vergeben">Vergeben</button>
+                </span>
+                <input type="text" id="f-number" value="BR-2026-001" placeholder="RE-XX-2026-01">
+              </div>
               <label class="re-field"><span>Rechnungsdatum</span>
                 <input type="date" id="f-date">
               </label>
@@ -219,8 +223,11 @@
         </div>
 
         <div class="re-panel re-panel-open">
-          <h2 class="re-panel-title">Schlusstext</h2>
+          <h2 class="re-panel-title">Anrede und Schlusstext</h2>
           <div class="re-panel-body">
+            <label class="re-field"><span>Anrede über den Positionen (optional)</span>
+              <textarea id="f-intro" rows="3" placeholder="z. B. Lieber Elmar,&#10;&#10;wie besprochen berechnen wir …"></textarea>
+            </label>
             <label class="re-field"><span>Text unter der Summe</span>
               <textarea id="f-closing" rows="3">Vielen Dank für die gute Zusammenarbeit!</textarea>
             </label>
@@ -306,6 +313,8 @@
             </div>
           </div>
 
+          <div class="re-doc-intro" id="p-intro" hidden></div>
+
           <div class="re-items-head" aria-hidden="true">
             <span>Pos.</span>
             <span>Leistung</span>
@@ -370,7 +379,7 @@
 
   <!-- lokal eingebunden statt per CDN: kein Fremdzugriff beim Rechnungsversand -->
   <script src="js/vendor/html2pdf.bundle.min.js"></script>
-  <script src="js/shared.js?v=20261030b"></script>
-  <script src="js/rechnung.js?v=20261030b"></script>
+  <script src="js/shared.js?v=20261030e"></script>
+  <script src="js/rechnung.js?v=20261030e"></script>
 </body>
 </html>

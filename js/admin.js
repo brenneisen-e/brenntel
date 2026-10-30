@@ -379,11 +379,9 @@
   }
 
   function saveInvoice(invoice) {
-    var lastLocal = load(RE_DRAFT_KEY);
     return api('POST', {
       action: 'save',
-      invoice: invoice,
-      lastNumber: lastLocal && lastLocal.number
+      invoice: invoice
     }).then(function (data) {
       var i = state.invoices.findIndex(function (r) { return r.id === data.invoice.id; });
       if (i === -1) state.invoices.push(data.invoice);
@@ -397,7 +395,7 @@
      Übergabe an den Rechnungseditor
      ---------------------------------------- */
   var EDITOR_FIELDS = ['number', 'date', 'service', 'paystatus', 'paiddate',
-                       'rname', 'rextra', 'rstreet', 'rcity', 'closing', 'greeting',
+                       'rname', 'rextra', 'rstreet', 'rcity', 'intro', 'closing', 'greeting',
                        'remail', 'mailsubject', 'mailtext'];
 
   function openInEditor(invoice) {
@@ -481,14 +479,12 @@
     btn.disabled = true;
     setDraftStatus(claudeDraft ? 'Claude passt den Entwurf an …' : 'Claude schreibt den Entwurf …', 'busy');
 
-    var lastLocal = load(RE_DRAFT_KEY);
     api('POST', {
       action: 'entwurf',
       prompt: prompt,
       draft: claudeDraft || undefined,
       angebot: offerContext(findOffer($('pc-angebot').value)),
-      projects: projectNames(),
-      lastNumber: lastLocal && lastLocal.number
+      projects: projectNames()
     }).then(function (data) {
       var draft = data.draft;
       draft.date = draft.date || todayISO();

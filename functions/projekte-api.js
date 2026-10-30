@@ -5,8 +5,14 @@
  * POST /projekte-api  { action: 'save',    invoice }          → Rechnung anlegen/ändern
  * POST /projekte-api  { action: 'delete',  id }               → Rechnung löschen
  * POST /projekte-api  { action: 'angebot', code, status }     → Status eines Angebots
- * POST /projekte-api  { action: 'entwurf', prompt, draft?, angebot?, projects?, lastNumber? }
+ * POST /projekte-api  { action: 'entwurf', prompt, draft?, angebot?, projects? }
  *                                                             → Rechnungsentwurf von Claude
+ * POST /projekte-api  { action: 'nummer',  rname, angebot? }  → nächste Nummer für den Kunden
+ *
+ * Rechnungsnummern laufen je Kunde: RE-<Kürzel>-<Jahr>-<lfd. Nr.>, etwa
+ * RE-CZ-2026-01 für die erste Rechnung an Czekalla 2026. So sieht ein Kunde
+ * nur seine eigene Zählung. Mehrere Nummernkreise sind nach § 14 Abs. 4
+ * Nr. 4 UStG zulässig, solange jede Nummer nur einmal vergeben wird.
  *
  * Zugang: Anmeldung im Admin Center (Sitzungs-Cookie, siehe _auth.js) oder
  * für Werkzeuge ohne Browser ein Bearer-Token (ADMIN_TOKEN bzw. MAILGEN_TOKEN).
@@ -82,10 +88,11 @@ const SEED_INVOICES = [
   {
     // Abschlag nach der App-Vorstellung am 28.10.2026: 50 % des
     // Gesamtpreises aus Angebot KVA-CZ-2611 (Architektur, Module A bis E),
-    // auf Ansage Eike 30.10.2026. Ersetzt die erste Fassung „nach MVP 1“.
-    id: 'seed-br-2026-002-v2',
-    replaces: 'seed-br-2026-002',
-    number: 'BR-2026-002',
+    // auf Ansage Eike 30.10.2026. Ersetzt die früheren Fassungen unter
+    // BR-2026-002 (vor dem Nummernkreis je Kunde).
+    id: 'seed-re-cz-2026-01',
+    replaces: ['seed-br-2026-002', 'seed-br-2026-002-v2'],
+    number: 'RE-CZ-2026-01',
     date: '2026-10-30',
     service: '09.10. bis 28.10.2026',
     paystatus: 'open',
@@ -96,19 +103,30 @@ const SEED_INVOICES = [
     remail: 'czekalla@malereifachbetrieb.de',
     project: 'Czekalla @ work',
     angebot: 'KVA-CZ-2611',
-    closing: 'Vielen Dank für die gute Zusammenarbeit!',
+    intro: 'Lieber Elmar,\n\nwie am 28.10. bei der Vorstellung der App besprochen, berechnen wir dir mit dieser Rechnung ' +
+      'die erste Hälfte des Gesamtpreises aus dem Angebot KVA‑CZ‑2611. Darunter steht, was bis zur Vorstellung fertig war.',
+    closing: 'Vielen Dank für die tolle Zusammenarbeit! Wir freuen uns auf den Testlauf mit euch.',
     greeting: 'Viele Grüße',
-    mailsubject: 'Rechnung BR-2026-002 – Abschlag Czekalla @ work',
-    mailtext: 'Lieber Elmar,\n\nnach der Vorstellung der App am 28.10. findest du anbei die Rechnung über die erste Hälfte ' +
-      'des Gesamtpreises von 11.500,00 €.\n\n' +
+    mailsubject: 'Rechnung RE-CZ-2026-01 – Abschlag Czekalla @ work',
+    mailtext: 'Lieber Elmar,\n\nwie am 28.10. besprochen, findest du anbei die Rechnung über die erste Hälfte des Gesamtpreises ' +
+      'von 11.500,00 €. Darin haben wir aufgeführt, was bis zur Vorstellung der App fertig war.\n\n' +
       'Die zweite Hälfte stellen wir bei Projektende in Rechnung.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
     items: [{
-      title: 'Abschlagszahlung 1 von 2 (50 %) nach der App-Vorstellung am 28.10.2026',
-      details: 'App „Czekalla @ work“, Angebot KVA-CZ-2611, Gesamtpreis 11.500,00 €\n' +
-               'Architektur: Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live\n' +
-               'Module A bis C: Zeiterfassung, Baustellen-Controlling und Baustellenakte\n' +
-               'Module D und E: Wochen- und Einsatzplanung, Urlaub und Krankmeldungen\n' +
-               'Die zweite Hälfte über 5.750,00 € wird bei Projektende fällig',
+      title: 'Abschlagszahlung 1 von 2 (50 %) nach der App‑Vorstellung am 28.10.2026',
+      // Was bis zur Vorstellung fertig war (Stand im Repo czekallaAtWork)
+      details: 'Architektur: Infrastruktur bei Cloudflare, Backend mit Datenbank, Web‑App für iPhone, Android und Büro‑PC, automatische Tests und Deployment unter czekallaatwork.app\n' +
+               'Android‑App mit automatischem Ausstempeln beim Verlassen der Baustelle\n' +
+               'Modul A Zeiterfassung: Ein-, Aus- und Umstempeln mit Baustellenerkennung, Stempeln ohne Netz, Pausen nach Arbeitszeitgesetz\n' +
+               'Modul A Büro‑Auswertung: Übersicht, Auswertungen nach Tag, Woche, Monat, Baustelle und Mitarbeiter, Lohnexport als CSV, Excel und PDF\n' +
+               'Modul B Baustellen‑Controlling: Faktor je Mitarbeiter, effektive Stunden, Stundenbudget mit Ampel, Zusatzstunden mit Nachweis\n' +
+               'Modul C Baustellenakte: Fotos, Dokumente und Notizen je Baustelle, geordnet nach Raum und Art\n' +
+               'Modul D Wochen- und Einsatzplanung: Wochenplan für Baustellen und Mitarbeiter, Ansicht für den Fernseher im Teamraum\n' +
+               'Modul E Urlaub und Krankmeldungen: Anträge und Genehmigung, Urlaubskonten, Stundenkonto und Anwesenheit\n' +
+               'Dazu: Mitarbeiterverwaltung mit Einrichtung der Handys per QR‑Code, Aufgaben, Nachrichten und Mitteilungen aufs Handy, Datenschutz‑Paket mit Löschkonzept\n' +
+               'Einführung: Handout und Vorführung „Ein Tag mit der App“ am 28.10.2026\n' +
+               'Gesamtpreis laut Angebot KVA‑CZ‑2611: 11.500,00 €\n' +
+               'Mit dieser Rechnung (Abschlag 1 von 2): 5.750,00 €\n' +
+               'Noch abzurechnen mit der Schlussrechnung bei Projektende: 5.750,00 €',
       qty: '1',
       unit: 'Pauschal',
       price: '5750',
@@ -137,17 +155,20 @@ async function loadState(kv) {
   if (neu.length) {
     neu.forEach((seed) => {
       state.seeded.push(seed.id);
-      const i = state.invoices.findIndex((r) => r.number === seed.number);
-      if (i === -1) {
-        state.invoices.push(sanitizeInvoice(seed, null));
+      // Eine neuere Fassung ersetzt eine ältere nur, solange diese ein
+      // unberührter Entwurf ist; Bearbeitetes oder Versendetes bleibt stehen
+      // und die neue Fassung kommt dann nicht dazu
+      const alt = state.invoices.findIndex((r) => (seed.replaces || []).indexOf(r.id) !== -1);
+      if (alt !== -1) {
+        const r = state.invoices[alt];
+        if (r.status === 'entwurf' && r.updatedAt === r.createdAt &&
+            !state.invoices.some((x) => x.number === seed.number)) {
+          state.invoices[alt] = sanitizeInvoice(seed, null);
+        }
         return;
       }
-      // Eine neuere Fassung ersetzt die ältere nur, solange diese ein
-      // unberührter Entwurf ist; Bearbeitetes oder Versendetes bleibt
-      const alt = state.invoices[i];
-      if (seed.replaces && alt.id === seed.replaces && alt.status === 'entwurf' &&
-          alt.updatedAt === alt.createdAt) {
-        state.invoices[i] = sanitizeInvoice(seed, null);
+      if (!state.invoices.some((r) => r.number === seed.number)) {
+        state.invoices.push(sanitizeInvoice(seed, null));
       }
     });
     await saveState(kv, state);
@@ -197,6 +218,7 @@ function sanitizeInvoice(eingang, vorher) {
     remail: str(e.remail, 200),
     mailsubject: str(e.mailsubject, 300),
     mailtext: str(e.mailtext, 5000),
+    intro: str(e.intro, 1500),
     closing: str(e.closing, 1000),
     greeting: str(e.greeting, 120),
     items,
@@ -215,18 +237,69 @@ function sanitizeInvoice(eingang, vorher) {
 }
 
 /* ----------------------------------------
-   Rechnungsnummer: BR-JJJJ-NNN, fortlaufend über gespeicherte Rechnungen
-   und die zuletzt im Editor verwendete Nummer
+   Rechnungsnummer je Kunde: RE-<Kürzel>-<Jahr>-<NN>
    ---------------------------------------- */
-function nextNumber(invoices, lastNumber) {
+const NUMMER_MUSTER = /^RE-([A-Z]{2,3})-(\d{4})-(\d+)$/;
+
+function sameCustomer(a, b) {
+  return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+}
+
+// Kürzel aus dem Namen: Initialen der ersten beiden Wörter, Rechtsformen
+// und Umlaute bereinigt („Malte Brenneisen“ → MB, „Nordantech“ → NO)
+function kuerzelAusName(name) {
+  const woerter = String(name || '')
+    .replace(/Ä/g, 'AE').replace(/Ö/g, 'OE').replace(/Ü/g, 'UE')
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/\b(GmbH|GbR|UG|AG|KG|OHG|e\.?\s?V\.?|mbH|Co\.?)\b/gi, ' ')
+    .replace(/[^A-Za-z\s-]/g, ' ')
+    .split(/[\s-]+/)
+    .filter(Boolean);
+  if (!woerter.length) return 'XX';
+  if (woerter.length === 1) return woerter[0].slice(0, 2).toUpperCase();
+  return (woerter[0][0] + woerter[1][0]).toUpperCase();
+}
+
+/**
+ * Kürzel für einen Kunden. Vorrang: schon verwendetes Kürzel desselben
+ * Kunden, dann das Kürzel aus dem Angebot (KVA-CZ-2611 → CZ), dann ein
+ * Vorschlag (von Claude), zuletzt die Initialen. Ein Kürzel, das schon ein
+ * anderer Kunde trägt, wird um einen Buchstaben verlängert.
+ */
+function kuerzelFuer(invoices, rname, angebot, vorschlag) {
+  for (const r of invoices) {
+    const m = String(r.number || '').match(NUMMER_MUSTER);
+    if (m && sameCustomer(r.rname, rname)) return m[1];
+  }
+  const ausAngebot = String(angebot || '').match(/^KVA-([A-Z]{2})-/);
+  let code = ausAngebot ? ausAngebot[1]
+    : /^[A-Z]{2,3}$/.test(String(vorschlag || '')) ? vorschlag
+    : kuerzelAusName(rname);
+
+  const belegt = (k) => invoices.some((r) => {
+    const m = String(r.number || '').match(NUMMER_MUSTER);
+    return m && m[1] === k && !sameCustomer(r.rname, rname);
+  });
+  if (belegt(code)) {
+    // weitere Buchstaben aus dem Namen (Malte Brenneisen: MBR, MBE …)
+    const name = String(rname || '').toUpperCase().replace(/Ä/g, 'AE').replace(/Ö/g, 'OE')
+      .replace(/Ü/g, 'UE').replace(/[^A-Z\s]/g, '').split(/\s+/).filter(Boolean);
+    const buchstaben = (name.slice(1).join('').slice(1) + name.join('') + 'XYZ').split('');
+    for (const b of buchstaben) {
+      if (!belegt(code.slice(0, 2) + b)) { code = code.slice(0, 2) + b; break; }
+    }
+  }
+  return code;
+}
+
+function nextNumber(invoices, code) {
   const jahr = new Date().getFullYear();
   let max = 0;
-  const nummern = invoices.map((r) => r.number).concat(lastNumber ? [lastNumber] : []);
-  nummern.forEach((nr) => {
-    const m = String(nr || '').match(/^BR-(\d{4})-(\d+)$/);
-    if (m && Number(m[1]) === jahr) max = Math.max(max, Number(m[2]));
+  invoices.forEach((r) => {
+    const m = String(r.number || '').match(NUMMER_MUSTER);
+    if (m && m[1] === code && Number(m[2]) === jahr) max = Math.max(max, Number(m[3]));
   });
-  return 'BR-' + jahr + '-' + String(max + 1).padStart(3, '0');
+  return 'RE-' + code + '-' + jahr + '-' + String(max + 1).padStart(2, '0');
 }
 
 /* ----------------------------------------
@@ -236,6 +309,7 @@ const DRAFT_SCHEMA = {
   type: 'object',
   properties: {
     project: { type: 'string', description: 'Projektname, z. B. „Czekalla @ work“' },
+    kuerzel: { type: 'string', description: 'Kundenkürzel aus 2 Großbuchstaben (A–Z), bei bekannten Kunden das vorhandene' },
     angebot: { type: 'string', description: 'Referenz des zugrunde liegenden Angebots oder leer' },
     rname: { type: 'string' },
     rextra: { type: 'string' },
@@ -262,7 +336,7 @@ const DRAFT_SCHEMA = {
     mailtext: { type: 'string' },
     hinweis: { type: 'string', description: 'Kurze Rückmeldung an Eike: Annahmen, offene Punkte. Leer, wenn nichts offen ist.' },
   },
-  required: ['project', 'angebot', 'rname', 'rextra', 'rstreet', 'rcity', 'remail',
+  required: ['project', 'kuerzel', 'angebot', 'rname', 'rextra', 'rstreet', 'rcity', 'remail',
              'service', 'items', 'mailsubject', 'mailtext', 'hinweis'],
   additionalProperties: false,
 };
@@ -275,13 +349,16 @@ Rahmen:
 - Liegt ein Angebot bei, übernimm Empfänger, Projektname und die Formulierungen der Leistungen von dort. Berechne nur, was Eike nennt, zum Beispiel eine Abschlagszahlung oder einzelne Module. Bei einer Abschlagszahlung nenne im Titel, welcher Anteil von welchem Angebot berechnet wird.
 - Einheit: „Pauschal“ für Festpreise, „Std.“ für Stunden. Menge und Preis als Zahl ohne Währungszeichen.
 - Erfinde keine Adressen oder E-Mail-Adressen. Was du nicht weißt, bleibt leer und gehört in „hinweis“.
-- Mailtext: kurz, freundlich, Ansprache wie im Angebot (du oder Sie), Gruß „Liebe Grüße“ bzw. „Viele Grüße“ und darunter „Eike und Irena“. Absätze durch Leerzeilen. Betreff im Stil „Rechnung BR-2026-002 – Projektname“.
+- Mailtext: kurz, freundlich, Ansprache wie im Angebot (du oder Sie), Gruß „Liebe Grüße“ bzw. „Viele Grüße“ und darunter „Eike und Irena“. Absätze durch Leerzeilen. Betreff im Stil „Rechnung {NR} – Projektname“. Schreibe für die Rechnungsnummer immer den Platzhalter {NR}, sie wird danach eingesetzt.
 - Wird ein bestehender Entwurf mitgeschickt, ändere nur, was Eike verlangt, und gib den vollständigen Entwurf zurück.
 - Schreibe in „hinweis“ höchstens zwei Sätze.`;
 
-function buildUserMessage(body, number) {
+function buildUserMessage(body, kunden) {
   const teile = [];
-  teile.push('Heute ist der ' + new Date().toISOString().slice(0, 10) + '. Rechnungsnummer: ' + number + '.');
+  teile.push('Heute ist der ' + new Date().toISOString().slice(0, 10) + '.');
+  if (kunden.length) {
+    teile.push('Bekannte Kunden mit Kürzel: ' + kunden.join(', ') + '.');
+  }
   if (Array.isArray(body.projects) && body.projects.length) {
     teile.push('Bestehende Projekte: ' + body.projects.slice(0, 40).map((p) => str(p, 120)).join(', ') + '.');
   }
@@ -295,7 +372,7 @@ function buildUserMessage(body, number) {
   return teile.join('\n\n');
 }
 
-async function draftWithClaude(env, body, number) {
+async function draftWithClaude(env, body, kunden) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -313,7 +390,7 @@ async function draftWithClaude(env, body, number) {
         format: { type: 'json_schema', schema: DRAFT_SCHEMA },
       },
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: buildUserMessage(body, number) }],
+      messages: [{ role: 'user', content: buildUserMessage(body, kunden) }],
     }),
   });
 
@@ -388,7 +465,9 @@ export async function onRequest(context) {
     }
     const vorher = index === -1 ? null : state.invoices[index];
     const invoice = sanitizeInvoice(eingang, vorher);
-    if (!invoice.number) invoice.number = nextNumber(state.invoices, body.lastNumber);
+    if (!invoice.number) {
+      invoice.number = nextNumber(state.invoices, kuerzelFuer(state.invoices, invoice.rname, invoice.angebot));
+    }
     const doppelt = state.invoices.some((r) => r.number === invoice.number && r.id !== invoice.id);
     if (doppelt) {
       return json({ error: 'Die Rechnungsnummer ' + invoice.number + ' ist schon vergeben.' }, 409);
@@ -421,6 +500,13 @@ export async function onRequest(context) {
     return json({ ok: true, angebote: state.angebote }, 200);
   }
 
+  if (body.action === 'nummer') {
+    const rname = str(body.rname, 160).trim();
+    if (!rname) return json({ error: 'Bitte zuerst den Empfänger eintragen.' }, 400);
+    const code = kuerzelFuer(state.invoices, rname, str(body.angebot, 40));
+    return json({ ok: true, kuerzel: code, number: nextNumber(state.invoices, code) }, 200);
+  }
+
   if (body.action === 'entwurf') {
     if (!env.ANTHROPIC_API_KEY) {
       return json({ error: 'Claude ist nicht eingerichtet (ANTHROPIC_API_KEY fehlt).' }, 500);
@@ -428,11 +514,20 @@ export async function onRequest(context) {
     if (!str(body.prompt, 4000).trim()) {
       return json({ error: 'Bitte beschreiben, was berechnet werden soll.' }, 400);
     }
-    const number = (body.draft && str(body.draft.number, 40).trim()) ||
-                   nextNumber(state.invoices, body.lastNumber);
+    const kunden = [];
+    state.invoices.forEach((r) => {
+      const m = String(r.number || '').match(NUMMER_MUSTER);
+      const eintrag = m && r.rname ? r.rname + ' (' + m[1] + ')' : '';
+      if (eintrag && kunden.indexOf(eintrag) === -1) kunden.push(eintrag);
+    });
     try {
-      const entwurf = await draftWithClaude(env, body, number);
+      const entwurf = await draftWithClaude(env, body, kunden);
       const items = Array.isArray(entwurf.items) ? entwurf.items.map(sanitizeItem) : [];
+      // Eine schon vergebene Nummer bleibt, sonst die nächste für den Kunden
+      const number = (body.draft && str(body.draft.number, 40).trim()) ||
+        nextNumber(state.invoices, kuerzelFuer(state.invoices, entwurf.rname, entwurf.angebot,
+                                               String(entwurf.kuerzel || '').toUpperCase()));
+      const nr = (text) => String(text || '').replace(/\{NR\}/g, number);
       return json({
         ok: true,
         hinweis: str(entwurf.hinweis, 600),
@@ -448,8 +543,8 @@ export async function onRequest(context) {
           remail: str(entwurf.remail, 200),
           service: str(entwurf.service, 120),
           items,
-          mailsubject: str(entwurf.mailsubject, 300),
-          mailtext: str(entwurf.mailtext, 5000),
+          mailsubject: str(nr(entwurf.mailsubject), 300),
+          mailtext: str(nr(entwurf.mailtext), 5000),
         },
       }, 200);
     } catch (err) {

@@ -63,7 +63,7 @@
                        'taxid', 'iban', 'holder', 'bank', 'vatmode', 'paydays',
                        'mailfrom', 'mailbcc'];
   var DRAFT_FIELDS = ['number', 'date', 'service', 'paystatus', 'paiddate',
-                      'rname', 'rextra', 'rstreet', 'rcity', 'closing', 'greeting',
+                      'rname', 'rextra', 'rstreet', 'rcity', 'intro', 'closing', 'greeting',
                       'remail', 'mailsubject', 'mailtext'];
 
   /* ----------------------------------------
@@ -127,16 +127,6 @@
     return d.getFullYear() + '-' +
            String(d.getMonth() + 1).padStart(2, '0') + '-' +
            String(d.getDate()).padStart(2, '0');
-  }
-
-  // "BR-2026-001" → "BR-2026-002" (Stellenzahl bleibt erhalten)
-  function nextNumber(current) {
-    var m = String(current || '').match(/^(.*?)(\d+)(\D*)$/);
-    if (!m) return current;
-    var digits = m[2];
-    var incremented = String(Number(digits) + 1);
-    while (incremented.length < digits.length) incremented = '0' + incremented;
-    return m[1] + incremented + m[3];
   }
 
   /* ----------------------------------------
@@ -357,12 +347,13 @@
     });
 
     $('re-new-btn').addEventListener('click', function () {
-      if (!window.confirm('Neue Rechnung anlegen? Empfänger und Positionen werden geleert, die Rechnungsnummer zählt hoch.')) return;
+      if (!window.confirm('Neue Rechnung anlegen? Empfänger und Positionen werden geleert. Die Nummer wird für den neuen Kunden vergeben.')) return;
 
-      $('f-number').value = nextNumber($('f-number').value);
+      // Nummernkreis je Kunde: die Nummer kommt, sobald der Empfänger steht
+      $('f-number').value = '';
       $('f-date').value = todayISO();
       $('f-paystatus').value = 'open';
-      ['service', 'paiddate', 'rname', 'rextra', 'rstreet', 'rcity',
+      ['service', 'paiddate', 'rname', 'rextra', 'rstreet', 'rcity', 'intro',
        'remail', 'mailsubject'].forEach(function (key) {
         $('f-' + key).value = '';
       });
@@ -383,7 +374,17 @@
       $('f-mailtext').focus();
     });
 
-    $('re-send-btn').addEventListener('click', sendMail);
+    $('re-send-btn').addEventListener('click', function () {
+      // Ohne Nummer erst eine für den Kunden holen, dann versenden
+      if ($('f-number').value.trim() || !pcLoggedIn) return sendMail();
+      assignNumber().then(sendMail, function () {});
+    });
+
+    $('re-number-btn').addEventListener('click', function () {
+      if ($('f-number').value.trim() &&
+          !window.confirm('Die Rechnung hat schon die Nummer ' + $('f-number').value.trim() + '. Durch die nächste Nummer für diesen Kunden ersetzen?')) return;
+      assignNumber().catch(function () {});
+    });
 
     $('re-pc-save').addEventListener('click', function () {
       pcSave({}).catch(function () {});
@@ -574,6 +575,31 @@
     syncTimer = setTimeout(function () {
       pcSave({}).catch(function () {});
     }, 1500);
+  }
+
+  // Nächste Nummer im Kreis des Kunden: RE-<Kürzel>-<Jahr>-<NN>
+  function assignNumber() {
+    if (!pcLoggedIn) {
+      setPc('Nummern vergibt das Projektcenter — bitte im Admin Center anmelden.', 'err');
+      return Promise.reject(new Error('nicht angemeldet'));
+    }
+    var link = pcLink();
+    return fetch('/projekte-api', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'nummer', rname: $('f-rname').value, angebot: link ? link.angebot : '' })
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
+        $('f-number').value = data.number;
+        onChange();
+        return data.number;
+      });
+    }).catch(function (err) {
+      setPc('Nummer: ' + err.message, 'err');
+      throw err;
+    });
   }
 
   function pcSave(extra) {
@@ -767,6 +793,13 @@
     $('p-holder-wrap').hidden = !v.holder;
     $('p-bankname').textContent = v.bank;
     $('p-bankname-wrap').hidden = !v.bank;
+
+    /* --- Anrede: Leerzeilen trennen Absätze --- */
+    var intro = $('p-intro');
+    intro.textContent = '';
+    v.intro.split(/\n{2,}/).map(function (t) { return t.trim(); }).filter(Boolean)
+      .forEach(function (t) { intro.appendChild(el('p', null, t)); });
+    intro.hidden = !intro.childNodes.length;
 
     /* --- Abschluss + Fußzeile --- */
     $('p-closing').textContent = v.closing;
