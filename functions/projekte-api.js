@@ -79,6 +79,41 @@ const SEED_INVOICES = [
     total: 4975,
     status: 'versendet',
   },
+  {
+    // Abschlag nach MVP 1: 50 % des Gesamtpreises aus Angebot KVA-CZ-2611
+    // (Architektur, Module A bis E), auf Ansage Eike 30.10.2026
+    id: 'seed-br-2026-002',
+    number: 'BR-2026-002',
+    date: '2026-10-30',
+    service: 'Oktober 2026 (MVP 1)',
+    paystatus: 'open',
+    rname: 'Czekalla Malereifachbetrieb',
+    rextra: 'z. Hd. Elmar Czekalla',
+    rstreet: 'Lehmbergstraße 25',
+    rcity: '25548 Kellinghusen',
+    remail: 'czekalla@malereifachbetrieb.de',
+    project: 'Czekalla @ work',
+    angebot: 'KVA-CZ-2611',
+    closing: 'Vielen Dank für die gute Zusammenarbeit!',
+    greeting: 'Viele Grüße',
+    mailsubject: 'Rechnung BR-2026-002 – Abschlag Czekalla @ work',
+    mailtext: 'Lieber Elmar,\n\nMVP 1 von Czekalla @ work steht, die App ist seit dieser Woche bei euch im Einsatz. ' +
+      'Anbei findest du die Rechnung über die erste Hälfte des Gesamtpreises von 11.500,00 €.\n\n' +
+      'Die zweite Hälfte stellen wir bei Projektende in Rechnung.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
+    items: [{
+      title: 'Abschlagszahlung 1 von 2 (50 %) nach MVP 1: App „Czekalla @ work“',
+      details: 'Grundlage: Angebot KVA-CZ-2611 vom 13.10.2026, Gesamtpreis 11.500,00 €\n' +
+               'Architektur: Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live\n' +
+               'Module A bis C: Zeiterfassung, Baustellen-Controlling und Baustellenakte\n' +
+               'Module D und E: Wochen- und Einsatzplanung, Urlaub und Krankmeldungen\n' +
+               'Die zweite Hälfte über 5.750,00 € wird bei Projektende fällig',
+      qty: '1',
+      unit: 'Pauschal',
+      price: '5750',
+    }],
+    total: 5750,
+    status: 'entwurf',
+  },
 ];
 
 async function loadState(kv) {

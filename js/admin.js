@@ -35,7 +35,7 @@
       date: '2026-10-13',
       valid: '2026-11-13',
       total: 11500,
-      status: 'offen',
+      status: 'angenommen',
       leistungen: 'Architektur mit Infrastruktur, Backend, Android-App, Automatismen, Tests und Go-Live: 6.500 €. ' +
         'Module: A Zeiterfassung mit Büro-Auswertung 1.700 €, B Baustellen-Controlling 800 €, C Baustellenakte 500 €, ' +
         'D Wochen- und Einsatzplanung 900 €, E Urlaub und Krankmeldungen 1.100 €. ' +
