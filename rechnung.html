@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20261030j">
-  <link rel="stylesheet" href="css/rechnung.css?v=20261030j">
+  <link rel="stylesheet" href="css/shared.css?v=20261030k">
+  <link rel="stylesheet" href="css/rechnung.css?v=20261030k">
 </head>
 <body class="re-body">
 
@@ -341,14 +341,23 @@
             <p class="re-doc-kleinhinweis" id="p-kleinhinweis">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
           </div>
 
-          <div class="re-doc-payment">
-            <span class="re-doc-label">Zahlung</span>
-            <p id="p-payment">Zahlbar ohne Abzug innerhalb von 14 Tagen.</p>
-            <div class="re-doc-bank" id="p-bank" hidden>
-              <span><em>IBAN</em><span id="p-iban"></span></span>
-              <span id="p-holder-wrap"><em>Kontoinhaber</em><span id="p-holder"></span></span>
-              <span id="p-bankname-wrap"><em>Bank</em><span id="p-bankname"></span></span>
+          <div class="re-doc-payment" id="p-payment-box">
+            <div class="re-doc-payment-main">
+              <span class="re-doc-label">Zahlung</span>
+              <p id="p-payment">Zahlbar ohne Abzug innerhalb von 14 Tagen.</p>
+              <div class="re-doc-bank" id="p-bank" hidden>
+                <span><em>IBAN</em><span id="p-iban"></span></span>
+                <span id="p-holder-wrap"><em>Kontoinhaber</em><span id="p-holder"></span></span>
+                <span id="p-bankname-wrap"><em>Bank</em><span id="p-bankname"></span></span>
+              </div>
             </div>
+            <!-- GiroCode (EPC-QR): Banking-Apps füllen damit Empfänger, IBAN,
+                 Betrag und Verwendungszweck aus. Als Bild, nicht als Inline-SVG,
+                 weil html2canvas SVG nicht in die PDF übernimmt. -->
+            <figure class="re-doc-qr" id="p-qr" hidden>
+              <img id="p-qr-img" alt="GiroCode für die Überweisung">
+              <figcaption>Mit der Banking&#8209;App scannen</figcaption>
+            </figure>
           </div>
 
           <div class="re-doc-closing">
@@ -382,7 +391,8 @@
 
   <!-- lokal eingebunden statt per CDN: kein Fremdzugriff beim Rechnungsversand -->
   <script src="js/vendor/html2pdf.bundle.min.js"></script>
-  <script src="js/shared.js?v=20261030j"></script>
-  <script src="js/rechnung.js?v=20261030j"></script>
+  <script src="js/vendor/qrcode-generator-1.4.4.js"></script>
+  <script src="js/shared.js?v=20261030k"></script>
+  <script src="js/rechnung.js?v=20261030k"></script>
 </body>
 </html>

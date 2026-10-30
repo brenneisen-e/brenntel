@@ -830,6 +830,8 @@
       appendNumber(dueText + ' Bitte gib dabei die Rechnungsnummer ', ' an.');
     }
 
+    renderGiroCode(v, total, isPaid);
+
     // Bei bereits erhaltener Zahlung wäre eine IBAN nur verwirrend
     var bank = $('p-bank');
     bank.hidden = isPaid || !(v.iban || v.bank || v.holder);
@@ -864,6 +866,49 @@
     });
 
     updateChecklist(v, filled, described, isPaid);
+  }
+
+  /* ----------------------------------------
+     GiroCode (EPC-QR-Code, EPC069-12 Version 002)
+     Zeilen: Kennung, Version, Zeichensatz (1 = UTF-8), SEPA-Überweisung,
+     BIC (ab Version 002 im EWR entbehrlich), Empfänger (max. 70), IBAN,
+     Betrag „EUR123.45“, Zweck-Code, strukturierte Referenz, Verwendungszweck
+     (max. 140). Nur bei offener Rechnung mit IBAN und Betrag.
+     ---------------------------------------- */
+  function giroCodeText(name, iban, amount, purpose) {
+    return ['BCD', '002', '1', 'SCT', '',
+            name.slice(0, 70),
+            iban,
+            'EUR' + amount.toFixed(2),
+            '', '',
+            purpose.slice(0, 140)].join('\n');
+  }
+
+  function renderGiroCode(v, total, isPaid) {
+    var box = $('p-payment-box');
+    var figure = $('p-qr');
+    var iban = (v.iban || '').replace(/\s+/g, '').toUpperCase();
+    var name = v.holder || v.company;
+    var show = !isPaid && total >= 0.01 && total <= 999999999.99 &&
+               /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(iban) && !!name &&
+               typeof qrcode === 'function';
+    figure.hidden = !show;
+    box.classList.toggle('has-qr', show);
+    if (!show) return;
+
+    var text = giroCodeText(name, iban, total, 'Rechnung ' + (v.number || ''));
+    if (figure.getAttribute('data-text') === text) return;
+    try {
+      qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+      var qr = qrcode(0, 'M');
+      qr.addData(text, 'Byte');
+      qr.make();
+      $('p-qr-img').src = qr.createDataURL(4, 0);
+      figure.setAttribute('data-text', text);
+    } catch (_) {
+      figure.hidden = true;
+      box.classList.remove('has-qr');
+    }
   }
 
   /* ----------------------------------------

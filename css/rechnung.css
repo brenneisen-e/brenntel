@@ -830,6 +830,41 @@
 
 .re-doc-payment p { margin: 0; }
 
+/* Mit GiroCode: Text links, Code rechts daneben */
+.re-doc-payment.has-qr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.re-doc-qr {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.re-doc-qr[hidden] { display: none; }
+
+.re-doc-qr img {
+  display: block;
+  width: 92px;
+  height: 92px;
+  padding: 5px;
+  background: #fff;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+
+.re-doc-qr figcaption {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .re-doc-bank {
   display: flex;
   flex-wrap: wrap;
