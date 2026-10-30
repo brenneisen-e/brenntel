@@ -91,7 +91,7 @@ const SEED_INVOICES = [
     // auf Ansage Eike 30.10.2026. Ersetzt die früheren Fassungen unter
     // BR-2026-002 (vor dem Nummernkreis je Kunde).
     id: 'seed-re-cz-2026-01',
-    rev: 8,
+    rev: 9,
     // Ersetzt den Entwurf auch, wenn der Editor ihn schon gespeichert hat —
     // solange er nicht versendet ist
     force: true,
@@ -113,7 +113,7 @@ const SEED_INVOICES = [
     greeting: 'Viele Grüße',
     mailsubject: 'Rechnung RE-CZ-2026-01 – Abschlag Czekalla @ work',
     mailtext: 'Lieber Elmar,\n\nschön, dass Czekalla @ work seit dem 28.10. bei euch läuft und Büro und Team schon damit arbeiten! ' +
-      'Wie besprochen findest du anbei die Rechnung über die erste Hälfte des Gesamtpreises von 11.500,00 €.\n\n' +
+      'Wie besprochen findest du anbei die Rechnung über die erste Hälfte.\n\n' +
       'Im November entwickeln wir die App gemeinsam mit euch weiter und testen sie im Alltag, zum Abschluss übergeben wir sie dir. ' +
       'Die zweite Hälfte rechnen wir dann mit der Schlussrechnung ab.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
     items: [{
