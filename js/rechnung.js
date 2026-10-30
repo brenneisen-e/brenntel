@@ -769,8 +769,11 @@
       row.appendChild(main);
 
       var price = el('div', 're-item-price');
-      price.appendChild(el('span', 're-item-qty',
-        qty(num(item.qty)) + ' × ' + (item.unit.trim() || 'Pauschal')));
+      // Eine einzelne Pauschale braucht keine Mengenzeile, nur den Betrag
+      var unit = item.unit.trim() || 'Pauschal';
+      if (!(num(item.qty) === 1 && /^pauschal$/i.test(unit))) {
+        price.appendChild(el('span', 're-item-qty', qty(num(item.qty)) + ' × ' + unit));
+      }
       price.appendChild(el('strong', 're-item-amount', euro(amount)));
       row.appendChild(price);
 
