@@ -139,7 +139,10 @@ function labelsFor(meta) {
   };
 }
 
-function renderEmail(message, meta, filename) {
+// withSignature: Platz für die Signatur des Postfachs direkt unter dem Text
+// (der Connector setzt sie an der Marke ein); die Firmen-Fußzeile entfällt
+// dann, sonst stünden Anschrift und Kontakt doppelt in der Mail.
+function renderEmail(message, meta, filename, withSignature) {
   const L = labelsFor(meta);
   // Leerzeilen trennen Absätze, einzelne Umbrüche bleiben Umbrüche
   const paragraphs = message
@@ -195,7 +198,7 @@ function renderEmail(message, meta, filename) {
     </div>
   </td></tr>
 
-  <tr><td style="padding:26px 36px 0;">${paragraphs}</td></tr>
+  <tr><td style="padding:26px 36px 0;">${paragraphs}${withSignature ? '<!--signature-->' : ''}</td></tr>
 
   ${summary
     ? `<tr><td style="padding:10px 36px 0;">
@@ -214,9 +217,11 @@ function renderEmail(message, meta, filename) {
     &#128206; ${escapeHtml(filename)} — liegt dieser E-Mail als PDF bei.
   </td></tr>
 
-  <tr><td style="padding:26px 36px 30px;">
+  ${withSignature
+    ? `<tr><td style="padding:0 0 30px;font-size:0;line-height:0;">&nbsp;</td></tr>`
+    : `<tr><td style="padding:26px 36px 30px;">
     <div style="border-top:1px solid #e6ded0;padding-top:16px;">${footerLines}</div>
-  </td></tr>
+  </td></tr>`}
 
 </table>
 </td></tr></table>
@@ -317,27 +322,40 @@ export async function onRequest(context) {
   // Rückfall bei einem Fehler des Connectors — sonst ginge eine Mail, deren
   // Versand nur unklar ist, womöglich zweimal oder unter anderem Absender raus.
   const account = connectorAccount(env, extractEmail(from));
-  const result = account
-    ? await sendViaConnector(env, account, {
-        to: [to],
-        cc,
-        bcc: bcc ? [bcc] : [],
-        subject,
-        text: plainText,
-        html: htmlBody,
-        attachments,
-      })
-    : await sendMail(env, {
-        from,
-        to,
-        cc,
-        bcc,
-        replyTo: replyTo && isValidEmail(replyTo) ? replyTo : undefined,
-        subject,
-        text: plainText,
-        html: htmlBody,
-        attachments,
-      });
+  const viaConnector = (withSignature) =>
+    sendViaConnector(env, account, {
+      to: [to],
+      cc,
+      bcc: bcc ? [bcc] : [],
+      subject,
+      text: plainText,
+      html: withSignature ? renderEmail(textBody, meta, filename, true) : htmlBody,
+      attachments,
+      signature: withSignature ? 'default' : undefined,
+    });
+
+  // Mit der Standard-Signatur des Postfachs (Ordner „Signaturen“, dieselbe
+  // wie in Webmail und App). Hat das Postfach keine, lehnt der Connector vor
+  // dem Versand ab — dann ohne Signatur, mit Firmen-Fußzeile.
+  let result;
+  if (account) {
+    result = await viaConnector(true);
+    if (!result.ok && /keine Standard-Signatur/i.test(result.error || '')) {
+      result = await viaConnector(false);
+    }
+  } else {
+    result = await sendMail(env, {
+      from,
+      to,
+      cc,
+      bcc,
+      replyTo: replyTo && isValidEmail(replyTo) ? replyTo : undefined,
+      subject,
+      text: plainText,
+      html: htmlBody,
+      attachments,
+    });
+  }
 
   if (!result.ok) {
     const status = result.provider === 'keiner' ? 500 : 502;

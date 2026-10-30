@@ -71,6 +71,7 @@ export async function sendViaConnector(env, account, mail) {
     text: mail.text,
   };
   if (mail.html) args.html = mail.html;
+  if (mail.signature) args.signature = mail.signature;
   if (mail.cc && mail.cc.length) args.cc = mail.cc;
   if (mail.bcc && mail.bcc.length) args.bcc = mail.bcc;
   if (mail.attachments && mail.attachments.length) {
