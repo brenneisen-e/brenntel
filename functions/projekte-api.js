@@ -103,11 +103,9 @@ const SEED_INVOICES = [
     remail: 'czekalla@malereifachbetrieb.de',
     project: 'Czekalla @ work',
     angebot: 'KVA-CZ-2611',
-    intro: 'Lieber Elmar,\n\nam 28.10. haben wir die App vorgestellt und live genommen, das Büro und die ersten sieben ' +
-      'Mitarbeiter sind freigeschaltet. Wie besprochen berechnen wir dir hiermit die erste Hälfte des Gesamtpreises aus ' +
-      'dem Angebot KVA‑CZ‑2611. Im November entwickeln wir die App weiter und testen sie im Betrieb, ' +
-      'zum Abschluss übergeben wir sie dir.',
-    closing: 'Vielen Dank für die tolle Zusammenarbeit! Wir freuen uns auf den Testlauf mit euch.',
+    intro: 'Lieber Elmar,\n\nam 28.10. haben wir die App live genommen, das Büro und sieben Mitarbeiter sind freigeschaltet. ' +
+      'Wie besprochen berechnen wir die erste Hälfte, im November folgen Weiterentwicklung\u00a0und\u00a0Test.',
+    closing: 'Vielen Dank für die tolle Zusammenarbeit!',
     greeting: 'Viele Grüße',
     mailsubject: 'Rechnung RE-CZ-2026-01 – Abschlag Czekalla @ work',
     mailtext: 'Lieber Elmar,\n\nam 28.10. haben wir die App vorgestellt und live genommen, das Büro und die ersten sieben ' +
@@ -117,20 +115,11 @@ const SEED_INVOICES = [
       'Die zweite Hälfte rechnen wir dann mit der Schlussrechnung ab.\n\nMelde dich jederzeit, wenn du Fragen hast.\n\nViele Grüße\nEike',
     items: [{
       title: 'Abschlagszahlung 1 von 2 (50 %) nach dem Livegang am 28.10.2026',
-      // Was bis zur Vorstellung fertig war (Stand im Repo czekallaAtWork)
-      details: 'Architektur: Infrastruktur bei Cloudflare, Backend mit Datenbank, Web‑App für iPhone, Android und Büro‑PC, automatische Tests und Deployment unter czekallaatwork.app\n' +
-               'Android‑App mit automatischem Ausstempeln beim Verlassen der Baustelle\n' +
-               'Modul A Zeiterfassung: Ein-, Aus- und Umstempeln mit Baustellenerkennung, Stempeln ohne Netz, Pausen nach Arbeitszeitgesetz\n' +
-               'Modul A Büro‑Auswertung: Übersicht, Auswertungen nach Tag, Woche, Monat, Baustelle und Mitarbeiter, Lohnexport als CSV, Excel und PDF\n' +
-               'Modul B Baustellen‑Controlling: Faktor je Mitarbeiter, effektive Stunden, Stundenbudget mit Ampel, Zusatzstunden mit Nachweis\n' +
-               'Modul C Baustellenakte: Fotos, Dokumente und Notizen je Baustelle, geordnet nach Raum und Art\n' +
-               'Modul D Wochen- und Einsatzplanung: Wochenplan für Baustellen und Mitarbeiter, Ansicht für den Fernseher im Teamraum\n' +
-               'Modul E Urlaub und Krankmeldungen: Anträge und Genehmigung, Urlaubskonten, Stundenkonto und Anwesenheit\n' +
-               'Dazu: Mitarbeiterverwaltung mit Einrichtung der Handys per QR‑Code, Aufgaben, Nachrichten und Mitteilungen aufs Handy, Datenschutz‑Paket mit Löschkonzept\n' +
-               'Einführung am 28.10.2026: Vorstellung mit Handout „Ein Tag mit der App“, Livegang mit Freischaltung des Büros und der ersten sieben Mitarbeiter\n' +
-               'Gesamtpreis laut Angebot KVA‑CZ‑2611: 11.500,00 €\n' +
-               'Mit dieser Rechnung (Abschlag 1 von 2): 5.750,00 €\n' +
-               'Noch abzurechnen mit der Schlussrechnung nach der Übergabe: 5.750,00 €',
+      // Was bis zum Livegang fertig war (Stand im Repo czekallaAtWork), knapp für eine Seite
+      details: 'Architektur, Web‑App und Android‑App mit automatischem Ausstempeln\n' +
+               'Module A bis C: Zeiterfassung, Lohnexport, Controlling, Baustellenakte\n' +
+               'Module D und E: Wochen- und Einsatzplanung, Urlaub und Krankmeldungen\n' +
+               'Gesamtpreis 11.500,00 €, nach der Übergabe noch offen: 5.750,00 €',
       qty: '1',
       unit: 'Pauschal',
       price: '5750',
